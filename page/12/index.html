@@ -79,8 +79,8 @@
 			</ul>
 		</nav>
 		<nav>
-			<a>总文章数 286</a>
-			<a>总字数 <span class="post-count">826k</span></a>
+			<a>总文章数 413</a>
+			<a>总字数 <span class="post-count">1279k</span></a>
 		</nav>
 		<nav class="header-smart-menu">
     		
@@ -165,20 +165,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-空对象模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-组合优于继承" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/12/05/%E7%A9%BA%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%BC%8F/">空对象模式</a>
+      <a class="article-title" href="/2022/04/12/%E7%BB%84%E5%90%88%E4%BC%98%E4%BA%8E%E7%BB%A7%E6%89%BF/">组合优于继承</a>
     </h1>
   
 
         
-        <a href="/2021/12/05/%E7%A9%BA%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%BC%8F/" class="archive-article-date">
-  	<time datetime="2021-12-05T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-05</time>
+        <a href="/2022/04/12/%E7%BB%84%E5%90%88%E4%BC%98%E4%BA%8E%E7%BB%A7%E6%89%BF/" class="archive-article-date">
+  	<time datetime="2022-04-12T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-12</time>
 </a>
         
       </header>
@@ -186,21 +186,65 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：836字 | 预计阅读时长：3分钟
+		字数：3.2k字 | 预计阅读时长：11分钟
 	  </div> 
       
-        <p>在实际的开发过程中，经常会遇到空指针的问题。那么如何解决空指针呢？今天来介绍一种设计模式叫空对象模式。内容摘抄自微信公众号【Java极客技术】。</p>
-<h2 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h2><p>在实际的系统运行过程中，难免会出现报<code>NullPointerException</code>空指针的错误，造成这样的本质原因就是数据或者对象为空，导致程序进一步执行的时候报错！</p>
-<p>一般的常规解决办法也就是加一个<code>if</code>判断。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(obj != <span class="keyword">null</span>)&#123;</span><br><span class="line">  <span class="comment">//doSomthing</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p>今天来讲一条很重要的设计原则，<strong>组合优于继承</strong>。内容摘抄自微信公众号【Java核心技术】。</p>
+<p>面向对象编程中，有一条非常经典的设计原则，那就是：组合优于继承，多用组合少用继承。</p>
+<p>同样地，在《阿里巴巴Java开发手册》中有一条规定：<strong>谨慎使用继承的方式进行扩展，优先使用组合的方式实现。</strong></p>
+<p><img src="/2022/04/12/%E7%BB%84%E5%90%88%E4%BC%98%E4%BA%8E%E7%BB%A7%E6%89%BF/1.png" alt="img"></p>
+<h2 id="为什么不推荐使用继承"><a href="#为什么不推荐使用继承" class="headerlink" title="为什么不推荐使用继承"></a>为什么不推荐使用继承</h2><p>每个人在刚刚学习面向对象编程时都会觉得：继承可以实现类的复用。所以，很多开发人员在需要复用一些代码的时候会很自然的使用类的继承的方式，因为书上就是这么写的。继承是面向对象的四大特性之一，用来表示类之间的is-a关系，可以解决代码复用的问题。虽然继承有诸多作用，但继承层次过深、过复杂，也会影响到代码的可维护性</p>
+<p>假设我们要设计一个关于鸟的类。我们将“鸟”这样一个抽象的事物概念，定义为一个抽象类AbstractBird。所有更细分的鸟，比如麻雀、鸽子、乌鸦等，都继承这个抽象类。我们知道，大部分鸟都会飞，那我们可不可以在 AbstractBird抽象类中，定义一个fly()方法呢？</p>
+<p>答案是否定的。尽管大部分鸟都会飞，但也有特例，比如鸵鸟就不会飞。鸵鸟继承具有fly()方法的父类，那鸵鸟就具有“飞”这样的行为，这显然不对。如果在鸵鸟这个子类中重写fly() 方法，让它抛出UnSupportedMethodException异常呢？</p>
+<p>具体的代码实现如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractBird</span> </span>&#123;</span><br><span class="line">  <span class="comment">//...省略其他属性和方法...</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span> </span>&#123; <span class="comment">//... &#125;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Ostrich</span> <span class="keyword">extends</span> <span class="title">AbstractBird</span> </span>&#123; <span class="comment">//鸵鸟</span></span><br><span class="line">  <span class="comment">//...省略其他属性和方法...</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnSupportedMethodException(<span class="string">&quot;I can&#x27;t fly.&#x27;&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>如果出现需要判断的对象过多，难以避免的会出现很多对<code>Null</code>的判断语句，而这些语句一旦多起来，我们的代码就会变的惨不忍睹。</p>
-<p>针对这种情况，我们可以引入了<strong>空对象模式</strong>以此来使我们的代码变的更优雅一点。</p>
-<p>废话也不多说了，代码直接撸起来！</p>
-<h2 id="二、程序示例"><a href="#二、程序示例" class="headerlink" title="二、程序示例"></a>二、程序示例</h2><p>下面，我们以获取从一个书籍库中获取书籍为例，实现过程如下！</p>
-<p>先创建一个书籍抽象类<code>AbstractBook</code>，代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractBook</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//书名</span></span><br><span class="line">    <span class="keyword">protected</span> String bookName;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//判断是否存在</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isExist</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取书名</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">getName</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
+<p>这种写法虽然可以解决问题，但不优雅。因为除了鸵鸟之外，不会飞的鸟还有很多，比如企鹅。对于这些不会飞的鸟来说，全部都去重写fly()方法，抛出异常，完全属于代码重复。理论上这些不会飞的鸟根本就不应该拥有fly()方法，让不会飞的鸟暴露fly()接口给外部，增加了被误用的概率。</p>
+<p>要解决上面的问题，就得让AbstractBird类派生出两个更加细分的抽象类：会飞的鸟类AbstractFlyableBird和不会飞的鸟类AbstractUnFlyableBird，让麻雀、乌鸦这些会飞的鸟都继承 AbstractFlyableBird，让鸵鸟、企鹅这些不会飞的鸟，都继承 AbstractUnFlyableBird 类。</p>
+<p>具体的继承关系如下图所示：</p>
+<p><img src="/2022/04/12/%E7%BB%84%E5%90%88%E4%BC%98%E4%BA%8E%E7%BB%A7%E6%89%BF/2.png" alt="img"></p>
+<p>这样一来，继承关系变成了三层。但是如果我们不只关注“鸟会不会飞”，还要继续关注“鸟会不会叫”，将鸟划分得更加细致时呢？两个关注行为自由搭配起来会产生四种情况：会飞会叫、不会飞会叫、会飞不会叫、不会飞不会叫。如果继续沿用刚才的设计思路，继承层次会再次加深。</p>
+<p><img src="/2022/04/12/%E7%BB%84%E5%90%88%E4%BC%98%E4%BA%8E%E7%BB%A7%E6%89%BF/3.png" alt="img"></p>
+<p>如果继续增加“鸟会不会下蛋”这样的行为，类的继承层次会越来越深、继承关系会越来越复杂。而这种层次很深、很复杂的继承关系，一方面，会导致代码的可读性变差。</p>
+<p>因为我们要搞清楚某个类具有哪些方法、属性，必须阅读父类的代码、父类的父类的代码……一直追溯到最顶层父类的代码。另一方面，这也破坏了类的封装特性，将父类的实现细节暴露给了子类。子类的实现依赖父类的实现，两者高度耦合，一旦父类代码修改，就会影响所有子类的逻辑。</p>
+<p>继承最大的问题就在于：<strong>继承层次过深、继承关系过于复杂时会影响到代码的可读性和可维护性。</strong></p>
+<h2 id="组合相比继承有哪些优势"><a href="#组合相比继承有哪些优势" class="headerlink" title="组合相比继承有哪些优势"></a>组合相比继承有哪些优势</h2><p>复用性是面向对象技术带来的很棒的潜在好处之一。如果运用的好的话可以帮助我们节省很多开发时间，提升开发效率。但是，如果被滥用那么就可能产生很多难以维护的代码。作为一门面向对象开发的语言，代码复用是Java引人注意的功能之一。</p>
+<p>Java代码的复用有继承、组合以及委托三种具体的实现形式。</p>
+<p>对于上面提到的继承带来的问题，可以利用组合（composition）、接口、委托（delegation）三个技术手段一块儿来解决。</p>
+<p>接口表示具有某种行为特性。针对“会飞”这样一个行为特性，我们可以定义一个Flyable接口，只让会飞的鸟去实现这个接口。对于会叫、会下蛋这些行为特性，我们可以类似地定义Tweetable接口、EggLayable接口。我们将这个设计思路翻译成Java代码的话，就是下面这个样子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Flyable</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Tweetable</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">tweet</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">EggLayable</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">layEgg</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Ostrich</span> <span class="keyword">implements</span> <span class="title">Tweetable</span>, <span class="title">EggLayable</span> </span>&#123;<span class="comment">//鸵鸟</span></span><br><span class="line">  <span class="comment">//... 省略其他属性和方法...</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">tweet</span><span class="params">()</span> </span>&#123; <span class="comment">//... &#125;</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">layEgg</span><span class="params">()</span> </span>&#123; <span class="comment">//... &#125;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sparrow</span> <span class="keyword">implements</span> <span class="title">Flayable</span>, <span class="title">Tweetable</span>, <span class="title">EggLayable</span> </span>&#123;<span class="comment">//麻雀</span></span><br><span class="line">  <span class="comment">//... 省略其他属性和方法...</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span> </span>&#123; <span class="comment">//... &#125;</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">tweet</span><span class="params">()</span> </span>&#123; <span class="comment">//... &#125;</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">layEgg</span><span class="params">()</span> </span>&#123; <span class="comment">//... &#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过，接口只声明方法，不定义实现。也就是说，每个会下蛋的鸟都要实现一遍layEgg()方法，并且实现逻辑几乎是一样的（可能极少场景下会不一样），这就会导致代码重复的问题。那这个问题又该如何解决呢？有以下两种方法。</p>
+<h2 id="使用委托"><a href="#使用委托" class="headerlink" title="使用委托"></a>使用委托</h2><p>针对三个接口再定义三个实现类，它们分别是：实现了fly()方法的 FlyAbility类、实现了tweet()方法的TweetAbility类、实现了layEgg()方法的 EggLayAbility类。然后，通过组合和委托技术来消除代码重复。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Flyable</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span>；</span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> class FlyAbility implements Flyable </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span> </span>&#123; <span class="comment">//... &#125;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//省略Tweetable/TweetAbility/EggLayable/EggLayAbility</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Ostrich</span> <span class="keyword">implements</span> <span class="title">Tweetable</span>, <span class="title">EggLayable</span> </span>&#123;<span class="comment">//鸵鸟</span></span><br><span class="line">  <span class="keyword">private</span> TweetAbility tweetAbility = <span class="keyword">new</span> TweetAbility(); <span class="comment">//组合</span></span><br><span class="line">  <span class="keyword">private</span> EggLayAbility eggLayAbility = <span class="keyword">new</span> EggLayAbility(); <span class="comment">//组合</span></span><br><span class="line">  <span class="comment">//... 省略其他属性和方法...</span></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">tweet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    tweetAbility.tweet(); <span class="comment">// 委托</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">layEgg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    eggLayAbility.layEgg(); <span class="comment">// 委托</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="使用Java8的接口默认方法"><a href="#使用Java8的接口默认方法" class="headerlink" title="使用Java8的接口默认方法"></a>使用Java8的接口默认方法</h2><p>在Java8中，我们可以在接口中写默认实现方法。使用关键字default定义默认接口实现，当然这个默认的方法也可以重写。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Flyable</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//默认实现...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Flyable</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">fly</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//默认实现...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Tweetable</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">tweet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//默认实现...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">EggLayable</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">default</span> <span class="keyword">void</span> <span class="title">layEgg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//默认实现...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Ostrich</span> <span class="keyword">implements</span> <span class="title">Tweetable</span>, <span class="title">EggLayable</span> </span>&#123;<span class="comment">//鸵鸟</span></span><br><span class="line">  <span class="comment">//... 省略其他属性和方法...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sparrow</span> <span class="keyword">implements</span> <span class="title">Flayable</span>, <span class="title">Tweetable</span>, <span class="title">EggLayable</span> </span>&#123;<span class="comment">//麻雀</span></span><br><span class="line">  <span class="comment">//... 省略其他属性和方法...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继承主要有三个作用：表示is-a关系、支持多态特性、代码复用。而这三个作用都可以通过其他技术手段来达成。比如is-a关系，我们可以通过组合和接口的has-a关系来替代；多态特性我们也可以利用接口来实现；代码复用我们可以通过组合和委托来实现。</p>
+<p>所以，<strong>从理论上讲，通过组合、接口、委托三个技术手段，我们完全可以替换掉继承，在项目中不用或者少用继承关系，特别是一些复杂的继承关系。</strong></p>
+<h2 id="如何判断该用组合还是继承"><a href="#如何判断该用组合还是继承" class="headerlink" title="如何判断该用组合还是继承"></a>如何判断该用组合还是继承</h2><p>尽管我们鼓励多用组合少用继承，但组合也并不是完美的，<strong>继承也并非一无是处。从上面的例子来看，继承改写成组合意味着要做更细粒度的类的拆分。这也就意味着，我们要定义更多的类和接口。类和接口的增多也就或多或少地增加代码的复杂程度和维护成本。</strong></p>
+<p><strong>如果类之间的继承结构稳定（不会轻易改变），继承层次比较浅（比如，最多有两层继承关系），继承关系不复杂，我们就可以大胆地使用继承。反之，系统越不稳定，继承层次很深，继承关系复杂，我们就尽量使用组合来替代继承。</strong></p>
+<p>除此之外，还有一些设计模式会固定使用继承或者组合。比如，装饰者模式（decorator pattern）、策略模式（strategy pattern）、组合模式（composite pattern）等都使用了组合关系，而模板模式（template pattern）使用了继承关系。</p>
+<p>有的地方提到组合优先继承这条软件开发原则时，可能会说成“<strong>多用组合，少用继承</strong>”。所谓多用与少用，实际指的是要弄清楚在具体的场景下需要哪种。软件开发原则这类问题，不宜死扣字眼。其实在《Thinking in Java》里有提到，当你用继承的时候，肯定是想要使用多态的特性。</p>
+<p>比如你要写一个画图系统，画不同的图形，这个时候，你可能考虑到调用相应的函数的时候可以不考虑具体类型，直接画就好了，具体什么图形，交给运行时去判断。这个时候，就要用到多态，就需要有继承关系。一个父类，多个子类。然后用父类的类型去引用具体子类的对象，就可以了。</p>
+<p>而用不到多态的时候，使用继承有什么用呢？代码复用？一个继承可以让你少写很多代码，但是用错了场合，后期的维护可能是灾难性的。因为继承关系的耦合度很高，一处改会导致处处需要修改。这个时候就需要组合。</p>
+<p>所以我坚持，<strong>如果不想使用多态特性，继承关系就是无用的。</strong></p>
+<h2 id="处境尴尬的继承"><a href="#处境尴尬的继承" class="headerlink" title="处境尴尬的继承"></a>处境尴尬的继承</h2><p><img src="/2022/04/12/%E7%BB%84%E5%90%88%E4%BC%98%E4%BA%8E%E7%BB%A7%E6%89%BF/4.png" alt="img"></p>
+<p>大家对继承的厌恶主要是因为长期以来程序员过度使用继承，继承并非一无是处。</p>
+<p>在某些特殊场景下，我们必须使用继承。如果你不能改变一个函数的入参类型，而入参又非接口，为了支持多态，只能采用继承来实现。比如下面这样一段代码，其中FeignClient是一个外部类，我们无法修改这个外部类，但是我们希望能重写这个类在运行时执行的encode() 函数。这个时候，我们只能采用继承来实现了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FeignClient</span> </span>&#123; <span class="comment">// Feign Client框架代码，只读不能修改</span></span><br><span class="line">  <span class="comment">//...省略其他代码...</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">encode</span><span class="params">(String url)</span> </span>&#123; <span class="comment">//... &#125;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">demofunction</span><span class="params">(FeignClient feignClient)</span> </span>&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  feignClient.encode(url);</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomizedFeignClient</span> <span class="keyword">extends</span> <span class="title">FeignClient</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">encode</span><span class="params">(String url)</span> </span>&#123; <span class="comment">//...重写encode的实现...&#125;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用</span></span><br><span class="line">FeignClient client = <span class="keyword">new</span> CustomizedFeignClient();</span><br><span class="line">demofunction(client);</span><br></pre></td></tr></table></figure>
+
+<p>上面这个例子，举得不是太恰当，更像是一种迫不得已。这恰好反映了继承在面向对象编程的大部分场景下的尴尬处境。</p>
+<p>其实我们很难真正使用好继承，根本原因在于，自然界中，代际之间是存在变异的，物种之间也是，而且这种变化是无法做规律化描述的，既伴随着某些功能的增加，也伴随着某些功能的弱化，甚至还有某些功能的改变。</p>
+<p>在软件行业最早期，软件功能很贫乏，需要不断增加软件功能来满足需求，这时候继承关系能够体现软件迭代后功能增强的特点。但很快就达到瓶颈期，功能不再是衡量软件好坏的主要指标，各种差异化的体验变得更加重要，此时软件迭代时不再是单纯的功能的累加，甚至于是完全的推倒重来，编程语言上的继承关系也就随之被废弃。</p>
+<p>注：以上关于组合及继承的代码例子，出自极客时间王争老师的《设计模式之美》第十讲</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这篇文章主要说了一下组合优于继承的概念、原因以及主要的使用方法，必须根据实际业务去考虑才能真正用好组合或者继承亦或是其他的设计原则。</p>
+
       
 
       
@@ -223,7 +267,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/12/05/%E7%A9%BA%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%BC%8F/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/04/12/%E7%BB%84%E5%90%88%E4%BC%98%E4%BA%8E%E7%BB%A7%E6%89%BF/">展开全文 >></a>
         </p>
       
 
@@ -253,20 +297,20 @@
 
 
   
-    <article id="post-Steam详细用法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Druid统计和监控SQL运行情况" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/12/04/Steam%E8%AF%A6%E7%BB%86%E7%94%A8%E6%B3%95/">Steam详细用法</a>
+      <a class="article-title" href="/2022/04/11/Druid%E7%BB%9F%E8%AE%A1%E5%92%8C%E7%9B%91%E6%8E%A7SQL%E8%BF%90%E8%A1%8C%E6%83%85%E5%86%B5/">Druid统计和监控SQL运行情况</a>
     </h1>
   
 
         
-        <a href="/2021/12/04/Steam%E8%AF%A6%E7%BB%86%E7%94%A8%E6%B3%95/" class="archive-article-date">
-  	<time datetime="2021-12-04T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-04</time>
+        <a href="/2022/04/11/Druid%E7%BB%9F%E8%AE%A1%E5%92%8C%E7%9B%91%E6%8E%A7SQL%E8%BF%90%E8%A1%8C%E6%83%85%E5%86%B5/" class="archive-article-date">
+  	<time datetime="2022-04-11T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-11</time>
 </a>
         
       </header>
@@ -274,29 +318,23 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：3.8k字 | 预计阅读时长：17分钟
+		字数：3.2k字 | 预计阅读时长：13分钟
 	  </div> 
       
-        <p>今天来看一下Steam的详细用法，之前已经写过一篇了，就做一个补充吧。 内容摘抄自微信公众号【Java极客技术】。</p>
-<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><p>Java 8 是一个非常成功的版本，这个版本新增的Stream，配合同版本出现的Lambda ，给我们操作集合（Collection）提供了极大的便利。Stream流是JDK8新增的成员，允许以声明性方式处理数据集合，可以把Stream流看作是遍历数据集合的一个高级迭代器。Stream 是 Java8 中处理集合的关键抽象概念，它可以指定你希望对集合进行的操作，可以执行非常复杂的查找/筛选/过滤、排序、聚合和映射数据等操作。使用Stream API 对集合数据进行操作，就类似于使用 SQL 执行的数据库查询。也可以使用 Stream API 来并行执行操作。简而言之，Stream API 提供了一种高效且易于使用的处理数据的方式。</p>
-<h3 id="1、使用流的好处"><a href="#1、使用流的好处" class="headerlink" title="1、使用流的好处"></a>1、使用流的好处</h3><p>代码以声明性方式书写，说明想要完成什么，而不是说明如何完成一个操作。</p>
-<p>可以把几个基础操作连接起来，来表达复杂的数据处理的流水线，同时保持代码清晰可读。</p>
-<h3 id="2、流是什么"><a href="#2、流是什么" class="headerlink" title="2、流是什么?"></a>2、流是什么?</h3><p>从支持数据处理操作的源生成元素序列.数据源可以是集合,数组或IO资源。</p>
-<p>从操作角度来看,流与集合是不同的. 流不存储数据值; 流的目的是处理数据,它是关于算法与计算的。</p>
-<p>如果把集合作为流的数据源,创建流时不会导致数据流动; 如果流的终止操作需要值时,流会从集合中获取值; 流只使用一次。</p>
-<p>流中心思想是延迟计算,流直到需要时才计算值。</p>
-<p><img src="/2021/12/04/Steam%E8%AF%A6%E7%BB%86%E7%94%A8%E6%B3%95/1.png" alt="img"></p>
-<p>Stream可以由数组或集合创建，对流的操作分为两种：</p>
-<ol>
-<li>中间操作，每次返回一个新的流，可以有多个。</li>
-<li>终端操作，每个流只能进行一次终端操作，终端操作结束后流无法再次使用。终端操作会产生一个新的集合或值。</li>
-</ol>
-<p><strong>特性：</strong></p>
-<ol>
-<li>不是数据结构，不会保存数据。</li>
-<li>不会修改原来的数据源，它会将操作后的数据保存到另外一个对象中。（保留意见：毕竟peek方法可以修改流中元素）</li>
-<li>惰性求值，流在中间处理过程中，只是对操作进行了记录，并不会立即执行，需要等到执行终止操作的时候才会进行实际的计算。</li>
-</ol>
+        <p>今天来看一下如何利用数据连接池Druid统计和监控SQL运行情况，内容摘抄自微信公众号【springmeng】。</p>
+<h2 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1 基本概念"></a>1 基本概念</h2><p>Druid 是Java语言中最好的数据库连接池。</p>
+<p>虽然 HikariCP 的速度稍快，但是，Druid能够提供强大的监控和扩展功能，也是阿里巴巴的开源项目。</p>
+<p>Druid是阿里巴巴开发的号称为监控而生的数据库连接池，在功能、性能、扩展性方面，都超过其他数据库连接池，包括DBCP、C3P0、BoneCP、Proxool、JBoss DataSource等等等，秒杀一切。</p>
+<p>Druid 可以很好的监控 DB 池连接和 SQL 的执行情况，天生就是针对监控而生的 DB 连接池。</p>
+<p>Spring Boot 默认数据源 HikariDataSource 与 JdbcTemplate中已经介绍 Spring Boot 2.x 默认使用 Hikari 数据源，可以说 Hikari 与 Driud 都是当前 Java Web 上最优秀的数据源。</p>
+<p>而Druid已经在阿里巴巴部署了超过600个应用，经过好几年生产环境大规模部署的严苛考验！</p>
+<ul>
+<li><code>stat</code>：Druid内置提供一个StatFilter,用于统计监控信息。</li>
+<li><code>wall</code>：Druid防御SQL注入攻击的WallFilter就是通过Druid的SQL Parser分析。Druid提供的SQL Parser可以在JDBC层拦截SQL做相应处理，比如说分库分表、审计等。</li>
+<li><code>log4j2</code>：这个就是 日志记录的功能，可以把sql语句打印到log4j2 供排查问题。</li>
+</ul>
+<h2 id="2-添加依赖"><a href="#2-添加依赖" class="headerlink" title="2 添加依赖"></a>2 添加依赖</h2><p>pom.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 阿里巴巴的druid数据源 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>druid-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.23<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- mysql8 驱动--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--使用 log4j2 记录日志--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-log4j2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">mybatis，引入了 SpringBoot的 JDBC 模块，</span></span><br><span class="line"><span class="comment">所以，默认是使用 hikari 作为数据源</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 排除默认的 HikariCP 数据源 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.zaxxer<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>HikariCP<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
         
       
 
@@ -310,91 +348,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">数据库</a>
         		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/12/04/Steam%E8%AF%A6%E7%BB%86%E7%94%A8%E6%B3%95/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Zuul动态路由" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/12/03/Zuul%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/">Zuul动态路由</a>
-    </h1>
-  
-
-        
-        <a href="/2021/12/03/Zuul%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/" class="archive-article-date">
-  	<time datetime="2021-12-03T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-03</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：1.7k字 | 预计阅读时长：6分钟
-	  </div> 
-      
-        <p>今天来看一下微服务网关：Zuul的动态路由，内容摘抄自微信公众号【IT大咖说】。</p>
-<h2 id="Zuul的动态路由"><a href="#Zuul的动态路由" class="headerlink" title="Zuul的动态路由"></a>Zuul的动态路由</h2><p>启动时Zuul会读取静态配置文件加载路由信息，将URL Path与路由映射关系建立好，提前加载到内存。在很多场景下，我们需要在不停止Zuul进程的前提下，完成路由映射规则的重新建立，这时候我们就需要动态路由（Dynamic Routing）功能，有两种实现动态路由的方式。</p>
-<p>方式一：通过Spring Boot Acturator开启Zuul的Endpoint功能，它支持Refresh动态刷新配置文件，这种方式的好处是Zuul无须做任何修改，也不需要维护路由映射规则，缺点是没有可视化界面，维护起来比较烦琐。</p>
-<p>方式二：覆写RouteLocator的List<Route>getRoutes（）方法，通过事件刷新机制，从数据库中读取路由配置规则。这是常用的Zuul动态路由解决方案，它可以轻松地实现可视化管理，减少引入新的Spring Cloud组件的依赖绑定。Sia-Gateway（GitHub已开源项目）使用了基于MySQL DB的动态路由机制。如下图所示是Zuul动态路由架构图。</Route></p>
-<p><img src="/2021/12/03/Zuul%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/1.png" alt="img"></p>
-<h3 id="Zuul的动态路由思路及解决方案如下。"><a href="#Zuul的动态路由思路及解决方案如下。" class="headerlink" title="Zuul的动态路由思路及解决方案如下。"></a>Zuul的动态路由思路及解决方案如下。</h3><p>首先，Admin作为前端管理界面将用户对路由的添加、修改、删除等操作通过RouteService存储到DB中。DB中的存储结构如下图所示。</p>
-<p><img src="/2021/12/03/Zuul%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/2.png" alt="img"></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
+      		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">SpringCloud</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SpringBoot</a>
         		</li>
       		
 		</ul>
@@ -404,7 +362,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/12/03/Zuul%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/04/11/Druid%E7%BB%9F%E8%AE%A1%E5%92%8C%E7%9B%91%E6%8E%A7SQL%E8%BF%90%E8%A1%8C%E6%83%85%E5%86%B5/">展开全文 >></a>
         </p>
       
 
@@ -434,20 +392,20 @@
 
 
   
-    <article id="post-大量TIME_WAIT的影响" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Redis模拟秒杀抢单" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/12/02/%E5%A4%A7%E9%87%8FTIME_WAIT%E7%9A%84%E5%BD%B1%E5%93%8D/">大量TIME_WAIT的影响</a>
+      <a class="article-title" href="/2022/04/10/Redis%E6%A8%A1%E6%8B%9F%E7%A7%92%E6%9D%80%E6%8A%A2%E5%8D%95/">Redis模拟秒杀抢单</a>
     </h1>
   
 
         
-        <a href="/2021/12/02/%E5%A4%A7%E9%87%8FTIME_WAIT%E7%9A%84%E5%BD%B1%E5%93%8D/" class="archive-article-date">
-  	<time datetime="2021-12-02T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-02</time>
+        <a href="/2022/04/10/Redis%E6%A8%A1%E6%8B%9F%E7%A7%92%E6%9D%80%E6%8A%A2%E5%8D%95/" class="archive-article-date">
+  	<time datetime="2022-04-10T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-10</time>
 </a>
         
       </header>
@@ -455,238 +413,36 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2.2k字 | 预计阅读时长：8分钟
+		字数：1.9k字 | 预计阅读时长：7分钟
 	  </div> 
       
-        <p>今天来看下大量的TIME_WAIT的TCP连接对业务有什么影响 ，内容摘抄自微信公众号【Java技术栈】。</p>
-<p><strong>几个方面：</strong></p>
-<ol>
-<li>问题描述：什么现象？什么影响？</li>
-<li>问题分析</li>
-<li>解决方案</li>
-<li>底层原理</li>
-</ol>
-<h2 id="1-问题描述"><a href="#1-问题描述" class="headerlink" title="1.问题描述"></a>1.问题描述</h2><p>模拟高并发的场景，会出现批量的 <code>TIME_WAIT</code> 的 TCP 连接：</p>
-<p><img src="/2021/12/02/%E5%A4%A7%E9%87%8FTIME_WAIT%E7%9A%84%E5%BD%B1%E5%93%8D/1.png" alt="img"></p>
-<p>短时间后，所有的 <code>TIME_WAIT</code> 全都消失，被回收，端口包括服务，均正常。</p>
-<p>即，在高并发的场景下，<code>TIME_WAIT</code> 连接存在，属于正常现象。</p>
-<p>线上场景中，持续的高并发场景</p>
-<ul>
-<li>一部分 <code>TIME_WAIT</code> 连接被回收，但新的 <code>TIME_WAIT</code> 连接产生；</li>
-<li>一些极端情况下，会出现<strong>大量</strong>的 <code>TIME_WAIT</code> 连接。</li>
+        <p>今天主要是看一下Redis分布式锁的应用，用来模拟秒杀抢单系统。内容摘抄自微信公众号【Java后端技术】。</p>
+<p>本篇内容主要讲解的是redis分布式锁，这个在各大厂面试几乎都是必备的，下面结合模拟抢单的场景来使用她；本篇不涉及到的redis环境搭建，快速搭建个人测试环境，这里建议使用docker；本篇内容节点如下：</p>
+<h2 id="Jedis的nx生成锁"><a href="#Jedis的nx生成锁" class="headerlink" title="Jedis的nx生成锁"></a>Jedis的nx生成锁</h2><ul>
+<li>如何删除锁</li>
+<li>模拟抢单动作(10w个人开抢)</li>
+<li>jedis的nx生成锁</li>
 </ul>
-<p>Think：</p>
-<blockquote>
-<p>上述大量的 <code>TIME_WAIT</code> 状态 TCP 连接，有什么业务上的影响吗？</p>
-</blockquote>
-<p>Nginx 作为反向代理时，大量的短链接，可能导致 Nginx 上的 TCP 连接处于 <code>time_wait</code> 状态：</p>
+<p>对于java中想操作redis，好的方式是使用jedis，首先pom中引入依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>对于分布式锁的生成通常需要注意如下几个方面：</p>
+<p><strong>创建锁的策略：</strong> redis的普通key一般都允许覆盖，A用户set某个key后，B在set相同的key时同样能成功，如果是锁场景，那就无法知道到底是哪个用户set成功的；这里jedis的setnx方式为我们解决了这个问题，简单原理是：当A用户先set成功了，那B用户set的时候就返回失败，满足了某个时间点只允许一个用户拿到锁。</p>
+<p><strong>锁过期时间：</strong> 某个抢购场景时候，如果没有过期的概念，当A用户生成了锁，但是后面的流程被阻塞了一直无法释放锁，那其他用户此时获取锁就会一直失败，无法完成抢购的活动；当然正常情况一般都不会阻塞，A用户流程会正常释放锁；过期时间只是为了更有保障。</p>
+<p>下面来上段setnx操作的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">setnx</span><span class="params">(String key, String val)</span> </span>&#123;</span><br><span class="line">        Jedis jedis = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            jedis = jedisPool.getResource();</span><br><span class="line">            <span class="keyword">if</span> (jedis == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> jedis.set(key, val, <span class="string">&quot;NX&quot;</span>, <span class="string">&quot;PX&quot;</span>, <span class="number">1000</span> * <span class="number">60</span>).</span><br><span class="line">                    equalsIgnoreCase(<span class="string">&quot;ok&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (jedis != <span class="keyword">null</span>) &#123;</span><br><span class="line">                jedis.close();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里注意点在于jedis的set方法，其参数的说明如：</p>
 <ul>
-<li>每一个 time_wait 状态，都会占用一个「本地端口」，上限为 <code>65535</code>(16 bit，2 Byte)；</li>
-<li>当大量的连接处于 <code>time_wait</code> 时，新建立 TCP 连接会出错，<strong>address already in use : connect</strong> 异常</li>
+<li>NX：是否存在key，存在就不set成功</li>
+<li>PX：key过期时间单位设置为毫秒（EX：单位秒）</li>
 </ul>
-<p>统计 TCP 连接的状态：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 统计：各种连接的数量</span><br><span class="line">$ netstat -n | awk &#x27;/^tcp/ &#123;++S[$NF]&#125; END &#123;for(a in S) print a, S[a]&#125;&#x27;</span><br><span class="line">ESTABLISHED 1154</span><br><span class="line">TIME_WAIT 1645</span><br></pre></td></tr></table></figure>
+<p>setnx如果失败直接封装返回false即可，下面我们通过一个get方式的api来调用下这个setnx方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/setnx/&#123;key&#125;/&#123;val&#125;&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">setnx</span><span class="params">(<span class="meta">@PathVariable</span> String key, <span class="meta">@PathVariable</span> String val)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">return</span> jedisCom.setnx(key, val);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>Tips：</p>
-<blockquote>
-<p>TCP 本地端口数量，上限为 <code>65535</code>（6.5w），这是因为 TCP 头部使用 <code>16 bit</code>，存储「<strong>端口号</strong>」，因此约束上限为 <code>65535</code>。</p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">多线程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/12/02/%E5%A4%A7%E9%87%8FTIME_WAIT%E7%9A%84%E5%BD%B1%E5%93%8D/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Mysql索引" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/12/01/Mysql%E7%B4%A2%E5%BC%95/">Mysql索引</a>
-    </h1>
-  
-
-        
-        <a href="/2021/12/01/Mysql%E7%B4%A2%E5%BC%95/" class="archive-article-date">
-  	<time datetime="2021-12-01T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-01</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：3.3k字 | 预计阅读时长：12分钟
-	  </div> 
-      
-        <p>今天来看一下Mysql的索引的原理和实现。内容摘抄自微信公众号【Java技术栈】。</p>
-<h2 id="什么是索引？"><a href="#什么是索引？" class="headerlink" title="什么是索引？"></a>什么是索引？</h2><p>索引是辅助存储引擎高效获取数据的一种数据结构。</p>
-<p><img src="/2021/12/01/Mysql%E7%B4%A2%E5%BC%95/1.png" alt="img"></p>
-<p>很多人形象的说索引就是数据的目录，便于存储引擎快速的定位数据。</p>
-<h2 id="索引的分类"><a href="#索引的分类" class="headerlink" title="索引的分类"></a>索引的分类</h2><p>我们经常从以下几个方面对索引进行分类</p>
-<p>从 <strong>「数据结构的角度」</strong> 对索引进行分类</p>
-<ul>
-<li>B+tree</li>
-<li>Hash</li>
-<li>Full-texts 索引</li>
-</ul>
-<p>从 <strong>「物理存储的角度」</strong> 对索引进行分类</p>
-<ul>
-<li>聚簇索引</li>
-<li>二级索引(辅助索引)</li>
-</ul>
-<p>从 <strong>「索引字段特性角度」</strong> 分类</p>
-<ul>
-<li>主键索引</li>
-<li>唯一索引</li>
-<li>普通索引</li>
-<li>前缀索引</li>
-</ul>
-<p>从 <strong>「组成索引的字段个数角度」</strong> 分类</p>
-<ul>
-<li>单列索引</li>
-<li>联合索引（复合索引）</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Mysql</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/12/01/Mysql%E7%B4%A2%E5%BC%95/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Redis实现限流" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/30/Redis%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81/">Redis实现限流</a>
-    </h1>
-  
-
-        
-        <a href="/2021/11/30/Redis%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81/" class="archive-article-date">
-  	<time datetime="2021-11-30T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-30</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：1.2k字 | 预计阅读时长：4分钟
-	  </div> 
-      
-        <p>今天来看一下如何用redis实现限流。内容摘抄自微信公众号【Java后端技术】。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">面对越来越多的高并发场景，限流显示的尤为重要。</span><br></pre></td></tr></table></figure>
-
-<p>当然，限流有许多种实现的方式，Redis具有很强大的功能，我用Redis实践了三种的实现方式，可以较为简单的实现其方式。Redis不仅仅是可以做限流，还可以做数据统计，附近的人等功能，这些可能会后续写到。</p>
-<h2 id="第一种：基于Redis的setnx的操作"><a href="#第一种：基于Redis的setnx的操作" class="headerlink" title="第一种：基于Redis的setnx的操作"></a>第一种：基于Redis的setnx的操作</h2><p>我们在使用Redis的分布式锁的时候，大家都知道是依靠了setnx的指令，在CAS（Compare and swap）的操作的时候，同时给指定的key设置了过期实践（expire），我们在限流的主要目的就是为了在单位时间内，有且仅有N数量的请求能够访问我的代码程序。所以依靠setnx可以很轻松的做到这方面的功能。</p>
-<p>比如我们需要在10秒内限定20个请求，那么我们在setnx的时候可以设置过期时间10，当请求的setnx数量达到20时候即达到了限流效果。代码比较简单就不做展示了。</p>
-<p>当然这种做法的弊端是很多的，比如当统计1-10秒的时候，无法统计2-11秒之内，如果需要统计N秒内的M个请求，那么我们的Redis中需要保持N个key等等问题</p>
-<h2 id="第二种：基于Redis的数据结构zset"><a href="#第二种：基于Redis的数据结构zset" class="headerlink" title="第二种：基于Redis的数据结构zset"></a>第二种：基于Redis的数据结构zset</h2><p>其实限流涉及的最主要的就是滑动窗口，上面也提到1-10怎么变成2-11。其实也就是起始值和末端值都各+1即可。</p>
-<p>而我们如果用Redis的list数据结构可以轻而易举的实现该功能</p>
-<p>我们可以将请求打造成一个zset数组，当每一次请求进来的时候，value保持唯一，可以用UUID生成，而score可以用当前时间戳表示，因为score我们可以用来计算当前时间戳之内有多少的请求数量。而zset数据结构也提供了range方法让我们可以很轻易的获取到2个时间戳内有多少请求</p>
-<p>代码如下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Response <span class="title">limitFlow</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Long currentTime = <span class="keyword">new</span> Date().getTime();</span><br><span class="line">        System.out.println(currentTime);</span><br><span class="line">        <span class="keyword">if</span>(redisTemplate.hasKey(<span class="string">&quot;limit&quot;</span>)) &#123;</span><br><span class="line">            Integer count = redisTemplate.opsForZSet().rangeByScore(<span class="string">&quot;limit&quot;</span>, currentTime -  intervalTime, currentTime).size();        <span class="comment">// intervalTime是限流的时间 </span></span><br><span class="line">            System.out.println(count);</span><br><span class="line">            <span class="keyword">if</span> (count != <span class="keyword">null</span> &amp;&amp; count &gt; <span class="number">5</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> Response.ok(<span class="string">&quot;每分钟最多只能访问5次&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        redisTemplate.opsForZSet().add(<span class="string">&quot;limit&quot;</span>,UUID.randomUUID().toString(),currentTime);</span><br><span class="line">        <span class="keyword">return</span> Response.ok(<span class="string">&quot;访问成功&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过上述代码可以做到滑动窗口的效果，并且能保证每N秒内至多M个请求，缺点就是zset的数据结构会越来越大。实现方式相对也是比较简单的。</p>
+<p>访问如下测试url，正常来说第一次返回了true，第二次返回了false，由于第二次请求的时候redis的key已存在，所以无法set成功</p>
+<p><img src="/2022/04/10/Redis%E6%A8%A1%E6%8B%9F%E7%A7%92%E6%9D%80%E6%8A%A2%E5%8D%95/1.png" alt="img"></p>
+<p>由上图能够看到只有一次set成功，并key具有一个有效时间，此时已到达了分布式锁的条件。</p>
         
       
 
@@ -710,7 +466,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/11/30/Redis%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/04/10/Redis%E6%A8%A1%E6%8B%9F%E7%A7%92%E6%9D%80%E6%8A%A2%E5%8D%95/">展开全文 >></a>
         </p>
       
 
@@ -740,20 +496,20 @@
 
 
   
-    <article id="post-数据持久化框架选择" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Redis集群反向代理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/29/%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96%E6%A1%86%E6%9E%B6%E9%80%89%E6%8B%A9/">数据持久化框架选择</a>
+      <a class="article-title" href="/2022/04/09/Redis%E9%9B%86%E7%BE%A4%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/">Redis集群反向代理</a>
     </h1>
   
 
         
-        <a href="/2021/11/29/%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96%E6%A1%86%E6%9E%B6%E9%80%89%E6%8B%A9/" class="archive-article-date">
-  	<time datetime="2021-11-29T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-29</time>
+        <a href="/2022/04/09/Redis%E9%9B%86%E7%BE%A4%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/" class="archive-article-date">
+  	<time datetime="2022-04-09T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-09</time>
 </a>
         
       </header>
@@ -761,25 +517,17 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：3.4k字 | 预计阅读时长：12分钟
+		字数：835字 | 预计阅读时长：3分钟
 	  </div> 
       
-        <p>今天来看一下数据持久化框架的选择和各种框架之间的对比。内容摘抄自微信公众号【Java技术栈】。</p>
-<p>因为项目需要选择数据持久化框架，看了一下主要几个流行的和不流行的框架，对于复杂业务系统，最终的结论是，JOOQ是总体上最好的，可惜不是完全免费，最终选择JDBC Template。</p>
-<p>Hibernate和Mybatis是使用最多的两个主流框架，而JOOQ、Ebean等小众框架则知道的人不多，但也有很多独特的优点。</p>
-<p>而JPA则是一组Java持久层Api的规范，Spring Data JPA是JPA Repository的实现，本来和Hibernate、Mybatis、JOOQ之类的框架不在同一个层次上，但引入Spring Data JPA之类框架之后，我们会直接使用JPA的API查询更新数据库，就像我们使用Mybatis一样，所以这里也把JPA和其他框架放在一起进行比较。</p>
-<p>同样，JDBC和其他框架也在同一层次，位于所有持久框架的底层，但我们有时候也会直接在项目中使用JDBC，而Spring JDBC Template部分消除了使用JDBC的繁琐细节，降低了使用成本，使得我们更加愿意在项目中直接使用JDBC。</p>
-<h2 id="一、SQL封装和性能"><a href="#一、SQL封装和性能" class="headerlink" title="一、SQL封装和性能"></a>一、SQL封装和性能</h2><p>在使用Hibernate的时候，我们查询的是POJO实体类，而不再是数据库的表，例如hql语句 select count(*) from User，里面的User是一个Java类，而不是数据库表User。</p>
-<p>这符合ORM最初的理想，ORM认为Java程序员使用OO的思维方式，和关系数据库的思维方式差距巨大，为了填补对象和关系思维方式的鸿沟，必须做一个对象到关系的映射，然后在Java的对象世界中，程序员可以使用纯的对象的思维方式，查询POJO对象，查询条件是对象属性，不再需要有任何表、字段等关系的概念，这样java程序员就更容易做持久层的操作。</p>
-<p>JPA可以视为Hibernate的儿子，也继承了这个思路，把SQL彻底封装起来，让Java程序员看不到关系的概念，用纯的面向对象思想，重新创造一个新的查询语言代替sql，比如hql，还有JPQL等。支持JPA的框架，例如Ebean都属于这种类型的框架。</p>
-<p>但封装SQL，使用另一种纯的面向对象查询语言代替sql，真的能够让程序员更容易实现持久层操作吗？<a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=MzI3ODcxMzQzMw==&mid=2247485137&idx=1&sn=8b6fa49dccc01b040c24749375e88a4f&chksm=eb5383e7dc240af15943519938f33da919436464b3182a70fec0ed3196a8761bf85594c6c0e6&scene=21#wechat_redirect">MyBatis</a>的流行证明了事实并非如此，至少在大多数情况下，使用hql并不比使用sql简单。</p>
-<p>首先，从很多角度上看，hql/JPQL等语言更加复杂和难以理解；其次就是性能上明显降低，速度更慢，内存占用巨大，而且还不好优化。最为恼火的是，当关系的概念被替换为对象的概念之后，查询语言的灵活性变得很差，表达能力也比sql弱很多。写查询语句的时候受到各种各样的限制，一个典型的例子就是多表关联查询。</p>
-<p>不管是hibernate还是jpa，表之间的连接查询，被映射为实体类之间的关联关系，这样，如果两个实体类之间没有（实现）关联关系，你就不能把两个实体（或者表）join起来查询。</p>
-<p>这是很恼火的事情，因为我们很多时候并不需要显式定义两个实体类之间的关联关系就可以实现业务逻辑，如果使用hql，只是为了join我们就必须在两个实体类之间添加代码，而且还不能逆向工程，如果表里面没有定义外键约束的话，逆向工程会把我们添加的关联代码抹掉。</p>
-<p>MyBatis则是另外一种类型的持久化框架，它没有封装SQL也没有创建一种新的面相对象的查询语言，而是直接使用SQL作为查询语言，只是把结果填入POJO对象而已。使用sql并不比hql和JPQL困难，查询速度快，可以灵活使用任意复杂的查询只要数据库支持。从SQL封装角度上看，<a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=MzI3ODcxMzQzMw==&mid=2247485137&idx=1&sn=8b6fa49dccc01b040c24749375e88a4f&chksm=eb5383e7dc240af15943519938f33da919436464b3182a70fec0ed3196a8761bf85594c6c0e6&scene=21#wechat_redirect">MyBatis</a>比Hibernate和JPA成功，SQL本不该被封装和隐藏，让Java程序员使用SQL既不麻烦也更容易学习和上手，这应该是<a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=MzI3ODcxMzQzMw==&mid=2247485137&idx=1&sn=8b6fa49dccc01b040c24749375e88a4f&chksm=eb5383e7dc240af15943519938f33da919436464b3182a70fec0ed3196a8761bf85594c6c0e6&scene=21#wechat_redirect">MyBatis</a>流行起来的重要原因。</p>
-<p>轻量级持久层框架JOOQ也和MyBatis一样，直接使用SQL作为查询语言，比起MyBatis，JOOQ虽然知名度要低得多，但JOOQ不但和<a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=MzI3ODcxMzQzMw==&mid=2247485137&idx=1&sn=8b6fa49dccc01b040c24749375e88a4f&chksm=eb5383e7dc240af15943519938f33da919436464b3182a70fec0ed3196a8761bf85594c6c0e6&scene=21#wechat_redirect">MyBatis</a>一样可以利用SQL的灵活性和高效率，通过逆向工程，JOOQ还可以用Java代码来编写SQL语句，利用IDE的代码自动补全功能，自动提示表名和字段名，减少程序员记忆负担，还可以在元数据发生变化时发生编译错误，提示程序员修改相应的SQL语句。</p>
-<p>Ebean作为一种基于JPA的框架，它也使用JPQL语言进行查询，多数情况下会让人很恼火。但据说Ebean不排斥SQL，可以直接用SQL查询，也可以用类似JOOQ的DSL方式在代码中构造SQL语句（还是JPQL语句？），但没用过Ebean，所以具体细节不清楚。</p>
-<p>JDBC Template就不用说了，它根本没做ORM，当然是纯SQL查询。利用Spring框架，可以把JDBC Template和JPA结合起来使用，在JPA不好查询的地方，或者效率低不好优化的地方使用JDBC，缓解了Hibernate/JPA封装SQL造成的麻烦，但我仍没看到任何封装SQL的必要性，除了给程序员带来一大堆麻烦和学习负担之外，没有太明显的好处。</p>
+        <p>今天来看一下为什么 Redis 集群要使用反向代理，内容摘抄自微信公众号【Java技术栈】。</p>
+<h2 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h2><p>如果没有反向代理,一台Redis可能需要跟很多个客户端连接:</p>
+<p><img src="/2022/04/09/Redis%E9%9B%86%E7%BE%A4%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/1.png" alt="img"></p>
+<p>看着是不是很慌?看没关系,主要是连接需要消耗线程资源,没有代理的话,Redis要将很大一部分的资源用在与客户端建立连接上,redis的高可用和可扩展无论是自带的Redis Sentinel还是Redis Cluster都要求客户端进行额外的支持，而目前基本上没有合适的客户端能够做这些事情，客户端来做这些事情也并不合适，它会让维护变得特别困难。</p>
+<p>因此在客户端和redis服务端之间加一层代理成了一种理想的方案，代理屏蔽后端Redis实现细节向客户端提供redis服务，可以完美的解决Redis的高可用和扩展性问题，同时代理的引入也使得Redis维护变得更加简单。</p>
+<p>于是乎,有了代理:</p>
+<h2 id="如何使用代理"><a href="#如何使用代理" class="headerlink" title="如何使用代理?"></a>如何使用代理?</h2><p>很简单,将请求连接到调度代理器上,由Proxy负责将请求转发到后面的Redis服务实例,图示:</p>
+<p><img src="/2022/04/09/Redis%E9%9B%86%E7%BE%A4%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/2.png" alt="img"></p>
         
       
 
@@ -793,7 +541,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">数据库</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
         		</li>
       		
 		</ul>
@@ -803,7 +551,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/11/29/%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96%E6%A1%86%E6%9E%B6%E9%80%89%E6%8B%A9/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/04/09/Redis%E9%9B%86%E7%BE%A4%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/">展开全文 >></a>
         </p>
       
 
@@ -833,20 +581,20 @@
 
 
   
-    <article id="post-Foreach问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-SpringCloud之Eureka和Zuul的简单使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/28/Foreach%E9%97%AE%E9%A2%98/">Foreach问题</a>
+      <a class="article-title" href="/2022/04/08/SpringCloud%E4%B9%8BEureka%E5%92%8CZuul%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">SpringCloud之Eureka和Zuul的简单使用</a>
     </h1>
   
 
         
-        <a href="/2021/11/28/Foreach%E9%97%AE%E9%A2%98/" class="archive-article-date">
-  	<time datetime="2021-11-28T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-28</time>
+        <a href="/2022/04/08/SpringCloud%E4%B9%8BEureka%E5%92%8CZuul%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/" class="archive-article-date">
+  	<time datetime="2022-04-08T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-08</time>
 </a>
         
       </header>
@@ -854,212 +602,35 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2.2k字 | 预计阅读时长：8分钟
+		字数：2.2k字 | 预计阅读时长：11分钟
 	  </div> 
       
-        <p>今天来看下为什么foreach中不允许对元素进行add和remove的问题。从源码处进行分析。内容摘抄自微信公众号【IT大咖说】。</p>
-<h1 id="◆1、foreach遍历ArrayList过程中使用-add-和-remove"><a href="#◆1、foreach遍历ArrayList过程中使用-add-和-remove" class="headerlink" title="◆1、foreach遍历ArrayList过程中使用 add 和 remove"></a>◆1、foreach遍历ArrayList过程中使用 add 和 remove</h1><p>我们先来看看使用foreach遍历ArrayList过程中使用 add 和 remove 会出现什么样子的结果，然后再分析一下。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">20</span>; i++) &#123;</span><br><span class="line">        list.add(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (Integer j : list) &#123;</span><br><span class="line">        <span class="keyword">if</span> (j.equals(<span class="number">3</span>)) &#123;</span><br><span class="line">            list.remove(<span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(j);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行结果：</p>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line">Exception <span class="keyword">in</span> thread &quot;main&quot; java.util.ConcurrentModificationException</span><br><span class="line">	<span class="built_in">at</span> java.util.ArrayList$Itr.checkForComodification(ArrayList.java:<span class="number">911</span>)</span><br><span class="line">	<span class="built_in">at</span> java.util.ArrayList$Itr.next(ArrayList.java:<span class="number">861</span>)</span><br><span class="line">	<span class="built_in">at</span> test.Test.main(Test.java:<span class="number">12</span>)</span><br></pre></td></tr></table></figure>
-
-<p>结果是出现了<br>ConcurrentModificationException 异常，追踪下抛出异常的位置（ArrayList.java:911）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">checkForComodification</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (modCount != expectedModCount)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个地方告诉我们如果 modCount 不等于 expectedModCount 的时候，就会抛出这个异常信息，那么这两个参数都代表了什么东西呢？为什么不相等的时候，就会出现异常呢？</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/11/28/Foreach%E9%97%AE%E9%A2%98/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-HTTP和HTTPS" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/27/HTTP%E5%92%8CHTTPS/">HTTP和HTTPS</a>
-    </h1>
-  
-
-        
-        <a href="/2021/11/27/HTTP%E5%92%8CHTTPS/" class="archive-article-date">
-  	<time datetime="2021-11-27T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-27</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：1.7k字 | 预计阅读时长：6分钟
-	  </div> 
-      
-        <p>今天来看一下http和https的联系和区别，可以说是网络编程最基本的内容了。内容摘抄自微信公众号【Java极客技术】。</p>
-<h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><p>HTTP协议是Hyper Text Transfer Protocol（超文本传输协议）的缩写,是用于从万维网服务器传输超文本到本地浏览器的传送协议。HTTP 是基于 TCP/IP 协议通信协议来传递数据（HTML 文件、图片文件、查询结果等）。它不涉及数据包（packet）传输，主要规定了客户端和服务器之间的通信格式，默认使用80端口。</p>
-<p>这其实就是百度百科里面的精简化的内容，虽然说不上太细致，但是已经算是对HTTP做了一个大概的描述，我们接下来就从以下的几个方面来看一下这个HTTP吧。</p>
-<p>我们从这里就不再多解释 HTTP报文 和 主体 这些内容了，阿粉之前也是完整的给大家解释过了，包括了 HTTP 的进化历史，阿粉今天我们来讲讲 HTTP 和 HTTPS 的关系。</p>
-<h3 id="HTTP缺点"><a href="#HTTP缺点" class="headerlink" title="HTTP缺点"></a>HTTP缺点</h3><p>众所周知，HTTP 的优点那可是一大堆：</p>
+        <p>今天来看一下在SpringCloud中，Eureka和Zuul的简单使用。内容摘抄自微信公众号【Java极客技术】。</p>
+<h2 id="一、Spirng-Cloud-是什么？"><a href="#一、Spirng-Cloud-是什么？" class="headerlink" title="一、Spirng Cloud 是什么？"></a>一、Spirng Cloud 是什么？</h2><p>简单来说 Spring Cloud 就是个框架集合，它里面包含了一系列的技术框架。在微服务如此普及的时代，如何快速构建一系列的稳定服务是比较重要的。</p>
+<blockquote>
+<p>Spirng Cloud 利用 Spring Boot 的开发便利性巧妙地简化了分布式系统基础设施的开发，如服务发现注册、配置中心、消息总线、负载均衡、断路器、数据监控等，都可以用 Spring Boot 的开发风格做到一键启动和部署。</p>
+</blockquote>
+<h2 id="二、服务注册与发现-Eureka"><a href="#二、服务注册与发现-Eureka" class="headerlink" title="二、服务注册与发现 Eureka"></a>二、服务注册与发现 Eureka</h2><p>之前写过一篇的服务注册与发现的文章，写的是 Consul，这次写下 Spring 的服务注册组件 Eureka。</p>
 <ol>
-<li>简单、灵活、易于扩展</li>
-<li>应用广泛、环境成熟</li>
-<li>无状态 (不需要额外的资源来记录状态信息)</li>
+<li>在Springboot网站自动下载代码，主要选择相关的版本，阿粉这边测试还是用 <code>1.3.5.RELEASE</code>。感兴趣的小伙伴可以自行升级高版本测试，功能都一样。</li>
+<li>pom.xml文件如下</li>
 </ol>
-<p>但是 HTTP 的缺点也是非常的显著，为什么这么说，HTTP 使用的是明文的方式进行传输，虽然方便了我们的调试，但是信息会被暴露出来，每一个环节没有隐私可言。</p>
-<p>而且 HTTP 在我们的认知当中，他就是一个不安全的，第一个原因是上面说的明文，还有就是 HTTP 不验证通信双方的身份，所以对方的身份有可能伪装，就像某些公共场所的那些 公共WIFI ，还有就是 HTTP 不能验证报文的完整性，所以报文也是有可能被篡改的。</p>
-<p>基于这些内容，所以我们很多时候对 HTTP 的选择都比较慎重，不然你传输内容的时候，别人用抓包工具就很容易的能够分析出你想要传递的内容。</p>
-<p>这时候我们就想到了一个事情，加密处理一下不就好了？</p>
-<p>对，完全没问题，HTTP 没有加密的机制，但是我们可以想办法处理，这个办法就是：</p>
-<p><strong>SSL</strong> 或者 <strong>TLS</strong></p>
-<p><strong>SSL</strong>: 安全套接层</p>
-<p><strong>TLS</strong>：安全层传输协议</p>
-<p>当他们组合使用的时候，就能够加密 HTTP 的通信的内容了，这时候就能在这条线路上进行通信，而通过 <strong>SSL</strong>组合使用后的 HTTP 被称为 HTTPS 或者称之为 HTTP overSSL。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/11/27/HTTP%E5%92%8CHTTPS/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">parent</span>&gt;</span>        </span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>        </span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>        </span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.3.5.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span>        </span><br><span class="line">      <span class="tag">&lt;<span class="name">relativePath</span>/&gt;</span> <span class="comment">&lt;!-- lookup parent from repository --&gt;</span>    </span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span>    </span><br><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span>        </span><br><span class="line">    <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span>        </span><br><span class="line">    <span class="tag">&lt;<span class="name">project.reporting.outputEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.reporting.outputEncoding</span>&gt;</span>        </span><br><span class="line">    <span class="tag">&lt;<span class="name">java.version</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">java.version</span>&gt;</span>        </span><br><span class="line">    <span class="tag">&lt;<span class="name">spring-cloud.version</span>&gt;</span>Brixton.RELEASE<span class="tag">&lt;/<span class="name">spring-cloud.version</span>&gt;</span>    </span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span>    </span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span>        </span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>            </span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>            </span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-eureka-server<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>        </span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>        </span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>            </span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>            </span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>            </span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span>        </span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>    </span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 
 
-
-  
-    <article id="post-OpenFeign的坑" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/26/OpenFeign%E7%9A%84%E5%9D%91/">OpenFeign的坑</a>
-    </h1>
-  
-
-        
-        <a href="/2021/11/26/OpenFeign%E7%9A%84%E5%9D%91/" class="archive-article-date">
-  	<time datetime="2021-11-26T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-26</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：2k字 | 预计阅读时长：8分钟
-	  </div> 
-      
-        <p>作为SpringCloud的重要组件，今天来看一下OpenFeign中使用不当时容易踩到的坑，我已经踩过几个了，所以要好好记录。</p>
-<p>OpenFeign是SpringCloud中的重要组件，它是一种声明式的HTTP客户端。使用OpenFeign调用远程服务就像调用本地方法一样，但是如果使用不当，很容易踩到坑。</p>
-<h2 id="坑一-用对Http-Client"><a href="#坑一-用对Http-Client" class="headerlink" title="坑一:用对Http Client"></a>坑一:用对Http Client</h2><h3 id="1-1-feign中http-client"><a href="#1-1-feign中http-client" class="headerlink" title="1.1 feign中http client"></a>1.1 feign中http client</h3><p>如果不做特殊配置，OpenFeign默认使用jdk自带的HttpURLConnection，我们知道HttpURLConnection没有连接池、性能和效率比较低，如果采用默认，很可能会遇到性能问题导致系统故障。</p>
-<p>可以采用Apache HttpClient，properties文件中增加下面配置：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">feign.httpclient.enabled=true</span></span><br></pre></td></tr></table></figure>
-
-<p>pom文件中增加依赖：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.github.openfeign<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>feign-httpclient<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>9.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>也可以采用OkHttpClient，properties文件中增加下面配置：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">feign.okhttp.enabled=true</span><br></pre></td></tr></table></figure>
-
-<p>pom文件中增加依赖：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.github.openfeign<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>feign-okhttp<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>10.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="1-2-ribbon中的Http-Client"><a href="#1-2-ribbon中的Http-Client" class="headerlink" title="1.2 ribbon中的Http Client"></a>1.2 ribbon中的Http Client</h3><p>通过OpenFeign作为注册中心的客户端时，默认使用Ribbon做负载均衡，Ribbon默认也是用jdk自带的HttpURLConnection，需要给Ribbon也设置一个Http client，比如使用okhttp，在properties文件中增加下面配置：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ribbon.okhttp.enabled=true</span><br></pre></td></tr></table></figure>
+<ol>
+<li>在启动类上面增加<code>@EnableEurekaServer</code>注解</li>
+<li>编写配置文件</li>
+</ol>
+<p><code># 自定义端口server.port=1111# 关闭服务端自注册功能eureka.client.register-with-eureka=falseeureka.client.fetch-registry=falseeureka.client.serviceUrl.defaultZone=http://localhost:$&#123;server.port&#125;/eureka/</code></p>
+<ol>
+<li>启动项目在<a href="http://localhost:1111可以看到如下页面">http://localhost:1111可以看到如下页面</a></li>
+</ol>
+<p><img src="/2022/04/08/SpringCloud%E4%B9%8BEureka%E5%92%8CZuul%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/1.png" alt="img"></p>
+<blockquote>
+<p>此时只是注册中心的服务端启动起来了，还没有任何服务注册到上面。</p>
+</blockquote>
         
       
 
@@ -1083,7 +654,494 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/11/26/OpenFeign%E7%9A%84%E5%9D%91/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/04/08/SpringCloud%E4%B9%8BEureka%E5%92%8CZuul%E7%9A%84%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-整洁架构" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/04/07/%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84/">整洁架构</a>
+    </h1>
+  
+
+        
+        <a href="/2022/04/07/%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84/" class="archive-article-date">
+  	<time datetime="2022-04-07T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-07</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：6.3k字 | 预计阅读时长：21分钟
+	  </div> 
+      
+        <p>今天来看一下什么是整洁架构，内容摘抄自微信公众号【IT大咖说】。</p>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>在这篇博文中，我将介绍整洁架构（Clean Architecture ），它是一种现代、可扩展的正式软件架构，适用于现代 Web 应用程序。接下来，我将讨论DDD（领域驱动设计）如何适应这幅图景，以及 DDD 概念如何与清洁架构完美契合，从而产生一种称为清洁 DDD 的方法。最后，我介绍了命令查询职责分离 (CQRS)，并描述了它如何补充和增强 Clean DDD 解决方案，以创建优雅、健壮、可扩展和可测试的软件系统。</p>
+<h2 id="清洁架构"><a href="#清洁架构" class="headerlink" title="清洁架构"></a><strong>清洁架构</strong></h2><p>清洁建筑是一种相对“现代”的正式建筑，因为它不到十年的历史。它随着时间的推移从其他几种架构演变而来，包括六边形架构、端口和适配器以及洋葱架构。 在这篇文章中，Bob 大叔强调了所有前身架构和清洁架构都具备的五个品质：</p>
+<ol>
+<li>框架独立性：架构与第三方框架解耦。</li>
+<li>可测试：该架构易于编写单元测试。</li>
+<li>UI 独立性：架构可以从用户界面中拔出</li>
+<li>数据库独立性：架构与底层数据存储分离。</li>
+<li>外部代理独立性：架构的业务规则是孤立的，对外界一无所知。</li>
+</ol>
+<p>Clean Architecture 可以被可视化为一系列同心圆，每个圆代表应用程序的不同层。使架构结合在一起的原则称为Dependency Rule：</p>
+<p>“使这个架构工作的最重要的规则是依赖规则。这条规则说源代码依赖只能指向内部。内圈中的任何东西都无法知道外圈中的某物。特别是某物的名称内圈中的代码不得提及外圈中声明的内容。这包括函数、类、变量或任何其他命名的软件实体。</p>
+<p>这是一个很好的起点，但我想进一步详细说明。清洁架构应用程序中的层：</p>
+<ul>
+<li>可能永远不知道围绕（在）它的层。</li>
+<li>也可能永远不知道与其相邻的层。</li>
+<li>在实时应用程序中通过依赖倒置在功能上相互连接——即通过在外层实现的抽象（接口）。</li>
+</ul>
+<p>整洁架构的显着特征是组成它的同心层围绕着一个包含抽象和业务逻辑的中央核心。这些抽象的实现，连同它们的外部依赖，被推到外层。在描述这种布局时，我喜欢使用“外围”的术语来指代外部实现层，而“核心”来指代内部层。请注意，这是我的命名约定，此时您不太可能在其他任何地方找到它。</p>
+<p>同样，我想强调一下我们如何明确地使用依赖倒置原则来确保内部层（纯逻辑和抽象）永远不会有任何外部层（实现）的知识。内部层使用这些层中定义的抽象，而实际的实现逻辑存在于外部层中。重申一下：依赖倒置原则指出细节依赖于抽象；抽象不依赖于细节。因此，我们正在区分什么是本质（核心）和什么是细节（外围）。使用依赖注入，通常通过控制容器的反转，所有内容都在完成的解决方案中结合在一起。</p>
+<h2 id="整洁的领域驱动设计"><a href="#整洁的领域驱动设计" class="headerlink" title="整洁的领域驱动设计"></a>整洁的领域驱动设计</h2><p><img src="/2022/04/07/%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84/1.png" alt="img"></p>
+<p>我对 Clean DDD 的解读</p>
+<p>整洁的领域驱动设计代表了软件架构开发的下一个合乎逻辑的步骤。这种方法源自Blob的原始架构，但在概念上略有不同。相同之处在于它在较高级别使用相同的同心层方法，但是使用域驱动设计来构建内核。此外，DDD 推动将域分离为不同的有界上下文也为这种设计提供了信息，因为这些有界上下文现在成为堆栈每一层水平分离的指南。这是一个真正的、现代的、以领域为中心的模型，用于构建和交付复杂的业务应用程序。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/04/07/%E6%95%B4%E6%B4%81%E6%9E%B6%E6%9E%84/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-MQTT协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/04/06/MQTT%E5%8D%8F%E8%AE%AE/">MQTT协议</a>
+    </h1>
+  
+
+        
+        <a href="/2022/04/06/MQTT%E5%8D%8F%E8%AE%AE/" class="archive-article-date">
+  	<time datetime="2022-04-06T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-06</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：1.7k字 | 预计阅读时长：5分钟
+	  </div> 
+      
+        <p>今天继续来看一下网络协议中的MQTT协议，内容摘抄自微信公众号【Java极客技术】。</p>
+<p>我们之前已经说了这个SSL 和 TCP/IP 协议了，我们今天就来详细的说说这个 MQTT 协议，因为很多消息现在都是支持 MQTT 协议的，比如 RabbitMQ ，还有 Kafka 等，今天我们就来详细的介绍 MQTT 协议到底是个什么。</p>
+<h2 id="什么是MQTT协议"><a href="#什么是MQTT协议" class="headerlink" title="什么是MQTT协议"></a>什么是MQTT协议</h2><p><img src="/2022/04/06/MQTT%E5%8D%8F%E8%AE%AE/1.png" alt="img"></p>
+<p>MQTT协议是一种消息列队传输协议，采用订阅、发布机制，订阅者只接收自己已经订阅的数据，非订阅数据则不接收，既保证了必要的数据的交换，又避免了无效数据造成的储存与处理。因此在在物联网领域，传感器与服务器的通信，信息的收集中得到广泛的应用。</p>
+<p>既然是协议，那么如果对比 TCP/IP协议的话，它位于分层中的哪一层呢？</p>
+<p>之前阿粉就说了 TCP/IP 参考模型可以分为四层：应用层、运输层、网络层、网络接口层。TCP和UDP位于运输层，应用层常见的协议有HTTP、FTP、SSH等。而 MQTT 协议运行于 TCP 之上，属于应用层协议，因此只要是支持TCP/IP协议栈的地方，都可以使用MQTT。</p>
+<h2 id="MQTT协议主要特性"><a href="#MQTT协议主要特性" class="headerlink" title="MQTT协议主要特性"></a>MQTT协议主要特性</h2><p>1）开放消息协议，简单易实现。</p>
+<p>2）使用发布/订阅消息模式，提供一对多的消息发布，解除应用程序耦合。</p>
+<p>3）对负载（协议携带的应用数据）内容屏蔽的消息传输。</p>
+<p>4）基于TCP/IP网络连接,提供有序，无损，双向连接。</p>
+<p>主流的MQTT是基于TCP连接进行数据推送的，但是同样有基于UDP的版本，叫做MQTT-SN。这两种版本由于基于不同的连接方式，优缺点自然也就各有不同了。</p>
+<p>5）消息服务质量（QoS）支持，可靠传输保证；有三种消息发布服务质量：</p>
+<p>QoS0：”至多一次”，消息发布完全依赖底层TCP/IP网络。会发生消息丢失或重复。这一级别可用于如下情况，环境传感器数据，丢失一次读记录无所谓，因为不久后还会有第二次发送。这一种方式主要普通APP的推送，倘若你的智能设备在消息推送时未联网，推送过去没收到，再次联网也就收不到了。</p>
+<p>QoS1：”至少一次”，确保消息到达，但消息重复可能会发生。</p>
+<p>QoS2：”只有一次”，确保消息到达一次。在一些要求比较严格的计费系统中，可以使用此级别。在计费系统中，消息重复或丢失会导致不正确的结果。这种最高质量的消息发布服务还可以用于即时通讯类的APP的推送，确保用户收到且只会收到一次。</p>
+<p>这个 Qos0 是个什么意思呢？就是如果使用了这个 Qos0 的配置作为发布质量，我们以客户端和服务器为例，那就是客户端发了一个消息给服务端，这时候服务端没有接收到，而配置是 “至多一次”,这时候，相同的消息，客户端就不会再继续给服务端发送了，我管你收没收到，我配置的就是最多一次.</p>
+<p>同理，QoS1 是至少一次，也就是说，客户端给服务端发送消息的时候，如果没有保证消息到达，这时候可能会继续发送，我才不管我发几次，只要你没有给我说你收到消息，那我就发！</p>
+<p>而 QoS2 相对来说就是比较严谨的了，为什么这么说，这就相当于客户端给服务端发送消息，这时候，要求保证客户端发了一次，而服务端收到一次，这样才是相当于只有一次的概念。</p>
+<p>6)小型传输，开销很小（固定长度的头部是2字节），协议交换最小化，以降低网络流量。</p>
+<p>这就是为什么在介绍里说它非常适合”在物联网领域，传感器与服务器的通信，信息的收集”，要知道嵌入式设备的运算能力和带宽都相对薄弱，使用这种协议来传递消息再适合不过了。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/04/06/MQTT%E5%8D%8F%E8%AE%AE/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Spring自带工具类" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/04/05/Spring%E8%87%AA%E5%B8%A6%E5%B7%A5%E5%85%B7%E7%B1%BB/">Spring自带工具类</a>
+    </h1>
+  
+
+        
+        <a href="/2022/04/05/Spring%E8%87%AA%E5%B8%A6%E5%B7%A5%E5%85%B7%E7%B1%BB/" class="archive-article-date">
+  	<time datetime="2022-04-05T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-05</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：2.4k字 | 预计阅读时长：10分钟
+	  </div> 
+      
+        <p>今天来看一下<strong>Spring自带的工具类</strong>，内容摘抄自微信公众号【Java后端技术】。</p>
+<h2 id="断言"><a href="#断言" class="headerlink" title="断言"></a>断言</h2><p>1 断言是一个逻辑判断，用于检查不应该发生的情况</p>
+<p>2 Assert 关键字在 JDK1.4 中引入，可通过 JVM 参数-enableassertions开启</p>
+<p>3 SpringBoot 中提供了 Assert 断言工具类，通常用于数据合法性检查</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 要求参数 object 必须为非空（Not Null），否则抛出异常，不予放行</span></span><br><span class="line"><span class="comment">// 参数 message 参数用于定制异常信息。</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">notNull</span><span class="params">(Object object, String message)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 要求参数必须空（Null），否则抛出异常，不予『放行』。</span></span></span><br><span class="line"><span class="function"><span class="comment">// 和 notNull() 方法断言规则相反</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">isNull</span><span class="params">(Object object, String message)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 要求参数必须为真（True），否则抛出异常，不予『放行』。</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">isTrue</span><span class="params">(<span class="keyword">boolean</span> expression, String message)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 要求参数（List/Set）必须非空（Not Empty），否则抛出异常，不予放行</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">notEmpty</span><span class="params">(Collection collection, String message)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 要求参数（String）必须有长度（即，Not Empty），否则抛出异常，不予放行</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hasLength</span><span class="params">(String text, String message)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 要求参数（String）必须有内容（即，Not Blank），否则抛出异常，不予放行</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hasText</span><span class="params">(String text, String message)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 要求参数是指定类型的实例，否则抛出异常，不予放行</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">isInstanceOf</span><span class="params">(Class type, Object obj, String message)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 要求参数 `subType` 必须是参数 superType 的子类或实现类，否则抛出异常，不予放行</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">isAssignable</span><span class="params">(Class superType, Class subType, String message)</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="对象、数组、集合"><a href="#对象、数组、集合" class="headerlink" title="对象、数组、集合"></a>对象、数组、集合</h2><h3 id="ObjectUtils"><a href="#ObjectUtils" class="headerlink" title="| ObjectUtils"></a><strong>| ObjectUtils</strong></h3><h4 id="获取对象的基本信息"><a href="#获取对象的基本信息" class="headerlink" title="获取对象的基本信息"></a><strong>获取对象的基本信息</strong></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取对象的类名。参数为 null 时，返回字符串：&quot;null&quot; </span></span><br><span class="line"><span class="function">String <span class="title">nullSafeClassName</span><span class="params">(Object obj)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 参数为 null 时，返回 0</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">nullSafeHashCode</span><span class="params">(Object object)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 参数为 null 时，返回字符串：&quot;null&quot;</span></span></span><br><span class="line"><span class="function">String <span class="title">nullSafeToString</span><span class="params">(<span class="keyword">boolean</span>[] array)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 获取对象 HashCode（十六进制形式字符串）。参数为 null 时，返回 0 </span></span></span><br><span class="line"><span class="function">String <span class="title">getIdentityHexString</span><span class="params">(Object obj)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 获取对象的类名和 HashCode。 参数为 null 时，返回字符串：&quot;&quot; </span></span></span><br><span class="line"><span class="function">String <span class="title">identityToString</span><span class="params">(Object obj)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 相当于 toString()方法，但参数为 null 时，返回字符串：&quot;&quot;</span></span></span><br><span class="line"><span class="function">String <span class="title">getDisplayString</span><span class="params">(Object obj)</span></span></span><br></pre></td></tr></table></figure>
+
+<h4 id="判断工具"><a href="#判断工具" class="headerlink" title="判断工具"></a><strong>判断工具</strong></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 判断数组是否为空</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">(Object[] array)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 判断参数对象是否是数组</span></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isArray</span><span class="params">(Object obj)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 判断数组中是否包含指定元素</span></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">containsElement</span><span class="params">(Object[] array, Object element)</span></span></span><br><span class="line"><span class="function"><span class="comment">// 相等，或同为 null时，返回 true</span></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">nullSafeEquals</span><span class="params">(Object o1, Object o2)</span></span></span><br><span class="line"><span class="function"><span class="comment">/*</span></span></span><br><span class="line"><span class="comment"><span class="function">判断参数对象是否为空，判断标准为：</span></span></span><br><span class="line"><span class="comment"><span class="function">    Optional: Optional.empty()</span></span></span><br><span class="line"><span class="comment"><span class="function">       Array: length == 0</span></span></span><br><span class="line"><span class="comment"><span class="function">CharSequence: length == 0</span></span></span><br><span class="line"><span class="comment"><span class="function">  Collection: Collection.isEmpty()</span></span></span><br><span class="line"><span class="comment"><span class="function">         Map: Map.isEmpty()</span></span></span><br><span class="line"><span class="comment"><span class="function"> */</span></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">(Object obj)</span></span></span><br></pre></td></tr></table></figure>
+
+<h4 id="其他工具方法"><a href="#其他工具方法" class="headerlink" title="其他工具方法"></a><strong>其他工具方法</strong></h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 向参数数组的末尾追加新元素，并返回一个新数组</span><br><span class="line">&lt;A, O extends A&gt; A[] addObjectToArray(A[] array, O obj)</span><br><span class="line">// 原生基础类型数组 --&gt; 包装类数组</span><br><span class="line">Object[] toObjectArray(Object source)</span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/04/05/Spring%E8%87%AA%E5%B8%A6%E5%B7%A5%E5%85%B7%E7%B1%BB/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-SSL协议" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/04/04/SSL%E5%8D%8F%E8%AE%AE/">SSL协议</a>
+    </h1>
+  
+
+        
+        <a href="/2022/04/04/SSL%E5%8D%8F%E8%AE%AE/" class="archive-article-date">
+  	<time datetime="2022-04-04T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-04</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：1.8k字 | 预计阅读时长：6分钟
+	  </div> 
+      
+        <p>今天来具体看一下SSL协议的内容，内容摘抄自微信公众号【<strong>Java极客技术</strong>】。</p>
+<h2 id="什么是SSL"><a href="#什么是SSL" class="headerlink" title="什么是SSL"></a>什么是SSL</h2><p>简称是SSL，全称Secure Sockets Layer 安全套接字协议，一般我们在学习 SSL 的时候，都会和 TLS一起来学习的，为什么呢？因为 SSL 和 TLS 都是为网络通信提供安全及数据完整性的一种安全协议。TLS与SSL在传输层与应用层之间对网络连接进行加密。</p>
+<p>我们先看 SSL协议，然后在看 TLS协议。</p>
+<p>SSL协议位于 TCP/IP 协议与各种应用层协议之间，为数据通讯提供安全支持。SSL 协议可分为两层：</p>
+<ul>
+<li>SSL记录协议（SSL Record Protocol）：</li>
+</ul>
+<p>它建立在可靠的传输协议（如TCP）之上，为高层协议提供数据封装、压缩、加密等基本功能的支持。</p>
+<ul>
+<li>SSL握手协议（SSL Handshake Protocol）：</li>
+</ul>
+<p>它建立在SSL记录协议之上，用于在实际的数据传输开始前，通讯双方进行身份认证、协商加密算法、交换加密密钥等。</p>
+<p>要说 SSL 协议我们先来看看结构，</p>
+<p><img src="/2022/04/04/SSL%E5%8D%8F%E8%AE%AE/1.png" alt="img"></p>
+<p>SSL的体系结构中包含两个协议子层，其中底层是</p>
+<ul>
+<li>SSL记录协议层（SSL Record Protocol Layer）；</li>
+<li>高层是SSL握手协议层（SSL HandShake Protocol Layer）</li>
+</ul>
+<p>SSL记录协议层的作用是为高层协议提供基本的安全服务的，而SSL握手协议层是用于SSL管理信息的交换，允许应用协议传送数据之间相互验证，协商加密算法和生成密钥的。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/04/04/SSL%E5%8D%8F%E8%AE%AE/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-git操作大全" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/04/03/git%E6%93%8D%E4%BD%9C%E5%A4%A7%E5%85%A8/">git操作大全</a>
+    </h1>
+  
+
+        
+        <a href="/2022/04/03/git%E6%93%8D%E4%BD%9C%E5%A4%A7%E5%85%A8/" class="archive-article-date">
+  	<time datetime="2022-04-03T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-04-03</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：5.1k字 | 预计阅读时长：18分钟
+	  </div> 
+      
+        <p>今天来看一下git的操作大全，内容摘抄自微信公众号【Java极客技术】。</p>
+<h2 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h2><p>在介绍<code>git</code>操作命令之前，我们先来了解一段故事！</p>
+<p>很多人都知道，Linus 在1991年 创建了开源的<code>Linux</code>操作系统，此后的三十多年里，Linux 系统不断发展，已然成为全世界最大的服务器系统软件了。</p>
+<p>Linus 虽然创建了<code>Linux</code>操作系统，但是<code>Linux</code>操作系统的壮大是得益于全世界热心的志愿者参与的，这么多人在世界各地为<code>Linux</code>操作系统编写代码，那<code>Linux</code>操作系统的代码是如何管理的呢？</p>
+<p>在 2002 年以前，世界各地的志愿者把源代码文件通过<code>diff</code>的方式发给 Linus，然后由 Linus 本人通过手工方式合并代码！</p>
+<p>不过，到了 2002 年，<code>Linux</code>操作系统已经发展了十年了，代码库之大让 Linus 很难继续通过手工方式管理了，社区的弟兄们也对这种方式表达了强烈不满。</p>
+<p>可能有的同学会发出疑问，不是有 CVS、SVN 这些免费的版本控制系统吗？为什么不用它们来托管<code>Linux</code>操作系统代码？</p>
+<p>因为 Linus 本人坚定地反对 CVS 和 SVN，原因是这些集中式的版本控制系统不但速度慢，而且必须联网才能使用。</p>
+<p>于是 Linus 选择了一个商业的版本控制系统 BitKeeper，BitKeeper 的东家 BitMover 公司出于人道主义精神，授权 Linux 社区免费使用这个版本控制系统。</p>
+<p>随着 Linux 社区对 BitKeeper 版本控制系统的深度了解，原本安定团结的大好局面在 2005 年被打破了，原因是 Linux 社区牛人众多，一名叫 Andrew 的开发者把 BitKeeper 商业授权协议破解了（这么干的其实也不只他一个），之后被 BitMover 公司发现了（监控工作做得不错！），于是 BitMover 公司怒了，要收回 Linux 社区的免费使用权。</p>
+<p>Linus 向 BitMover 公司道了歉，保证以后严格管教弟兄们，嗯，想要别人不破解，这其实是不可能的。</p>
+<p>之后，Linus 花了两周时间自己用 C 写了一个分布式版本控制系统，这就是我们今天要介绍的 Git！（牛人是怎么定义的，大家可以自行体会一下）</p>
+<p>一个月之内，Linux 系统的源码已经由 Git 管理了！</p>
+<p>之后的事情，想必估计都知道，Git 迅速成为全世界最流行的分布式版本控制系统，在代码托管方面，基本上是一骑绝尘！</p>
+<p>尤其是 2008 年，GitHub 网站上线了，它为开源项目免费提供 Git 存储，无数的开源项目开始迁移至 GitHub，包括 jQuery、PHP、Ruby等等！</p>
+<p><img src="/2022/04/03/git%E6%93%8D%E4%BD%9C%E5%A4%A7%E5%85%A8/1.png" alt="img"></p>
+<p>说了这么多，Git 是一款什么样的软件？和 CVS、SVN 这些免费的版本控制系统有什么区别呢？</p>
+<p>上文中我们也说到了，Git 其实是一款分布式的版本控制系统，可能你还是不太理解什么叫分布式，我们先聊聊什么是集中式！</p>
+<p>集中方的版本控制系统，简单的说，就是当你要干活的时候，用的一般都是自己的电脑，首先要从中央服务器取得最新的版本，然后开始干活，干完活了，再把自己的活推送给中央服务器。</p>
+<p><img src="/2022/04/03/git%E6%93%8D%E4%BD%9C%E5%A4%A7%E5%85%A8/2.png" alt="img"></p>
+<p>集中式版本控制系统，好处就是统一管理，但是坏处也很明显，必须联网才能工作，如果在局域网内还好，带宽够大，速度够快，可如果在互联网上，遇到网速慢的话，可能提交一个10M的文件就需要5分钟，这还不得把人给憋死啊。</p>
+<p>分布式版本控制系统，与集中式版本控制系统最大的不同就是：没有中央服务器这个东西。</p>
+<p>每个人的电脑上都是一个完整的版本库，<strong>可以说每个电脑都是中央服务器</strong>，当你工作的时候，不需要联网，可以直接提交工作的内容，如果对方的电脑想要知道你的工作内容，你只需要把对应的工作文件推送过去就可以，对方就可以看到，其他不相关的文件不需要推送给对方！</p>
+<p><img src="/2022/04/03/git%E6%93%8D%E4%BD%9C%E5%A4%A7%E5%85%A8/3.png" alt="img"></p>
+<p>和集中式版本控制系统相比，分布式版本控制系统的安全性要高很多，因为每个人电脑里都有完整的版本库，某一个人的电脑坏掉了不要紧，随便从其他人那里复制一个就可以了。而集中式版本控制系统的中央服务器要是出了问题，所有人都没法干活了。</p>
+<p>既然<code>git</code>这么受欢迎，下面我们就开始<code>git</code>的学习之旅吧！</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/04/03/git%E6%93%8D%E4%BD%9C%E5%A4%A7%E5%85%A8/">展开全文 >></a>
         </p>
       
 
@@ -1115,7 +1173,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/11/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/13/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/11/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/13/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1217,15 +1275,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">前端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1265,15 +1343,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常处理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多线程</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">中间件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1321,11 +1399,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">前端</a>
+                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1349,15 +1427,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1365,11 +1439,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+                <a href="javascript:void(0)" class="js-tag color5">并发编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库，缓存</a>
               </li>
             
             <div class="clearfix"></div>

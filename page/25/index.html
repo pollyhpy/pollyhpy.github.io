@@ -79,8 +79,8 @@
 			</ul>
 		</nav>
 		<nav>
-			<a>总文章数 286</a>
-			<a>总字数 <span class="post-count">826k</span></a>
+			<a>总文章数 413</a>
+			<a>总字数 <span class="post-count">1279k</span></a>
 		</nav>
 		<nav class="header-smart-menu">
     		
@@ -165,20 +165,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-分布式事务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-大量TIME_WAIT的影响" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/02/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务</a>
+      <a class="article-title" href="/2021/12/02/%E5%A4%A7%E9%87%8FTIME_WAIT%E7%9A%84%E5%BD%B1%E5%93%8D/">大量TIME_WAIT的影响</a>
     </h1>
   
 
         
-        <a href="/2021/08/02/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" class="archive-article-date">
-  	<time datetime="2021-08-02T02:53:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-02</time>
+        <a href="/2021/12/02/%E5%A4%A7%E9%87%8FTIME_WAIT%E7%9A%84%E5%BD%B1%E5%93%8D/" class="archive-article-date">
+  	<time datetime="2021-12-02T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-02</time>
 </a>
         
       </header>
@@ -186,199 +186,419 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：5.2k字 | 预计阅读时长：18分钟
+		字数：2.2k字 | 预计阅读时长：8分钟
 	  </div> 
       
-        <p>接下来写的这一篇有关分布式事务的介绍和解决方案，相当的枯燥乏味，暂时没有办法看下去，先记录下来吧，需要用到的时候会用到的，毕竟分布式是微服务架构中不可避免的一部分。(摘抄自java技术栈微信公众号)</p>
-<h3 id="一、数据库事务"><a href="#一、数据库事务" class="headerlink" title="一、数据库事务"></a>一、数据库事务</h3><p>在说分布式事务之前，我们先从数据库事务说起。数据库事务可能大家都很熟悉，在开发过程中也会经常使用到。但是即使如此，可能对于一些细节问题，很多人仍然不清楚。比如很多人都知道数据库事务的几个特性：原子性(Atomicity )、一致性( Consistency )、隔离性或独立性( Isolation)和持久性(Durabilily)，简称就是ACID。但是再往下比如问到隔离性指的是什么的时候可能就不知道了，或者是知道隔离性是什么但是再问到数据库实现隔离的都有哪些级别，或者是每个级别他们有什么区别的时候可能就不知道了。</p>
-<p>本文并不打算介绍这些数据库事务的这些东西，有兴趣可以搜索一下相关资料。不过有一个知识点我们需要了解，就是假如数据库在提交事务的时候突然断电，那么它是怎么样恢复的呢？为什么要提到这个知识点呢？因为分布式系统的核心就是处理各种异常情况，这也是分布式系统复杂的地方，因为分布式的网络环境很复杂，这种“断电”故障要比单机多很多，所以我们在做分布式系统的时候，最先考虑的就是这种情况。这些异常可能有 机器宕机、网络异常、消息丢失、消息乱序、数据错误、不可靠的TCP、存储数据丢失、其他异常等等…</p>
-<p>我们接着说本地事务数据库断电的这种情况，它是怎么保证数据一致性的呢？我们使用SQL Server来举例，我们知道我们在使用 SQL Server 数据库是由两个文件组成的，一个数据库文件和一个日志文件，通常情况下，日志文件都要比数据库文件大很多。</p>
-<p>数据库进行任何写入操作的时候都是要先写日志的，同样的道理，我们在执行事务的时候数据库首先会记录下这个事务的redo操作日志，然后才开始真正操作数据库，在操作之前首先会把日志文件写入磁盘，那么当突然断电的时候，即使操作没有完成，在重新启动数据库时候，数据库会根据当前数据的情况进行undo回滚或者是redo前滚，这样就保证了数据的强一致性。</p>
-<p>接着，我们就说一下分布式事务。另外，分布式事务系列面试题和答案全部整理好了，微信搜索Java技术栈，在后台发送：面试，可以在线阅读。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/02/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-idea常用配置" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/01/idea%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/">idea常用配置</a>
-    </h1>
-  
-
-        
-        <a href="/2021/08/01/idea%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/" class="archive-article-date">
-  	<time datetime="2021-08-01T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-01</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：1.4k字 | 预计阅读时长：4分钟
-	  </div> 
-      
-        <p>idea作为最常用的开发编码工具，一些基本的常用配置需要了解和总结，今天就来总结一下，内容摘抄自微信公众号【springmeng】。</p>
-<p>刚刚使用IntelliJ IDEA 编辑器的时候，会有很多设置，会方便以后的开发，磨刀不误砍柴工。</p>
-<p>比如：设置文件字体大小，代码自动完成提示，版本管理，本地代码历史，自动导入包，修改注释，修改tab的显示的数量和行数，打开项目方式，等等一大堆东西。</p>
-<p>总结一下，免得下次换了系统，还得再找一遍配置。</p>
-<h3 id="设置外观和字体大小"><a href="#设置外观和字体大小" class="headerlink" title="设置外观和字体大小"></a><strong>设置外观和字体大小</strong></h3><p><img src="/2021/08/01/idea%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/image1.png" alt="image1"></p>
-<p>这个呢是设置一下外观。和字体大小。放在第一个没问题。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">idea</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/01/idea%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-for循环优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/31/for%E5%BE%AA%E7%8E%AF%E4%BC%98%E5%8C%96/">for循环优化</a>
-    </h1>
-  
-
-        
-        <a href="/2021/07/31/for%E5%BE%AA%E7%8E%AF%E4%BC%98%E5%8C%96/" class="archive-article-date">
-  	<time datetime="2021-07-31T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-31</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：671字 | 预计阅读时长：2分钟
-	  </div> 
-      
-        <p>今天来看下for循环的优化方法，内容摘抄自微信公众号【Java后端技术】。</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>我们都经常使用一些循环耗时计算的操作，特别是for循环，它是一种重复计算的操作，如果处理不好，耗时就比较大，如果处理书写得当将大大提高效率，下面总结几条for循环的常见优化方式。</p>
-<p>首先，我们初始化一个集合 list，如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br></pre></td></tr></table></figure>
-
-<h3 id="方法一：最常规的不加思考的写法"><a href="#方法一：最常规的不加思考的写法" class="headerlink" title="方法一：最常规的不加思考的写法"></a>方法一：最常规的不加思考的写法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; list.size(); i++) &#123;</span><br><span class="line"> System.out.println(list.get(i));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>优点：较常见，易于理解</li>
-<li>缺点：每次都要计算<code>list.size()</code></li>
-</ul>
-<h3 id="方法二：数组长度提取出来"><a href="#方法二：数组长度提取出来" class="headerlink" title="方法二：数组长度提取出来"></a>方法二：数组长度提取出来</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> m = list.size();</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; m; i++) &#123;</span><br><span class="line">      System.out.println(list.get(i));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>优点：不必每次都计算</p>
-</li>
-<li><p>缺点：</p>
-</li>
-<li><ol>
-<li>m的作用域不够小，违反了最小作用域原则</li>
-<li>不能在for循环中操作list的大小，比如除去或新加一个元素</li>
+        <p>今天来看下大量的TIME_WAIT的TCP连接对业务有什么影响 ，内容摘抄自微信公众号【Java技术栈】。</p>
+<p><strong>几个方面：</strong></p>
+<ol>
+<li>问题描述：什么现象？什么影响？</li>
+<li>问题分析</li>
+<li>解决方案</li>
+<li>底层原理</li>
 </ol>
-</li>
+<h2 id="1-问题描述"><a href="#1-问题描述" class="headerlink" title="1.问题描述"></a>1.问题描述</h2><p>模拟高并发的场景，会出现批量的 <code>TIME_WAIT</code> 的 TCP 连接：</p>
+<p><img src="/2021/12/02/%E5%A4%A7%E9%87%8FTIME_WAIT%E7%9A%84%E5%BD%B1%E5%93%8D/1.png" alt="img"></p>
+<p>短时间后，所有的 <code>TIME_WAIT</code> 全都消失，被回收，端口包括服务，均正常。</p>
+<p>即，在高并发的场景下，<code>TIME_WAIT</code> 连接存在，属于正常现象。</p>
+<p>线上场景中，持续的高并发场景</p>
+<ul>
+<li>一部分 <code>TIME_WAIT</code> 连接被回收，但新的 <code>TIME_WAIT</code> 连接产生；</li>
+<li>一些极端情况下，会出现<strong>大量</strong>的 <code>TIME_WAIT</code> 连接。</li>
 </ul>
+<p>Think：</p>
+<blockquote>
+<p>上述大量的 <code>TIME_WAIT</code> 状态 TCP 连接，有什么业务上的影响吗？</p>
+</blockquote>
+<p>Nginx 作为反向代理时，大量的短链接，可能导致 Nginx 上的 TCP 连接处于 <code>time_wait</code> 状态：</p>
+<ul>
+<li>每一个 time_wait 状态，都会占用一个「本地端口」，上限为 <code>65535</code>(16 bit，2 Byte)；</li>
+<li>当大量的连接处于 <code>time_wait</code> 时，新建立 TCP 连接会出错，<strong>address already in use : connect</strong> 异常</li>
+</ul>
+<p>统计 TCP 连接的状态：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 统计：各种连接的数量</span><br><span class="line">$ netstat -n | awk &#x27;/^tcp/ &#123;++S[$NF]&#125; END &#123;for(a in S) print a, S[a]&#125;&#x27;</span><br><span class="line">ESTABLISHED 1154</span><br><span class="line">TIME_WAIT 1645</span><br></pre></td></tr></table></figure>
+
+<p>Tips：</p>
+<blockquote>
+<p>TCP 本地端口数量，上限为 <code>65535</code>（6.5w），这是因为 TCP 头部使用 <code>16 bit</code>，存储「<strong>端口号</strong>」，因此约束上限为 <code>65535</code>。</p>
+</blockquote>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">多线程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/12/02/%E5%A4%A7%E9%87%8FTIME_WAIT%E7%9A%84%E5%BD%B1%E5%93%8D/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Mysql索引" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/12/01/Mysql%E7%B4%A2%E5%BC%95/">Mysql索引</a>
+    </h1>
+  
+
+        
+        <a href="/2021/12/01/Mysql%E7%B4%A2%E5%BC%95/" class="archive-article-date">
+  	<time datetime="2021-12-01T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-01</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：3.3k字 | 预计阅读时长：12分钟
+	  </div> 
+      
+        <p>今天来看一下Mysql的索引的原理和实现。内容摘抄自微信公众号【Java技术栈】。</p>
+<h2 id="什么是索引？"><a href="#什么是索引？" class="headerlink" title="什么是索引？"></a>什么是索引？</h2><p>索引是辅助存储引擎高效获取数据的一种数据结构。</p>
+<p><img src="/2021/12/01/Mysql%E7%B4%A2%E5%BC%95/1.png" alt="img"></p>
+<p>很多人形象的说索引就是数据的目录，便于存储引擎快速的定位数据。</p>
+<h2 id="索引的分类"><a href="#索引的分类" class="headerlink" title="索引的分类"></a>索引的分类</h2><p>我们经常从以下几个方面对索引进行分类</p>
+<p>从 <strong>「数据结构的角度」</strong> 对索引进行分类</p>
+<ul>
+<li>B+tree</li>
+<li>Hash</li>
+<li>Full-texts 索引</li>
+</ul>
+<p>从 <strong>「物理存储的角度」</strong> 对索引进行分类</p>
+<ul>
+<li>聚簇索引</li>
+<li>二级索引(辅助索引)</li>
+</ul>
+<p>从 <strong>「索引字段特性角度」</strong> 分类</p>
+<ul>
+<li>主键索引</li>
+<li>唯一索引</li>
+<li>普通索引</li>
+<li>前缀索引</li>
+</ul>
+<p>从 <strong>「组成索引的字段个数角度」</strong> 分类</p>
+<ul>
+<li>单列索引</li>
+<li>联合索引（复合索引）</li>
+</ul>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/12/01/Mysql%E7%B4%A2%E5%BC%95/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Redis实现限流" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/11/30/Redis%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81/">Redis实现限流</a>
+    </h1>
+  
+
+        
+        <a href="/2021/11/30/Redis%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81/" class="archive-article-date">
+  	<time datetime="2021-11-30T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-30</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：1.2k字 | 预计阅读时长：4分钟
+	  </div> 
+      
+        <p>今天来看一下如何用redis实现限流。内容摘抄自微信公众号【Java后端技术】。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">面对越来越多的高并发场景，限流显示的尤为重要。</span><br></pre></td></tr></table></figure>
+
+<p>当然，限流有许多种实现的方式，Redis具有很强大的功能，我用Redis实践了三种的实现方式，可以较为简单的实现其方式。Redis不仅仅是可以做限流，还可以做数据统计，附近的人等功能，这些可能会后续写到。</p>
+<h2 id="第一种：基于Redis的setnx的操作"><a href="#第一种：基于Redis的setnx的操作" class="headerlink" title="第一种：基于Redis的setnx的操作"></a>第一种：基于Redis的setnx的操作</h2><p>我们在使用Redis的分布式锁的时候，大家都知道是依靠了setnx的指令，在CAS（Compare and swap）的操作的时候，同时给指定的key设置了过期实践（expire），我们在限流的主要目的就是为了在单位时间内，有且仅有N数量的请求能够访问我的代码程序。所以依靠setnx可以很轻松的做到这方面的功能。</p>
+<p>比如我们需要在10秒内限定20个请求，那么我们在setnx的时候可以设置过期时间10，当请求的setnx数量达到20时候即达到了限流效果。代码比较简单就不做展示了。</p>
+<p>当然这种做法的弊端是很多的，比如当统计1-10秒的时候，无法统计2-11秒之内，如果需要统计N秒内的M个请求，那么我们的Redis中需要保持N个key等等问题</p>
+<h2 id="第二种：基于Redis的数据结构zset"><a href="#第二种：基于Redis的数据结构zset" class="headerlink" title="第二种：基于Redis的数据结构zset"></a>第二种：基于Redis的数据结构zset</h2><p>其实限流涉及的最主要的就是滑动窗口，上面也提到1-10怎么变成2-11。其实也就是起始值和末端值都各+1即可。</p>
+<p>而我们如果用Redis的list数据结构可以轻而易举的实现该功能</p>
+<p>我们可以将请求打造成一个zset数组，当每一次请求进来的时候，value保持唯一，可以用UUID生成，而score可以用当前时间戳表示，因为score我们可以用来计算当前时间戳之内有多少的请求数量。而zset数据结构也提供了range方法让我们可以很轻易的获取到2个时间戳内有多少请求</p>
+<p>代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Response <span class="title">limitFlow</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Long currentTime = <span class="keyword">new</span> Date().getTime();</span><br><span class="line">        System.out.println(currentTime);</span><br><span class="line">        <span class="keyword">if</span>(redisTemplate.hasKey(<span class="string">&quot;limit&quot;</span>)) &#123;</span><br><span class="line">            Integer count = redisTemplate.opsForZSet().rangeByScore(<span class="string">&quot;limit&quot;</span>, currentTime -  intervalTime, currentTime).size();        <span class="comment">// intervalTime是限流的时间 </span></span><br><span class="line">            System.out.println(count);</span><br><span class="line">            <span class="keyword">if</span> (count != <span class="keyword">null</span> &amp;&amp; count &gt; <span class="number">5</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> Response.ok(<span class="string">&quot;每分钟最多只能访问5次&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        redisTemplate.opsForZSet().add(<span class="string">&quot;limit&quot;</span>,UUID.randomUUID().toString(),currentTime);</span><br><span class="line">        <span class="keyword">return</span> Response.ok(<span class="string">&quot;访问成功&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过上述代码可以做到滑动窗口的效果，并且能保证每N秒内至多M个请求，缺点就是zset的数据结构会越来越大。实现方式相对也是比较简单的。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/11/30/Redis%E5%AE%9E%E7%8E%B0%E9%99%90%E6%B5%81/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-数据持久化框架选择" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/11/29/%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96%E6%A1%86%E6%9E%B6%E9%80%89%E6%8B%A9/">数据持久化框架选择</a>
+    </h1>
+  
+
+        
+        <a href="/2021/11/29/%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96%E6%A1%86%E6%9E%B6%E9%80%89%E6%8B%A9/" class="archive-article-date">
+  	<time datetime="2021-11-29T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-29</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：3.4k字 | 预计阅读时长：12分钟
+	  </div> 
+      
+        <p>今天来看一下数据持久化框架的选择和各种框架之间的对比。内容摘抄自微信公众号【Java技术栈】。</p>
+<p>因为项目需要选择数据持久化框架，看了一下主要几个流行的和不流行的框架，对于复杂业务系统，最终的结论是，JOOQ是总体上最好的，可惜不是完全免费，最终选择JDBC Template。</p>
+<p>Hibernate和Mybatis是使用最多的两个主流框架，而JOOQ、Ebean等小众框架则知道的人不多，但也有很多独特的优点。</p>
+<p>而JPA则是一组Java持久层Api的规范，Spring Data JPA是JPA Repository的实现，本来和Hibernate、Mybatis、JOOQ之类的框架不在同一个层次上，但引入Spring Data JPA之类框架之后，我们会直接使用JPA的API查询更新数据库，就像我们使用Mybatis一样，所以这里也把JPA和其他框架放在一起进行比较。</p>
+<p>同样，JDBC和其他框架也在同一层次，位于所有持久框架的底层，但我们有时候也会直接在项目中使用JDBC，而Spring JDBC Template部分消除了使用JDBC的繁琐细节，降低了使用成本，使得我们更加愿意在项目中直接使用JDBC。</p>
+<h2 id="一、SQL封装和性能"><a href="#一、SQL封装和性能" class="headerlink" title="一、SQL封装和性能"></a>一、SQL封装和性能</h2><p>在使用Hibernate的时候，我们查询的是POJO实体类，而不再是数据库的表，例如hql语句 select count(*) from User，里面的User是一个Java类，而不是数据库表User。</p>
+<p>这符合ORM最初的理想，ORM认为Java程序员使用OO的思维方式，和关系数据库的思维方式差距巨大，为了填补对象和关系思维方式的鸿沟，必须做一个对象到关系的映射，然后在Java的对象世界中，程序员可以使用纯的对象的思维方式，查询POJO对象，查询条件是对象属性，不再需要有任何表、字段等关系的概念，这样java程序员就更容易做持久层的操作。</p>
+<p>JPA可以视为Hibernate的儿子，也继承了这个思路，把SQL彻底封装起来，让Java程序员看不到关系的概念，用纯的面向对象思想，重新创造一个新的查询语言代替sql，比如hql，还有JPQL等。支持JPA的框架，例如Ebean都属于这种类型的框架。</p>
+<p>但封装SQL，使用另一种纯的面向对象查询语言代替sql，真的能够让程序员更容易实现持久层操作吗？<a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=MzI3ODcxMzQzMw==&mid=2247485137&idx=1&sn=8b6fa49dccc01b040c24749375e88a4f&chksm=eb5383e7dc240af15943519938f33da919436464b3182a70fec0ed3196a8761bf85594c6c0e6&scene=21#wechat_redirect">MyBatis</a>的流行证明了事实并非如此，至少在大多数情况下，使用hql并不比使用sql简单。</p>
+<p>首先，从很多角度上看，hql/JPQL等语言更加复杂和难以理解；其次就是性能上明显降低，速度更慢，内存占用巨大，而且还不好优化。最为恼火的是，当关系的概念被替换为对象的概念之后，查询语言的灵活性变得很差，表达能力也比sql弱很多。写查询语句的时候受到各种各样的限制，一个典型的例子就是多表关联查询。</p>
+<p>不管是hibernate还是jpa，表之间的连接查询，被映射为实体类之间的关联关系，这样，如果两个实体类之间没有（实现）关联关系，你就不能把两个实体（或者表）join起来查询。</p>
+<p>这是很恼火的事情，因为我们很多时候并不需要显式定义两个实体类之间的关联关系就可以实现业务逻辑，如果使用hql，只是为了join我们就必须在两个实体类之间添加代码，而且还不能逆向工程，如果表里面没有定义外键约束的话，逆向工程会把我们添加的关联代码抹掉。</p>
+<p>MyBatis则是另外一种类型的持久化框架，它没有封装SQL也没有创建一种新的面相对象的查询语言，而是直接使用SQL作为查询语言，只是把结果填入POJO对象而已。使用sql并不比hql和JPQL困难，查询速度快，可以灵活使用任意复杂的查询只要数据库支持。从SQL封装角度上看，<a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=MzI3ODcxMzQzMw==&mid=2247485137&idx=1&sn=8b6fa49dccc01b040c24749375e88a4f&chksm=eb5383e7dc240af15943519938f33da919436464b3182a70fec0ed3196a8761bf85594c6c0e6&scene=21#wechat_redirect">MyBatis</a>比Hibernate和JPA成功，SQL本不该被封装和隐藏，让Java程序员使用SQL既不麻烦也更容易学习和上手，这应该是<a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=MzI3ODcxMzQzMw==&mid=2247485137&idx=1&sn=8b6fa49dccc01b040c24749375e88a4f&chksm=eb5383e7dc240af15943519938f33da919436464b3182a70fec0ed3196a8761bf85594c6c0e6&scene=21#wechat_redirect">MyBatis</a>流行起来的重要原因。</p>
+<p>轻量级持久层框架JOOQ也和MyBatis一样，直接使用SQL作为查询语言，比起MyBatis，JOOQ虽然知名度要低得多，但JOOQ不但和<a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=MzI3ODcxMzQzMw==&mid=2247485137&idx=1&sn=8b6fa49dccc01b040c24749375e88a4f&chksm=eb5383e7dc240af15943519938f33da919436464b3182a70fec0ed3196a8761bf85594c6c0e6&scene=21#wechat_redirect">MyBatis</a>一样可以利用SQL的灵活性和高效率，通过逆向工程，JOOQ还可以用Java代码来编写SQL语句，利用IDE的代码自动补全功能，自动提示表名和字段名，减少程序员记忆负担，还可以在元数据发生变化时发生编译错误，提示程序员修改相应的SQL语句。</p>
+<p>Ebean作为一种基于JPA的框架，它也使用JPQL语言进行查询，多数情况下会让人很恼火。但据说Ebean不排斥SQL，可以直接用SQL查询，也可以用类似JOOQ的DSL方式在代码中构造SQL语句（还是JPQL语句？），但没用过Ebean，所以具体细节不清楚。</p>
+<p>JDBC Template就不用说了，它根本没做ORM，当然是纯SQL查询。利用Spring框架，可以把JDBC Template和JPA结合起来使用，在JPA不好查询的地方，或者效率低不好优化的地方使用JDBC，缓解了Hibernate/JPA封装SQL造成的麻烦，但我仍没看到任何封装SQL的必要性，除了给程序员带来一大堆麻烦和学习负担之外，没有太明显的好处。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">数据库</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/11/29/%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96%E6%A1%86%E6%9E%B6%E9%80%89%E6%8B%A9/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Foreach问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/11/28/Foreach%E9%97%AE%E9%A2%98/">Foreach问题</a>
+    </h1>
+  
+
+        
+        <a href="/2021/11/28/Foreach%E9%97%AE%E9%A2%98/" class="archive-article-date">
+  	<time datetime="2021-11-28T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-28</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：2.2k字 | 预计阅读时长：8分钟
+	  </div> 
+      
+        <p>今天来看下为什么foreach中不允许对元素进行add和remove的问题。从源码处进行分析。内容摘抄自微信公众号【IT大咖说】。</p>
+<h1 id="◆1、foreach遍历ArrayList过程中使用-add-和-remove"><a href="#◆1、foreach遍历ArrayList过程中使用-add-和-remove" class="headerlink" title="◆1、foreach遍历ArrayList过程中使用 add 和 remove"></a>◆1、foreach遍历ArrayList过程中使用 add 和 remove</h1><p>我们先来看看使用foreach遍历ArrayList过程中使用 add 和 remove 会出现什么样子的结果，然后再分析一下。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">20</span>; i++) &#123;</span><br><span class="line">        list.add(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (Integer j : list) &#123;</span><br><span class="line">        <span class="keyword">if</span> (j.equals(<span class="number">3</span>)) &#123;</span><br><span class="line">            list.remove(<span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(j);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line">Exception <span class="keyword">in</span> thread &quot;main&quot; java.util.ConcurrentModificationException</span><br><span class="line">	<span class="built_in">at</span> java.util.ArrayList$Itr.checkForComodification(ArrayList.java:<span class="number">911</span>)</span><br><span class="line">	<span class="built_in">at</span> java.util.ArrayList$Itr.next(ArrayList.java:<span class="number">861</span>)</span><br><span class="line">	<span class="built_in">at</span> test.Test.main(Test.java:<span class="number">12</span>)</span><br></pre></td></tr></table></figure>
+
+<p>结果是出现了<br>ConcurrentModificationException 异常，追踪下抛出异常的位置（ArrayList.java:911）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">checkForComodification</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (modCount != expectedModCount)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个地方告诉我们如果 modCount 不等于 expectedModCount 的时候，就会抛出这个异常信息，那么这两个参数都代表了什么东西呢？为什么不相等的时候，就会出现异常呢？</p>
         
       
 
@@ -394,10 +614,6 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">性能优化</a>
-        		</li>
       		
 		</ul>
 	</div>
@@ -406,7 +622,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/31/for%E5%BE%AA%E7%8E%AF%E4%BC%98%E5%8C%96/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/28/Foreach%E9%97%AE%E9%A2%98/">展开全文 >></a>
         </p>
       
 
@@ -436,20 +652,20 @@
 
 
   
-    <article id="post-分布式和微服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-HTTP和HTTPS" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/30/%E5%88%86%E5%B8%83%E5%BC%8F%E5%92%8C%E5%BE%AE%E6%9C%8D%E5%8A%A1/">分布式和微服务</a>
+      <a class="article-title" href="/2021/11/27/HTTP%E5%92%8CHTTPS/">HTTP和HTTPS</a>
     </h1>
   
 
         
-        <a href="/2021/07/30/%E5%88%86%E5%B8%83%E5%BC%8F%E5%92%8C%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="archive-article-date">
-  	<time datetime="2021-07-30T06:23:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-30</time>
+        <a href="/2021/11/27/HTTP%E5%92%8CHTTPS/" class="archive-article-date">
+  	<time datetime="2021-11-27T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-27</time>
 </a>
         
       </header>
@@ -457,43 +673,29 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：879字 | 预计阅读时长：2分钟
+		字数：1.7k字 | 预计阅读时长：6分钟
 	  </div> 
       
-        <p>今天和同事聊了一下分布式和微服务，于是了解一下分布式和微服务的区别。简单来说，分布式属于微服务，微服务就是一种特殊的分布式，只是分布式是每个服务部署在不同的服务器上面，解决高并发的问题，而微服务是每个服务实现一个单一的功能，粒度更小，耦合度更低。</p>
-<ul>
-<li><h3 id="1、微服务"><a href="#1、微服务" class="headerlink" title="1、微服务"></a>1、微服务</h3></li>
-<li><p>微服务的意思也就是将模块拆分成一个独立的服务单元通过接口来实现数据的交互。简单来说微服务就是很小的服务，小到一个服务只对应一个单一的功能，只做一件事。这个服务可以单独部署运行，服务之间可以通过RPC来相互交互，每个微服务都是由独立的小团队开发，测试，部署，上线，负责它的整个生命周期。</p>
-</li>
-</ul>
-<ul>
-<li><h3 id="2、分布式"><a href="#2、分布式" class="headerlink" title="2、分布式"></a>2、分布式</h3></li>
-<li></li>
-<li><p>分布式服务顾名思义服务是分散部署在不同的机器上的，一个服务可能负责几个功能，是一种面向SOA架构的，服务之间也是通过rpc来交互或者是webservice来交互的。逻辑架构设计完后就该做物理架构设计，系统应用部署在超过一台服务器或虚拟机上，且各分开部署的部分彼此通过各种通讯协议交互信息，就可算作分布式部署，生产环境下的微服务肯定是分布式部署的，分布式部署的应用不一定是微服务架构的，比如集群部署，它是把相同应用复制到不同服务器上，但是逻辑功能上还是单体应用。</p>
-</li>
-</ul>
-<ul>
-<li><h3 id="3、关系"><a href="#3、关系" class="headerlink" title="3、关系"></a>3、关系</h3></li>
-<li><p>　　</p>
-</li>
-<li><p>*<strong>联系：</strong></p>
-</li>
-<li><p>分布式只是一种手段，把不同的机器分散在不同的地方，然后这些机器间相互协助完成业务。微服务是一种特殊的分布式，换句话说，微服务架构是分布式服务架构的子集。微服务架构通过更细粒度的服务切分，使得整个系统的迭代速度并行程度更高，但是运维的复杂度和性能会随着服务的粒度更细而增加。微服务重在解耦合，使每个模块都独立。分布式重在资源共享与加快计算机计算速度。</p>
-</li>
-<li></li>
-<li><p>*<strong>区别：</strong>
-　　</p>
-</li>
-<li><p>（1）架构不同：微服务的设计是为了不因为某个模块的升级和BUG影响现有的系统业务。微服务与分布式的细微差别是，微服务的应用不一定是分散在多个服务器上，他也可以是同一个服务器。
-　　</p>
-</li>
-<li><p>（2）作用不同：分布式：不同模块部署在不同服务器上，分布式主要解决的是网站高并发带来问题。微服务：各服务可独立应用，组合服务也可系统应用。
-　　</p>
-</li>
-<li><p>（3）粒度不同：微服务相比分布式服务来说，它的粒度更小，服务之间耦合度更低，由于每个微服务都由独立的小团队负责，因此它敏捷性更高，分布式服务最后都会向微服务架构演化，这是一种趋势， 不过服务微服务化后带来的挑战也是显而易见的，例如服务粒度小，数量大，后期运维将会很难。</p>
-</li>
-</ul>
-
+        <p>今天来看一下http和https的联系和区别，可以说是网络编程最基本的内容了。内容摘抄自微信公众号【Java极客技术】。</p>
+<h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><p>HTTP协议是Hyper Text Transfer Protocol（超文本传输协议）的缩写,是用于从万维网服务器传输超文本到本地浏览器的传送协议。HTTP 是基于 TCP/IP 协议通信协议来传递数据（HTML 文件、图片文件、查询结果等）。它不涉及数据包（packet）传输，主要规定了客户端和服务器之间的通信格式，默认使用80端口。</p>
+<p>这其实就是百度百科里面的精简化的内容，虽然说不上太细致，但是已经算是对HTTP做了一个大概的描述，我们接下来就从以下的几个方面来看一下这个HTTP吧。</p>
+<p>我们从这里就不再多解释 HTTP报文 和 主体 这些内容了，阿粉之前也是完整的给大家解释过了，包括了 HTTP 的进化历史，阿粉今天我们来讲讲 HTTP 和 HTTPS 的关系。</p>
+<h3 id="HTTP缺点"><a href="#HTTP缺点" class="headerlink" title="HTTP缺点"></a>HTTP缺点</h3><p>众所周知，HTTP 的优点那可是一大堆：</p>
+<ol>
+<li>简单、灵活、易于扩展</li>
+<li>应用广泛、环境成熟</li>
+<li>无状态 (不需要额外的资源来记录状态信息)</li>
+</ol>
+<p>但是 HTTP 的缺点也是非常的显著，为什么这么说，HTTP 使用的是明文的方式进行传输，虽然方便了我们的调试，但是信息会被暴露出来，每一个环节没有隐私可言。</p>
+<p>而且 HTTP 在我们的认知当中，他就是一个不安全的，第一个原因是上面说的明文，还有就是 HTTP 不验证通信双方的身份，所以对方的身份有可能伪装，就像某些公共场所的那些 公共WIFI ，还有就是 HTTP 不能验证报文的完整性，所以报文也是有可能被篡改的。</p>
+<p>基于这些内容，所以我们很多时候对 HTTP 的选择都比较慎重，不然你传输内容的时候，别人用抓包工具就很容易的能够分析出你想要传递的内容。</p>
+<p>这时候我们就想到了一个事情，加密处理一下不就好了？</p>
+<p>对，完全没问题，HTTP 没有加密的机制，但是我们可以想办法处理，这个办法就是：</p>
+<p><strong>SSL</strong> 或者 <strong>TLS</strong></p>
+<p><strong>SSL</strong>: 安全套接层</p>
+<p><strong>TLS</strong>：安全层传输协议</p>
+<p>当他们组合使用的时候，就能够加密 HTTP 的通信的内容了，这时候就能在这条线路上进行通信，而通过 <strong>SSL</strong>组合使用后的 HTTP 被称为 HTTPS 或者称之为 HTTP overSSL。</p>
+        
       
 
       
@@ -506,7 +708,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
         		</li>
       		
 		</ul>
@@ -516,7 +718,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/30/%E5%88%86%E5%B8%83%E5%BC%8F%E5%92%8C%E5%BE%AE%E6%9C%8D%E5%8A%A1/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/27/HTTP%E5%92%8CHTTPS/">展开全文 >></a>
         </p>
       
 
@@ -546,20 +748,20 @@
 
 
   
-    <article id="post-FeignClient调用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-OpenFeign的坑" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/29/FeignClient%E8%B0%83%E7%94%A8/">FeignClient调用</a>
+      <a class="article-title" href="/2021/11/26/OpenFeign%E7%9A%84%E5%9D%91/">OpenFeign的坑</a>
     </h1>
   
 
         
-        <a href="/2021/07/29/FeignClient%E8%B0%83%E7%94%A8/" class="archive-article-date">
-  	<time datetime="2021-07-29T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-29</time>
+        <a href="/2021/11/26/OpenFeign%E7%9A%84%E5%9D%91/" class="archive-article-date">
+  	<time datetime="2021-11-26T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-26</time>
 </a>
         
       </header>
@@ -567,18 +769,28 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：3.3k字 | 预计阅读时长：14分钟
+		字数：2k字 | 预计阅读时长：8分钟
 	  </div> 
       
-        <p>Spring Cloud 是目前最火的微服务框架，Feign 作为基础组件之一，在 Spring Cloud 体系中发挥了重要的作用。今天来看下FeignClient的用法。</p>
-<h2 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h2><p>微服务架构服务实例众多，服务与服务之间如何调用，Spring Cloud提供了解决方案：伪装者 Feign。</p>
-<p>Feign 是 Spring Cloud 的一个组件，也是一个WebService客户端，用于服务之间的调动。</p>
-<h2 id="2、如何使用"><a href="#2、如何使用" class="headerlink" title="2、如何使用"></a>2、如何使用</h2><p>第一步：服务之间调用</p>
-<p>本例需要创建三个工程：</p>
-<p>eureka-server 注册中心服务（项目创建参照第三节网关）</p>
-<p>product-service 产品服务（最基础的客户端服务，提供一个rest接口即可。前面第三节已创建，可参考，不需要做任何修改）</p>
-<p>order-service-feignclient 订单服务（测试服务调用）</p>
-<p>order-service-feignclient 工程目录如下图：<br><img src="/2021/07/29/FeignClient%E8%B0%83%E7%94%A8/user\hexo\source\new\FeignClient调用\1.png" alt="img1"></p>
+        <p>作为SpringCloud的重要组件，今天来看一下OpenFeign中使用不当时容易踩到的坑，我已经踩过几个了，所以要好好记录。</p>
+<p>OpenFeign是SpringCloud中的重要组件，它是一种声明式的HTTP客户端。使用OpenFeign调用远程服务就像调用本地方法一样，但是如果使用不当，很容易踩到坑。</p>
+<h2 id="坑一-用对Http-Client"><a href="#坑一-用对Http-Client" class="headerlink" title="坑一:用对Http Client"></a>坑一:用对Http Client</h2><h3 id="1-1-feign中http-client"><a href="#1-1-feign中http-client" class="headerlink" title="1.1 feign中http client"></a>1.1 feign中http client</h3><p>如果不做特殊配置，OpenFeign默认使用jdk自带的HttpURLConnection，我们知道HttpURLConnection没有连接池、性能和效率比较低，如果采用默认，很可能会遇到性能问题导致系统故障。</p>
+<p>可以采用Apache HttpClient，properties文件中增加下面配置：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">feign.httpclient.enabled=true</span></span><br></pre></td></tr></table></figure>
+
+<p>pom文件中增加依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.github.openfeign<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>feign-httpclient<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>9.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>也可以采用OkHttpClient，properties文件中增加下面配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">feign.okhttp.enabled=true</span><br></pre></td></tr></table></figure>
+
+<p>pom文件中增加依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.github.openfeign<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>feign-okhttp<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>10.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-2-ribbon中的Http-Client"><a href="#1-2-ribbon中的Http-Client" class="headerlink" title="1.2 ribbon中的Http Client"></a>1.2 ribbon中的Http Client</h3><p>通过OpenFeign作为注册中心的客户端时，默认使用Ribbon做负载均衡，Ribbon默认也是用jdk自带的HttpURLConnection，需要给Ribbon也设置一个Http client，比如使用okhttp，在properties文件中增加下面配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ribbon.okhttp.enabled=true</span><br></pre></td></tr></table></figure>
         
       
 
@@ -602,7 +814,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/29/FeignClient%E8%B0%83%E7%94%A8/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/26/OpenFeign%E7%9A%84%E5%9D%91/">展开全文 >></a>
         </p>
       
 
@@ -632,20 +844,20 @@
 
 
   
-    <article id="post-建造者模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-RocketMQ存储设计" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/28/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/">建造者模式</a>
+      <a class="article-title" href="/2021/11/25/RocketMQ%E5%AD%98%E5%82%A8%E8%AE%BE%E8%AE%A1/">RocketMQ存储设计</a>
     </h1>
   
 
         
-        <a href="/2021/07/28/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/" class="archive-article-date">
-  	<time datetime="2021-07-28T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-28</time>
+        <a href="/2021/11/25/RocketMQ%E5%AD%98%E5%82%A8%E8%AE%BE%E8%AE%A1/" class="archive-article-date">
+  	<time datetime="2021-11-25T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-25</time>
 </a>
         
       </header>
@@ -653,24 +865,20 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2.3k字 | 预计阅读时长：9分钟
+		字数：3k字 | 预计阅读时长：10分钟
 	  </div> 
       
-        <p>今天来看下建造者模式。</p>
-<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><blockquote>
-<p>当一个类的内部数据过于复杂的时候（通常是负责持有数据的类，比如Config、VO、PO、Entity…），要创建的话可能就需要了解这个类的内部结构，还有这些东西是怎么组织装配等一大坨乱七八糟的东西，这个时候就会增加学习成本而且会很混乱，这个时候就想啊想一种什么法子来管理一下这个类中的数据呢，怎么在创建的时候让它按部就班的来，并且代码可读性很好别让我看花了眼啊，我要的东西也能都很好设置进来，这就是Builder模式的应用场景，Builder模式可以将一个类的构建和表示进行分离。</p>
+        <p>今天来看一下中间件RocketMQ的存储设计。内容摘抄自微信公众号【苏三说技术】。</p>
+<p>RocketMQ作为一款基于磁盘存储的中间件，具有无限积压能力，并提供高吞吐、低延迟的服务能力，其最核心的部分必然是它优雅的存储设计。</p>
+<blockquote>
+<p>温馨提示：本文节选自新上市《RocketMQ技术内幕》第二版本，一个最大的改变就是在进入源码分析之前，首先通过图文的方式，提炼出RocketMQ的核心工作机制，降低源码阅读的难度，引发思考。</p>
 </blockquote>
-<h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1.介绍"></a>1.介绍</h2><h3 id="1-1什么是构建者模式"><a href="#1-1什么是构建者模式" class="headerlink" title="1.1什么是构建者模式"></a>1.1什么是构建者模式</h3><blockquote>
-<p>创建者模式又叫建造者模式，是将一个复杂的对象的<strong>构建</strong>与它的<strong>表示</strong>分离，使<br> 得同样的构建过程可以创建不同的表示。创建者模式隐藏了复杂对象的创建过程，它把复杂对象的创建过程加以抽象，通过子类继承或者重载的方式，动态的创建具有复合属性的对象。</p>
-</blockquote>
-<h3 id="1-2适用场景："><a href="#1-2适用场景：" class="headerlink" title="1.2适用场景："></a>1.2适用场景：</h3><ul>
-<li>隔离复杂对象的创建和使用，相同的方法，不同执行顺序，产生不同事件结果</li>
-<li>多个部件都可以装配到一个对象中，但产生的运行结果不相同</li>
-<li>产品类非常复杂或者产品类因为调用顺序不同而产生不同作用</li>
-<li>初始化一个对象时，参数过多，或者很多参数具有默认值</li>
-<li>Builder模式不适合创建差异性很大的产品类<br> 产品内部变化复杂，会导致需要定义很多具体建造者类实现变化，增加项目中类的数量，增加系统的理解难度和运行成本</li>
-<li>需要生成的产品对象有复杂的内部结构，这些产品对象具备共性；</li>
-</ul>
+<h2 id="1、存储概述"><a href="#1、存储概述" class="headerlink" title="1、存储概述"></a>1、存储概述</h2><p>RocketMQ存储的文件主要包括Commitlog文件、ConsumeQueue文件、Index文件。</p>
+<p>RocketMQ将所有主题的消息存储在同一个文件中，确保消息发送时按顺序写文件，尽最大能力确保消息发送的高可用性与高吞吐量。</p>
+<p>但消息中间件一般都是基于主题的订阅与发布模式，消息消费时必须按照主题进行帅选消息，显然从Commitlog文件中按照topic去筛选消息会变得及其低效，为了提高根据主题检索消息的效率，RocketMQ引入了ConsumeQueue文件，俗成消费队列文件。</p>
+<p>关系型数据库可以按照字段属性进行记录检索，作为一款主要面向业务开发的消息中间件，RocketMQ也提供了基于消息属性的检索能力，底层的核心设计理念是为Commitlog文件建立<strong>哈希索引，并存储在Index文件中</strong>。</p>
+<p>在RocketMQ中顺序写入到Commitlog文件后，ConsumeQueue与Index文件都是异步构建的，其数据流向图如下：</p>
+<p><img src="/2021/11/25/RocketMQ%E5%AD%98%E5%82%A8%E8%AE%BE%E8%AE%A1/1.png" alt="img"></p>
         
       
 
@@ -684,7 +892,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
         		</li>
       		
 		</ul>
@@ -694,7 +902,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/28/%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/25/RocketMQ%E5%AD%98%E5%82%A8%E8%AE%BE%E8%AE%A1/">展开全文 >></a>
         </p>
       
 
@@ -724,20 +932,20 @@
 
 
   
-    <article id="post-Zookeeper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Redis使用规范" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/27/Zookeeper/">Zookeeper</a>
+      <a class="article-title" href="/2021/11/24/Redis%E4%BD%BF%E7%94%A8%E8%A7%84%E8%8C%83/">Redis使用规范</a>
     </h1>
   
 
         
-        <a href="/2021/07/27/Zookeeper/" class="archive-article-date">
-  	<time datetime="2021-07-27T00:56:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-27</time>
+        <a href="/2021/11/24/Redis%E4%BD%BF%E7%94%A8%E8%A7%84%E8%8C%83/" class="archive-article-date">
+  	<time datetime="2021-11-24T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-24</time>
 </a>
         
       </header>
@@ -748,12 +956,35 @@
 		字数：2.3k字 | 预计阅读时长：8分钟
 	  </div> 
       
-        <p>在项目配置启动时，需要用到zookeeper进行分布式的管理，那么今天就来了解一下zookeeper到底是什么。</p>
-<h3 id="1、Zookeeper介绍"><a href="#1、Zookeeper介绍" class="headerlink" title="1、Zookeeper介绍"></a>1、Zookeeper介绍</h3><h4 id="①-Zookeeper的名字由来"><a href="#①-Zookeeper的名字由来" class="headerlink" title="① Zookeeper的名字由来"></a>① Zookeeper的名字由来</h4><p>在apache上的许多开源项目都是以动物形象作为icon，比如tomcat就是一只猫，hive是只黄蜂等，zookeeper的工作就是把这些动物的行动进行协调</p>
-<h4 id="②-Zookeeper的简介"><a href="#②-Zookeeper的简介" class="headerlink" title="② Zookeeper的简介"></a>② Zookeeper的简介</h4><p>zookeeper就是一种用于分布式应用程序的高性能协调服务，它的特点就是数据是存于内存中的，持久化实现在日志中。它的内存类似于树形结构，且高吞吐低延迟，可以帮助我们实现分布式统一配置中心，服务注册，分布式锁等 组成ZooKeeper服务的服务器必须彼此了解。它们维护内存中的状态图像，以及持久性存储中的事务日志和快照。只要大多数服务器可用，ZooKeeper服务就可用。客户端连接到单个ZooKeeper服务器。客户端维护TCP连接，通过该连接发送请求，获取响应，获取监视事件以及发送tick。如果与服务器的TCP连接中断，则客户端将连接到其他服务器。</p>
-<h4 id="③-Zookeeper的安装（linux下）"><a href="#③-Zookeeper的安装（linux下）" class="headerlink" title="③ Zookeeper的安装（linux下）"></a>③ Zookeeper的安装（linux下）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1.JDK版本需要在1.6以上</span><br><span class="line">2.下载：https://archive.apache.org/dist/zookeeper/zookeeper-3.5.2/zookeeper-3.5.2.tar.gz</span><br><span class="line">3.解压后的conf目录，增加配置文件zoo.cfg</span><br><span class="line">4.启动服务端 bin/zkServer.sh start</span><br><span class="line">5.测试，客户端连接：bin/zkCli.sh -server 127.0.0.1:2181</span><br><span class="line">zoo.cfg的关键配置有3个：</span><br><span class="line">    tickTime=2000：一次心跳的基本时间，</span><br><span class="line">    dataDir：数据与日志的存放处</span><br><span class="line">    clientPort：端口号</span><br></pre></td></tr></table></figure>
+        <p>Redis作为常用的缓存工具，今天来看下redis的使用规范，内容摘抄自微信公众号【Java技术栈】。</p>
+<p>Redis 使用规范围绕如下几个纬度展开：</p>
+<ul>
+<li>键值对使用规范；</li>
+<li>命令使用规范；</li>
+<li>数据保存规范；</li>
+<li>运维规范。</li>
+</ul>
+<h2 id="键值对使用规范"><a href="#键值对使用规范" class="headerlink" title="键值对使用规范"></a>键值对使用规范</h2><p>有两点需要注意：</p>
+<ol>
+<li>好的 <code>key</code> 命名，才能提供可读性强、可维护性高的 key，便于定位问题和寻找数据。</li>
+<li><code>value</code>要避免出现 <code>bigkey</code>、选择高效的序列化和压缩、使用对象共享池、选择高效恰当的数据类型（可参考《Redis 实战篇：巧用数据类型实现亿级数据统计》）。</li>
+</ol>
+<h3 id="key-命名规范"><a href="#key-命名规范" class="headerlink" title="key 命名规范"></a>key 命名规范</h3><p>规范的 <code>key</code>命名，在遇到问题的时候能够方便定位。Redis 属于 没有 <code>Scheme</code>的 <code>NoSQL</code>数据库。</p>
+<p>所以要靠规范来建立其 <code>Scheme</code> 语意，就好比根据不同的场景我们建立不同的数据库。</p>
+<p><strong>敲黑板</strong></p>
+<p>把「业务模块名」作为前缀（好比数据库 <code>Scheme</code>），通过「冒号」分隔，再加上「具体业务名」。</p>
+<p>这样我们就可以通过 <code>key</code> 前缀来区分不同的业务数据，清晰明了。</p>
+<p>总结起来就是：「业务名:表名:id」</p>
+<p>比如我们要统计公众号属于技术类型的博主「Java技术栈」的文章数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set 公众号:技术类:Java技术栈 100000</span><br></pre></td></tr></table></figure>
 
-<p>//待补充Windows下的安装</p>
+<blockquote>
+<p>❝</p>
+<p>key 太长的话有什么问题么？</p>
+</blockquote>
+<p>key 是字符串，底层的数据结构是 <code>SDS</code>，SDS 结构中会包含字符串长度、分配空间大小等元数据信息。</p>
+<p><strong>字符串长度增加，SDS 的元数据也会占用更多的内存空间。</strong></p>
+<p>所以当字符串太长的时候，我们可以采用适当缩写的形式。</p>
         
       
 
@@ -767,11 +998,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码规范</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Zookeeper</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
         		</li>
       		
 		</ul>
@@ -781,7 +1012,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/27/Zookeeper/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/24/Redis%E4%BD%BF%E7%94%A8%E8%A7%84%E8%8C%83/">展开全文 >></a>
         </p>
       
 
@@ -811,20 +1042,20 @@
 
 
   
-    <article id="post-Mybatis_in" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-数据库缓存数据一致性方案" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/26/Mybatis_in/">Mybatis_in</a>
+      <a class="article-title" href="/2021/11/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E6%96%B9%E6%A1%88/">数据库缓存数据一致性方案</a>
     </h1>
   
 
         
-        <a href="/2021/07/26/Mybatis_in/" class="archive-article-date">
-  	<time datetime="2021-07-26T02:53:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-26</time>
+        <a href="/2021/11/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E6%96%B9%E6%A1%88/" class="archive-article-date">
+  	<time datetime="2021-11-23T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-23</time>
 </a>
         
       </header>
@@ -832,22 +1063,14 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1k字 | 预计阅读时长：5分钟
+		字数：2.5k字 | 预计阅读时长：8分钟
 	  </div> 
       
-        <p>*<strong>mybatis是一个最基本的操作，今天来写一下在mybatis里面的in的操作。</strong></p>
-<h3 id="1、mybatis中普通的select操作"><a href="#1、mybatis中普通的select操作" class="headerlink" title="1、mybatis中普通的select操作"></a>1、mybatis中普通的select操作</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEsimInfo&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.southgnss.sthcloud.product.manager.Dto.EsimExportDto&quot;</span>&gt;</span></span><br><span class="line">        SELECT</span><br><span class="line">        iccid as ICCID,</span><br><span class="line">        date_format(current_plan_expire_time,&#x27;%Y-%m-%d %H:%i:%s&#x27;) as currentPlanExpireTime</span><br><span class="line">        FROM</span><br><span class="line">        location_service.esim_info</span><br><span class="line">        where status=5</span><br><span class="line">         and current_plan_expire_time between  #&#123;startTime&#125; and  #&#123;endTime&#125;</span><br><span class="line"></span><br><span class="line">        order by current_plan_expire_time asc</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>*<strong>注：</strong></p>
-<p><strong>插句题外话，mysql中用date_format(date,’%Y-%m-%d’)进行日期格式的转换，对应着oracle中的to_char();</strong> 　</p>
-<p><strong>mysql中用str_to_date(date,’%Y-%m-%d’)进行字符串向日期格式的转换，对应着 oracle中的to_date();</strong></p>
-<p>**<strong>注：</strong></p>
-<p><strong>还要注意的一点是，在进行mybatis操作时，如果传进去的参数是单个参数，参数必须加上注解@Param，否则将不能识别和获取参数，如果是使用实体entity则不需要，#和$都可以识别对应参数。</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Mapper</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DeviceProductInfoMapper</span> <span class="keyword">extends</span> <span class="title">BaseMapper</span>&lt;<span class="title">DeviceProductLineInfo</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">List&lt;EsimExportDto&gt; <span class="title">getEsimInfo</span> <span class="params">(<span class="meta">@Param(&quot;startTime&quot;)</span> String startTime, <span class="meta">@Param(&quot;endTime&quot;)</span> String endTime)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="2、mybatis中普通的update操作"><a href="#2、mybatis中普通的update操作" class="headerlink" title="2、mybatis中普通的update操作"></a>2、mybatis中普通的update操作</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">&quot;updatePayStates&quot;</span> &gt;</span></span><br><span class="line">        UPDATE</span><br><span class="line">        order_info</span><br><span class="line">        SET</span><br><span class="line">        status = #&#123;status&#125;</span><br><span class="line">        <span class="tag">&lt;<span class="name">where</span>&gt;</span></span><br><span class="line">            order_no = #&#123;orderNo&#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">where</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br></pre></td></tr></table></figure>
+        <p>今天来看下分布式中，数据库和缓存数据的一致性的方案。内容摘抄自微信公众号【IT大咖说】。</p>
+<h1 id="◆引言"><a href="#◆引言" class="headerlink" title="◆引言"></a>◆<strong>引言</strong></h1><p>在我们的实际项目中，在一些QPS比较高的场景下，经常引入缓存来缓解数据库的查询压力，以缓存的空间来换取查询效率的提升。但是一旦引入了缓存，就一定会遇到缓存中的数据与数据库中的数据如何保持一致的问题，本文就是针对两者之间的数据一致性问题进行分析，一步一步分析以及解决。</p>
+<h1 id="◆为什么会出现数据不一致"><a href="#◆为什么会出现数据不一致" class="headerlink" title="◆为什么会出现数据不一致"></a>◆<strong>为什么会出现数据不一致</strong></h1><p>业务起初的时候，用户数以及业务量都还没有起来。我们可以直接使用服务从数据库中写入数据以及获取业务数据来满足业务，这时候看上去基本满足业务需要，如下所示：</p>
+<p><img src="/2021/11/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E6%96%B9%E6%A1%88/1.png" alt="img"></p>
+<p>但是当用户数不断增加，业务量不断增加，经常出现查询缓慢的问题。此时的数据库压力带来的业务掣肘现象已经显现出来了。那么我们应该怎么办呢？最先想到的解决方案就是增加节点，既然数据库压力大那就增加数据库实例节点，通过更多的数据库节点来分担现有的数据库压力是不是就好了。比如当前的QPS达到了10w，那么如果用十个数据库实例分别在10台服务器上，实际上每个数据库实例来抗1w的QPS。看上去很完美的方案，大家来看看这样做的弊端在哪里，加入业务进一步增长怎么办？难道还要不断增加数据库实例吗？那么系统的硬件成本将不断增加，运维维护成本也会增加，特别是当前经济环境下。所以这似乎并不是一个长久的经济的解决方案。</p>
         
       
 
@@ -861,7 +1084,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Mybatis</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">数据库</a>
         		</li>
       		
 		</ul>
@@ -871,209 +1094,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/26/Mybatis_in/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-isEmpty和isBlank" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/25/isEmpty%E5%92%8CisBlank/">isEmpty和isBlank</a>
-    </h1>
-  
-
-        
-        <a href="/2021/07/25/isEmpty%E5%92%8CisBlank/" class="archive-article-date">
-  	<time datetime="2021-07-25T01:14:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-25</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：855字 | 预计阅读时长：3分钟
-	  </div> 
-      
-        <p>isEmpty()和isBlank()是Java中日常要用到的两个注解，那他们有什么区别呢，又该怎么选择呢？在工作中遇到了这样的问题，来归纳总结一下。</p>
-<h3 id="1、isEmpty"><a href="#1、isEmpty" class="headerlink" title="1、isEmpty"></a>1、isEmpty</h3><p>判断字符串是否为空字符串，只要有一个任意字符（包括空白字符）就不为空。</p>
-<p>来看 isEmpty 的方法源码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">(CharSequence cs)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> cs == <span class="keyword">null</span> || cs.length() == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>看见没，这个方法只判断了是为为 null 或者长度为 0。</p>
-<p>意味着，如果用户输入 “   “ 等空白字符，这个方法就不通过了，结果就是不为空了。</p>
-<p>如验证输入以下内容：</p>
-<table>
-<thead>
-<tr>
-<th align="center">输入内容</th>
-<th align="center">是否为空</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">“   “</td>
-<td align="center">否</td>
-</tr>
-<tr>
-<td align="center">“”</td>
-<td align="center">是</td>
-</tr>
-<tr>
-<td align="center">“Java技术栈”</td>
-<td align="center">否</td>
-</tr>
-</tbody></table>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/25/isEmpty%E5%92%8CisBlank/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spring事务管理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/24/Spring%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/">Spring事务管理</a>
-    </h1>
-  
-
-        
-        <a href="/2021/07/24/Spring%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/" class="archive-article-date">
-  	<time datetime="2021-07-24T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-24</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：8.2k字 | 预计阅读时长：36分钟
-	  </div> 
-      
-        <p>今天来详细的说一下Spring的事务管理！</p>
-<h1 id="1-初步理解"><a href="#1-初步理解" class="headerlink" title="1 初步理解"></a>1 初步理解</h1><p>理解事务之前，先讲一个你日常生活中最常干的事：取钱。<br>比如你去ATM机取1000块钱，大体有两个步骤：首先输入密码金额，银行卡扣掉1000元钱；然后ATM出1000元钱。这两个步骤必须是要么都执行要么都不执行。如果银行卡扣除了1000块但是ATM出钱失败的话，你将会损失1000元；如果银行卡扣钱失败但是ATM却出了1000块，那么银行将损失1000元。所以，如果一个步骤成功另一个步骤失败对双方都不是好事，如果不管哪一个步骤失败了以后，整个取钱过程都能回滚，也就是完全取消所有操作的话，这对双方都是极好的。<br>事务就是用来解决类似问题的。事务是一系列的动作，它们综合在一起才是一个完整的工作单元，这些动作必须全部完成，如果有一个失败的话，那么事务就会回滚到最开始的状态，仿佛什么都没发生过一样。<br>在企业级应用程序开发中，事务管理必不可少的技术，用来确保数据的完整性和一致性。<br><strong>事务有四个特性：ACID</strong></p>
-<blockquote>
-<ul>
-<li>原子性（Atomicity）：事务是一个原子操作，由一系列动作组成。事务的原子性确保动作要么全部完成，要么完全不起作用。</li>
-<li>一致性（Consistency）：一旦事务完成（不管成功还是失败），系统必须确保它所建模的业务处于一致的状态，而不会是部分完成部分失败。在现实中的数据不应该被破坏。</li>
-<li>隔离性（Isolation）：可能有许多事务会同时处理相同的数据，因此每个事务都应该与其他事务隔离开来，防止数据损坏。</li>
-<li>持久性（Durability）：一旦事务完成，无论发生什么系统错误，它的结果都不应该受到影响，这样就能从任何系统崩溃中恢复过来。通常情况下，事务的结果被写到持久化存储器中。</li>
-</ul>
-</blockquote>
-<p>一个真正的 RDBMS 数据库系统将为每个事务保证所有的四个属性。使用 SQL 发布到数据库中的事务的简单视图如下：</p>
-<ul>
-<li>使用 begin transaction 命令开始事务。</li>
-<li>使用 SQL 查询语句执行各种删除、更新或插入操作。</li>
-<li>如果所有的操作都成功，则执行提交操作，否则回滚所有操作。</li>
-</ul>
-<p>Spring 框架在不同的底层事务管理 APIs 的顶部提供了一个抽象层。Spring 的事务支持旨在通过添加事务能力到 POJOs 来提供给 EJB 事务一个选择方案。Spring 支持编程式和声明式事务管理。EJBs 需要一个应用程序服务器，但 Spring 事务管理可以在不需要应用程序服务器的情况下实现。</p>
-<h2 id="局部事务-vs-全局事务"><a href="#局部事务-vs-全局事务" class="headerlink" title="局部事务 vs. 全局事务"></a>局部事务 vs. 全局事务</h2><p>局部事务是特定于一个单一的事务资源，如一个 JDBC 连接，而全局事务可以跨多个事务资源事务，如在一个分布式系统中的事务。</p>
-<p>局部事务管理在一个集中的计算环境中是有用的，该计算环境中应用程序组件和资源位于一个单位点，而事务管理只涉及到一个运行在一个单一机器中的本地数据管理器。局部事务更容易实现。</p>
-<p>全局事务管理需要在分布式计算环境中，所有的资源都分布在多个系统中。在这种情况下事务管理需要同时在局部和全局范围内进行。分布式或全局事务跨多个系统执行，它的执行需要全局事务管理系统和所有相关系统的局部数据管理人员之间的协调。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/24/Spring%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E6%96%B9%E6%A1%88/">展开全文 >></a>
         </p>
       
 
@@ -1105,7 +1126,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/24/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/26/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/24/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="page-number current">25</span><a class="page-number" href="/page/26/">26</a><a class="page-number" href="/page/27/">27</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/26/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1207,15 +1228,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">前端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1255,15 +1296,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常处理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多线程</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">中间件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1311,11 +1352,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">前端</a>
+                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1339,15 +1380,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1355,11 +1392,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+                <a href="javascript:void(0)" class="js-tag color5">并发编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库，缓存</a>
               </li>
             
             <div class="clearfix"></div>

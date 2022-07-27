@@ -79,8 +79,8 @@
 			</ul>
 		</nav>
 		<nav>
-			<a>总文章数 286</a>
-			<a>总字数 <span class="post-count">826k</span></a>
+			<a>总文章数 413</a>
+			<a>总字数 <span class="post-count">1279k</span></a>
 		</nav>
 		<nav class="header-smart-menu">
     		
@@ -165,20 +165,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-MultipartFile和File的相互转换" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java实现办公文件在线预览" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/13/MultipartFile%E5%92%8CFile%E7%9A%84%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2/">MultipartFile和File的相互转换</a>
+      <a class="article-title" href="/2021/11/12/Java%E5%AE%9E%E7%8E%B0%E5%8A%9E%E5%85%AC%E6%96%87%E4%BB%B6%E5%9C%A8%E7%BA%BF%E9%A2%84%E8%A7%88/">Java实现办公文件在线预览</a>
     </h1>
   
 
         
-        <a href="/2021/07/13/MultipartFile%E5%92%8CFile%E7%9A%84%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2/" class="archive-article-date">
-  	<time datetime="2021-07-13T00:56:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-13</time>
+        <a href="/2021/11/12/Java%E5%AE%9E%E7%8E%B0%E5%8A%9E%E5%85%AC%E6%96%87%E4%BB%B6%E5%9C%A8%E7%BA%BF%E9%A2%84%E8%A7%88/" class="archive-article-date">
+  	<time datetime="2021-11-12T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-12</time>
 </a>
         
       </header>
@@ -186,11 +186,18 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：250字 | 预计阅读时长：1分钟
+		字数：1.1k字 | 预计阅读时长：5分钟
 	  </div> 
       
-        <p>在工作中真的太经常用到MultipartFile和File的相互转换，每次都要查百度，这里就总结一下，下次不要再查百度了。</p>
-<h3 id="1、MultipartFile-转-File"><a href="#1、MultipartFile-转-File" class="headerlink" title="1、MultipartFile 转 File"></a>1、MultipartFile 转 File</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * MultipartFile 转 File</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> file</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">multipartFileToFile</span><span class="params">(MultipartFile file)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">        File toFile = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (file.equals(<span class="string">&quot;&quot;</span>) || file.getSize() &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            file = <span class="keyword">null</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            InputStream ins = <span class="keyword">null</span>;</span><br><span class="line">            ins = file.getInputStream();</span><br><span class="line">            toFile = <span class="keyword">new</span> File(file.getOriginalFilename());</span><br><span class="line">            inputStreamToFile(ins, toFile);</span><br><span class="line">      ins.close();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> toFile;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取流文件</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">inputStreamToFile</span><span class="params">(InputStream ins, File file)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            OutputStream os = <span class="keyword">new</span> FileOutputStream(file);</span><br><span class="line">            <span class="keyword">int</span> bytesRead = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">8192</span>];</span><br><span class="line">            <span class="keyword">while</span> ((bytesRead = ins.read(buffer, <span class="number">0</span>, <span class="number">8192</span>)) != -<span class="number">1</span>) &#123;</span><br><span class="line">                os.write(buffer, <span class="number">0</span>, bytesRead);</span><br><span class="line">            &#125;</span><br><span class="line">            os.close();</span><br><span class="line">            ins.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+        <p>今天来看下Java怎么实现办公文件如word、ppt、excel等的在线预览。内容摘抄自微信公众号【springmeng】。</p>
+<p>Java实现办公文件在线预览功能是一个大家在工作中也许会遇到的需求，网上些公司专门提供这样的服务，不过需要收费 如果想要免费的，可以用openoffice，实现原理就是：</p>
+<blockquote>
+<p>通过第三方工具openoffice，将word、excel、ppt、txt等文件转换为pdf文件流；</p>
+</blockquote>
+<p>当然如果装了Adobe Reader XI，那把pdf直接拖到浏览器页面就可以直接打开预览，前提就是浏览器支持pdf文件浏览。</p>
+<p>我这里介绍通过poi实现word、excel、ppt转pdf流，这样就可以在浏览器上实现预览了。</p>
+<h2 id="一、实现办公文件在线预览"><a href="#一、实现办公文件在线预览" class="headerlink" title="一、实现办公文件在线预览"></a>一、实现办公文件在线预览</h2><h3 id="1-到官网下载Apache-OpenOffice-安装包，安装运行。（不同系统的安装方法，自行百度，这里不做过多说明）"><a href="#1-到官网下载Apache-OpenOffice-安装包，安装运行。（不同系统的安装方法，自行百度，这里不做过多说明）" class="headerlink" title="1.到官网下载Apache OpenOffice 安装包，安装运行。（不同系统的安装方法，自行百度，这里不做过多说明）"></a><strong>1.到官网下载Apache OpenOffice 安装包，安装运行。（不同系统的安装方法，自行百度，这里不做过多说明）</strong></h3><p><img src="/2021/11/12/Java%E5%AE%9E%E7%8E%B0%E5%8A%9E%E5%85%AC%E6%96%87%E4%BB%B6%E5%9C%A8%E7%BA%BF%E9%A2%84%E8%A7%88/1.png" alt="img"></p>
+<h3 id="2-再项目的pom文件中引入依赖"><a href="#2-再项目的pom文件中引入依赖" class="headerlink" title="2.再项目的pom文件中引入依赖"></a><strong>2.再项目的pom文件中引入依赖</strong></h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--openoffice--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.artofsolving<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jodconverter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
         
       
 
@@ -214,7 +221,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/13/MultipartFile%E5%92%8CFile%E7%9A%84%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/12/Java%E5%AE%9E%E7%8E%B0%E5%8A%9E%E5%85%AC%E6%96%87%E4%BB%B6%E5%9C%A8%E7%BA%BF%E9%A2%84%E8%A7%88/">展开全文 >></a>
         </p>
       
 
@@ -244,20 +251,20 @@
 
 
   
-    <article id="post-minio使用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-NIO之Reactor模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/12/minio%E4%BD%BF%E7%94%A8/">minio使用</a>
+      <a class="article-title" href="/2021/11/11/NIO%E4%B9%8BReactor%E6%A8%A1%E5%BC%8F/">NIO之Reactor模式</a>
     </h1>
   
 
         
-        <a href="/2021/07/12/minio%E4%BD%BF%E7%94%A8/" class="archive-article-date">
-  	<time datetime="2021-07-12T07:09:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-12</time>
+        <a href="/2021/11/11/NIO%E4%B9%8BReactor%E6%A8%A1%E5%BC%8F/" class="archive-article-date">
+  	<time datetime="2021-11-11T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-11</time>
 </a>
         
       </header>
@@ -265,31 +272,20 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2.4k字 | 预计阅读时长：11分钟
+		字数：2.5k字 | 预计阅读时长：8分钟
 	  </div> 
       
-        <p>在工作时用到了minio作为存储节点，今天来了解一下minio的用法：</p>
-<h3 id="1、minio简介"><a href="#1、minio简介" class="headerlink" title="1、minio简介"></a>1、minio简介</h3><p>Minio 是一个基于Apache License v2.0开源协议的对象存储服务。它兼容亚马逊S3云存储服务接口，非常适合于存储大容量非结构化的数据，例如图片、视频、日志文件、备份数据和容器/虚拟机镜像等，而一个对象文件可以是任意大小，从几kb到最大5T不等。<br> Minio是一个非常轻量的服务,可以很简单的和其他应用的结合，类似 NodeJS, Redis 或者 MySQL。</p>
-<h3 id="2、minio安装配置"><a href="#2、minio安装配置" class="headerlink" title="2、minio安装配置"></a>2、minio安装配置</h3><p>minio只需要exe文件即可启动，命令如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">minio.exe server E:\minio_files -address 0.0.0.0:9006</span><br></pre></td></tr></table></figure>
-
-<p>在配置文件中做如下配置，即可使用对应的minio存储结点：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">oss:</span></span><br><span class="line">  <span class="attr">endpoint:</span> <span class="string">http://sthcloud-oss:9006</span></span><br><span class="line">  <span class="attr">access-key:</span> <span class="string">minioadmin</span></span><br><span class="line">  <span class="attr">secret-key:</span> <span class="string">minioadmin</span></span><br><span class="line">  <span class="attr">bucket-name:</span> <span class="string">sthcloud</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="3、minio特点"><a href="#3、minio特点" class="headerlink" title="3、minio特点"></a>3、minio特点</h3><ul>
-<li>高性能：作为高性能对象存储，在标准硬件条件下它能达到55GB/s的读、35GG/s的写速率</li>
-<li>可扩容：不同MinIO集群可以组成联邦，并形成一个全局的命名空间，并跨越多个数据中心</li>
-<li>云原生：容器化、基于K8S的编排、多租户支持</li>
-<li>Amazon S3兼容：Minio使用Amazon S3 v2 / v4 API。可以使用Minio SDK，Minio Client，AWS SDK和AWS CLI访问Minio服务器。</li>
-<li>可对接后端存储: 除了Minio自己的文件系统，还支持DAS、 JBODs、NAS、Google云存储和Azure Blob存储。</li>
-<li>SDK支持: 基于Minio轻量的特点，它得到类似Java、Python或Go等语言的sdk支持</li>
-<li>Lambda计算: Minio服务器通过其兼容AWS SNS / SQS的事件通知服务触发Lambda功能。支持的目标是消息队列，如Kafka，NATS，AMQP，MQTT，Webhooks以及Elasticsearch，Redis，Postgres和MySQL等数据库。</li>
-<li>有操作页面</li>
-<li>功能简单: 这一设计原则让MinIO不容易出错、更快启动</li>
-<li>支持纠删码：MinIO使用纠删码、Checksum来防止硬件错误和静默数据污染。在最高冗余度配置下，即使丢失1/2的磁盘也能恢复数据</li>
+        <p>今天来看一下NIO的Reactor模式是怎么样的。内容摘抄自微信公众号【IT大咖说】。</p>
+<p><img src="/2021/11/11/NIO%E4%B9%8BReactor%E6%A8%A1%E5%BC%8F/image1.png" alt="img"></p>
+<h2 id="为什么是-Reactor"><a href="#为什么是-Reactor" class="headerlink" title="为什么是 Reactor"></a><strong>为什么是 Reactor</strong></h2><p>一般所有的网络服务，一般分为如下几个步骤：</p>
+<ul>
+<li>读请求（read request）</li>
+<li>读解析（read decode）</li>
+<li>处理程序（process service）</li>
+<li>应答编码 （encode reply）</li>
+<li>发送应答（send reply）</li>
 </ul>
+<p>接下来，大明哥就来分析解决这个问题的最佳实践。</p>
         
       
 
@@ -303,7 +299,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">minio</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NIO</a>
         		</li>
       		
 		</ul>
@@ -313,7 +309,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/12/minio%E4%BD%BF%E7%94%A8/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/11/NIO%E4%B9%8BReactor%E6%A8%A1%E5%BC%8F/">展开全文 >></a>
         </p>
       
 
@@ -343,20 +339,20 @@
 
 
   
-    <article id="post-递归" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-MybstisPlus代码生成器" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/11/%E9%80%92%E5%BD%92/">递归</a>
+      <a class="article-title" href="/2021/11/10/MybstisPlus%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/">MybstisPlus代码生成器</a>
     </h1>
   
 
         
-        <a href="/2021/07/11/%E9%80%92%E5%BD%92/" class="archive-article-date">
-  	<time datetime="2021-07-11T07:09:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-11</time>
+        <a href="/2021/11/10/MybstisPlus%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/" class="archive-article-date">
+  	<time datetime="2021-11-10T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-10</time>
 </a>
         
       </header>
@@ -364,32 +360,29 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.3k字 | 预计阅读时长：5分钟
+		字数：2k字 | 预计阅读时长：10分钟
 	  </div> 
       
-        <p>递归算法可以说在程序开发中是一个非常常用和重要的算法，在工作中就遇到了需要用到递归来遍历文件，那今天就来总结下递归。</p>
-<h3 id="1、什么叫递归"><a href="#1、什么叫递归" class="headerlink" title="1、什么叫递归"></a>1、什么叫递归</h3><p><strong>递归，就是在运行的过程中调用自己。</strong></p>
-<p><strong>构成递归需具备的条件：</strong></p>
-<ol>
-<li><p>子问题须与原始问题为同样的事，且更为简单；</p>
-</li>
-<li><p>不能无限制地调用本身，须有个出口，化简为非递归状况处理。</p>
-</li>
+        <p>为了解放劳动力，减少没有必要的重复劳动，在工作中使用了代码生成器，可以很方便的进行代码的生成。今天就来看下MybatisPlus的代码生成器。</p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><ol>
+<li>代码生成器顾名思义就是为我们生成一些代码，省去了我们一些时间。</li>
+<li>MyBatis-Plus 的代码生成器可以生成 Entity、Mapper、Mapper XML、Service、Controller 模块代码。</li>
 </ol>
-<p>在数学和计算机科学中，递归指由一种（或多种）简单的基本情况定义的一类对象或方法，并规定其他所有情况都能被还原为其基本情况。</p>
-<p><strong>递归算法一般用于解决三类问题：</strong></p>
-<p>(1)数据的定义是按递归定义的。（Fibonacci函数）</p>
-<p>(2)问题解法按递归算法实现。</p>
-<p>这类问题虽则本身没有明显的递归结构，但用递归求解比迭代求解更简单，如Hanoi问题。</p>
-<p>(3)数据的结构形式是按递归定义的。</p>
-<p>如二叉树、广义表等，由于结构本身固有的递归特性，则它们的操作可递归地描述。</p>
-<p><strong>递归程序的执行过程可以分为两大阶段：</strong></p>
-<p><strong>1、回溯阶段</strong></p>
-<p><strong>2、递推阶段</strong></p>
-<p><img src="/2021/07/11/%E9%80%92%E5%BD%92/1.png" alt="img"></p>
-<h3 id="2、循环与递归"><a href="#2、循环与递归" class="headerlink" title="2、循环与递归"></a>2、循环与递归</h3><p>简单来说，循环是有去无回，而递归则是有去有回(因为存在终止条件)。</p>
-<p>举个栗子，你用你手中的钥匙打开一扇门，结果去发现前方还有一扇门，紧接着你又用钥匙打开了这扇门，然后你又看到一扇们…但是当你开到某扇门时，发现前方是一堵墙无路可走了，你选择原路返回——这就是递归</p>
-<p>但是如果你打开一扇门后，同样发现前方也有一扇们，紧接着你又打开下一扇门…直到打开最后一扇门出去，或者一直没有碰到尽头 （死循环）——这就是循环。</p>
+<h1 id="须知"><a href="#须知" class="headerlink" title="须知"></a>须知</h1><ol>
+<li>MyBatis-Plus 从 <code>3.0.3</code> 之后移除了代码生成器与模板引擎的默认依赖，需要手动添加相关依赖，才能实现代码生成器功能。</li>
+</ol>
+<h1 id="玩熟-MyBatis-Plus-代码生成器"><a href="#玩熟-MyBatis-Plus-代码生成器" class="headerlink" title="玩熟 MyBatis-Plus 代码生成器"></a>玩熟 MyBatis-Plus 代码生成器</h1><h2 id="1-新建-MyBatis-Plus-代码生成器项目"><a href="#1-新建-MyBatis-Plus-代码生成器项目" class="headerlink" title="1.新建 MyBatis-Plus 代码生成器项目"></a>1.新建 MyBatis-Plus 代码生成器项目</h2><h2 id="2-添加代码生成器依赖"><a href="#2-添加代码生成器依赖" class="headerlink" title="2.添加代码生成器依赖"></a>2.添加代码生成器依赖</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.baomidou<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-plus-generator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-添加模板引擎依赖"><a href="#3-添加模板引擎依赖" class="headerlink" title="3.添加模板引擎依赖"></a>3.添加模板引擎依赖</h2><ol>
+<li><p>MyBatis-Plus 支持 Velocity（默认）、Freemarker、Beetl，可以选择自己熟悉的模板引擎，如果都不满足您的要求，可以采用自定义模板引擎。</p>
+</li>
+<li><p>下面三个依赖任选其一</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/org.apache.velocity/velocity-engine-core --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.velocity<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>velocity-engine-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/org.freemarker/freemarker --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.freemarker<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>freemarker<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.30<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/com.ibeetl/beetl --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.ibeetl<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>beetl<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.1.3.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>如果我们选择了非默认引擎，需要在 AutoGenerator 中 设置模板引擎。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">AutoGenerator generator = <span class="keyword">new</span> AutoGenerator();</span><br><span class="line"></span><br><span class="line"><span class="comment">// set freemarker engine</span></span><br><span class="line">generator.setTemplateEngine(<span class="keyword">new</span> FreemarkerTemplateEngine());</span><br><span class="line"></span><br><span class="line"><span class="comment">// set beetl engine</span></span><br><span class="line">generator.setTemplateEngine(<span class="keyword">new</span> BeetlTemplateEngine());</span><br><span class="line"></span><br><span class="line"><span class="comment">// set custom engine (reference class is your custom engine class)</span></span><br><span class="line">generator.setTemplateEngine(<span class="keyword">new</span> CustomTemplateEngine());</span><br><span class="line"></span><br><span class="line"><span class="comment">// other config</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure></li>
+</ol>
         
       
 
@@ -403,7 +396,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">MybatisPlus</a>
         		</li>
       		
 		</ul>
@@ -413,7 +406,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/11/%E9%80%92%E5%BD%92/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/10/MybstisPlus%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8/">展开全文 >></a>
         </p>
       
 
@@ -443,20 +436,20 @@
 
 
   
-    <article id="post-nacos配置" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JUC" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/10/nacos%E9%85%8D%E7%BD%AE/">nacos配置</a>
+      <a class="article-title" href="/2021/11/09/JUC/">JUC</a>
     </h1>
   
 
         
-        <a href="/2021/07/10/nacos%E9%85%8D%E7%BD%AE/" class="archive-article-date">
-  	<time datetime="2021-07-10T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-10</time>
+        <a href="/2021/11/09/JUC/" class="archive-article-date">
+  	<time datetime="2021-11-09T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-09</time>
 </a>
         
       </header>
@@ -464,13 +457,20 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2.3k字 | 预计阅读时长：9分钟
+		字数：8.4k字 | 预计阅读时长：38分钟
 	  </div> 
       
-        <p>nacos是SpringCloud服务中一个很重要的组件，不可或缺的一部分，今天就来简单说一下nacos，以及nacos的安装配置。</p>
-<h1 id="一、什么是Nacos"><a href="#一、什么是Nacos" class="headerlink" title="一、什么是Nacos"></a>一、什么是Nacos</h1><p>英文全称Dynamic Naming and Configuration Service，Na为naming/nameServer即注册中心,co为configuration即注册中心，service是指该注册/配置中心都是以服务为核心。服务在nacos是一等公民</p>
-<h1 id="二、Nacos原理"><a href="#二、Nacos原理" class="headerlink" title="二、Nacos原理"></a>二、Nacos原理</h1><p><img src="/2021/07/10/nacos%E9%85%8D%E7%BD%AE/3.png" alt="img"></p>
-<p>Nacos注册中心分为server与client，server采用Java编写，为client提供注册发现服务与配置服务。而client可以用多语言实现，client与微服务嵌套在一起，nacos提供sdk和openApi，如果没有sdk也可以根据openApi手动写服务注册与发现和配置拉取的逻辑</p>
+        <p>今天来看下Java多线程JUC包的内容。内容摘抄自微信公众号【Java核心技术】。</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>在 Java 5.0 提供了 <code>java.util.concurrent</code>(简称JUC)包,在此包中增加了在并发编程中很常用的工具类,用于定义类似于线程的自定义子系统,包括线程池,异步 IO 和轻量级任务框架;还提供了设计用于多线程上下文中的 Collection 实现等。</p>
+<h2 id="volatile-关键字"><a href="#volatile-关键字" class="headerlink" title="volatile 关键字"></a>volatile 关键字</h2><h3 id="内存可见性"><a href="#内存可见性" class="headerlink" title="内存可见性"></a>内存可见性</h3><p>内存可见性（Memory Visibility）是指当某个线程正在使用对象状态而另一个线程在同时修改该状态，需要确保当一个线程修改了对象状态后，其他线程能够看到发生的状态变化。</p>
+<p>可见性错误是指当读操作与写操作在不同的线程中执行时，我们无法确保执行读操作的线程能适时地看到其他线程写入的值，有时甚至是根本不可能的事情。</p>
+<p>我们可以通过同步来保证对象被安全地发布。除此之外我们也可以使用一种更加轻量级的 volatile 变量。</p>
+<p>Java 提供了一种稍弱的同步机制，即 volatile 变量，用来确保将变量的更新操作通知到其他线程。可以将 volatile 看做一个轻量级的锁，但是又与锁有些不同：</p>
+<ul>
+<li>对于多线程，不是一种互斥关系</li>
+<li>不能保证变量状态的“原子性操作</li>
+</ul>
+<h4 id="问题代码示例"><a href="#问题代码示例" class="headerlink" title="问题代码示例"></a><strong>问题代码示例</strong></h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@ClassName</span> TestVolatile</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>: Thread 已经修改了flag，但是main线程还是拿到的false</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: WangWenpeng</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span> 1.0</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestVolatile</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ThreadDemo td = <span class="keyword">new</span> ThreadDemo();</span><br><span class="line">        <span class="keyword">new</span> Thread(td).start();</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (td.isFlag()) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;______________&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ThreadDemo</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> flag = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isFlag</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> flag;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFlag</span><span class="params">(<span class="keyword">boolean</span> flag)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.flag = flag;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//增加这种出现问题的几率</span></span><br><span class="line">            Thread.sleep(<span class="number">200</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        flag = <span class="keyword">true</span>;</span><br><span class="line">        System.out.println(<span class="string">&quot;flag=&quot;</span> + isFlag());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
         
       
 
@@ -484,7 +484,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">SpringCloud</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">多线程</a>
         		</li>
       		
 		</ul>
@@ -494,7 +494,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/10/nacos%E9%85%8D%E7%BD%AE/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/09/JUC/">展开全文 >></a>
         </p>
       
 
@@ -524,20 +524,20 @@
 
 
   
-    <article id="post-数据库的四种隔离级别" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-数据库索引" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%9B%9B%E7%A7%8D%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/">数据库的四种隔离级别</a>
+      <a class="article-title" href="/2021/11/08/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B4%A2%E5%BC%95/">数据库索引</a>
     </h1>
   
 
         
-        <a href="/2021/07/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%9B%9B%E7%A7%8D%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/" class="archive-article-date">
-  	<time datetime="2021-07-09T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-09</time>
+        <a href="/2021/11/08/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B4%A2%E5%BC%95/" class="archive-article-date">
+  	<time datetime="2021-11-08T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-08</time>
 </a>
         
       </header>
@@ -548,15 +548,25 @@
 		字数：2.7k字 | 预计阅读时长：9分钟
 	  </div> 
       
-        <p>之前在数据库面试总结中，已经总结过了数据库的四种隔离级别，但是不够详细，今天就来详细的理解和总结一下数据库的四种隔离级别和三种并发过程中可能会出现的问题。</p>
-<h2 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h2><p>　<strong>数据库事务的隔离级别有4种，由低到高分别为Read uncommitted 、Read committed 、Repeatable read 、Serializable 。而且，在事务的并发操作中可能会出现脏读，不可重复读，幻读。下面通过事例一一阐述它们的概念与联系。</strong></p>
-<h3 id="脏读、不可重复读、幻象读概念说明："><a href="#脏读、不可重复读、幻象读概念说明：" class="headerlink" title="脏读、不可重复读、幻象读概念说明："></a><strong>脏读、不可重复读、幻象读</strong>概念说明：</h3><p>　　脏读：指当一个事务正在访问数据，并且对数据进行了修改，而这种数据还没有提交到数据库中，这时，另外一个事务也访问这个数据，然后使用了这个数据。因为这个数据还没有提交那么另外一个事务读取到的这个数据我们称之为脏数据。依据脏数据所做的操作肯能是不正确的。<br>　　不可重复读：指在一个事务内，多次读同一数据。在这个事务还没有执行结束，另外一个事务也访问该同一数据，那么在第一个事务中的两次读取数据之间，由于第二个事务的修改第一个事务两次读到的数据可能是不一样的，这样就发生了在一个事物内两次连续读到的数据是不一样的，这种情况被称为是不可重复读。<br>　　幻象读：一个事务先后读取一个范围的记录，但两次读取的纪录数不同，我们称之为幻象读（两次执行同一条 select 语句会出现不同的结果，第二次读会增加一数据行，并没有说这两次执行是在同一个事务中）</p>
-<hr>
-<h3 id="读未提交-（Read-uncommitted）"><a href="#读未提交-（Read-uncommitted）" class="headerlink" title="读未提交 （Read uncommitted）"></a><strong>读未提交 （Read uncommitted）</strong></h3><p>　　读未提交，顾名思义，就是一个事务可以读取另一个未提交事务的数据。</p>
-<p>　　事例：老板要给程序员发工资，程序员的工资是3.6万/月。但是发工资时老板不小心按错了数字，按成3.9万/月，该钱已经打到程序员的户口，但是事务还没有提交，就在这时，程序员去查看自己这个月的工资，发现比往常多了3千元，以为涨工资了非常高兴。但是老板及时发现了不对，马上回滚差点就提交了的事务，将数字改成3.6万再提交。</p>
-<p>　　分析：实际程序员这个月的工资还是3.6万，但是程序员看到的是3.9万。他看到的是老板还没提交事务时的数据。这就是脏读。因此，在这种隔离级别下，查询是不会加锁的，也由于查询的不加锁，所以这种隔离级别的一致性是最差的，可能会产生“脏读”、“不可重复读”、“幻读”。如无特殊情况，基本是不会使用这种隔离级别的。</p>
-<p>　　那怎么解决脏读呢？Read committed！读提交，能解决脏读问题。</p>
-<hr>
+        <p>今天来具体看下数据库索引的实现。内容摘抄自微信公众号【Java极客技术】。</p>
+<h2 id="索引的类型-常见的"><a href="#索引的类型-常见的" class="headerlink" title="索引的类型(常见的)"></a>索引的类型(常见的)</h2><ul>
+<li><p>主键索引(primary key)</p>
+<p>主键索引这个阿粉从刚开始接触开发的时候，就被各种灌输，表的主键就默认是索引，不允许出现空值。</p>
+</li>
+<li><p>普通索引(index/normal)</p>
+<p>MySQL中基本索引类型，没有什么限制，允许在定义索引的列中插入重复值和空值。</p>
+</li>
+<li><p>全文索引(fulltext)</p>
+<p>只能在文本类型CHAR,VARCHAR,TEXT类型字段上创建全文索引。MyISAM和InnoDB中都可以使用全文索引。</p>
+</li>
+<li><p>唯一索引(unique)</p>
+<p>索引列中的值必须是唯一的，但是允许为空值。</p>
+</li>
+</ul>
+<p>索引的类型肯定不限制于这几项，</p>
+<p>既然我们知道分类了，我们接下来再来看看不同索引的创建方式</p>
+<h2 id="不同索引的创建方式"><a href="#不同索引的创建方式" class="headerlink" title="不同索引的创建方式"></a>不同索引的创建方式</h2><p>其实如果你真的不会去写 SQL 去创建索引，最简单的，Navicat 你总是会用的吧，图形化的界面操作，你肯定也是了解的吧，那图形化直接操作不就好了。</p>
+<p><img src="/2021/11/08/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B4%A2%E5%BC%95/image1.png" alt="image1"></p>
         
       
 
@@ -580,7 +590,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/09/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%9B%9B%E7%A7%8D%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/08/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B4%A2%E5%BC%95/">展开全文 >></a>
         </p>
       
 
@@ -610,20 +620,20 @@
 
 
   
-    <article id="post-mysql安装" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Mysql开发规范" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/08/mysql%E5%AE%89%E8%A3%85/">mysql安装</a>
+      <a class="article-title" href="/2021/11/07/Mysql%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/">Mysql开发规范</a>
     </h1>
   
 
         
-        <a href="/2021/07/08/mysql%E5%AE%89%E8%A3%85/" class="archive-article-date">
-  	<time datetime="2021-07-08T01:30:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-08</time>
+        <a href="/2021/11/07/Mysql%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/" class="archive-article-date">
+  	<time datetime="2021-11-07T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-07</time>
 </a>
         
       </header>
@@ -631,12 +641,19 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.1k字 | 预计阅读时长：4分钟
+		字数：5.2k字 | 预计阅读时长：18分钟
 	  </div> 
       
-        <p>mysql是最多人用的关系型数据库，也是开发中十分重要必不可少的一部分。今天来看下mysql的安装。</p>
-<h1 id="一、下载安装包"><a href="#一、下载安装包" class="headerlink" title="一、下载安装包"></a>一、下载安装包</h1><h2 id="1、进入官网，点击”Dowload”"><a href="#1、进入官网，点击”Dowload”" class="headerlink" title="1、进入官网，点击”Dowload”"></a>1、进入官网，点击”Dowload”</h2><p><strong>官网地址：</strong><a target="_blank" rel="noopener" href="https://www.mysql.com/">https://www.mysql.com/</a></p>
-<p><img src="/2021/07/08/mysql%E5%AE%89%E8%A3%85/image1.png" alt="image-20210914001540822"></p>
+        <p>规范对于程序员编写代码和开发十分的重要，今天来看一下数据库对象设计和命名的规范。内容摘抄自微信公众号【Java技术栈】。</p>
+<h2 id="数据库对象命名规范"><a href="#数据库对象命名规范" class="headerlink" title="数据库对象命名规范"></a>数据库对象命名规范</h2><h3 id="数据库对象"><a href="#数据库对象" class="headerlink" title="数据库对象"></a>数据库对象</h3><p>数据库对象是数据库的组成部分，常见的有以下几种：表（Table ）、索引（Index）、视图（View）、图表（Diagram）、缺省值（Default）、规则（Rule）、触发器（Trigger）、存储过程（Stored Procedure）、 用户（User）等。命名规范是指数据库对象如数据库（SCHEMA）、表（TABLE）、索引（INDEX）、约束（CONSTRAINTS）等的命名约定。</p>
+<h3 id="数据库对象全局命名规范"><a href="#数据库对象全局命名规范" class="headerlink" title="数据库对象全局命名规范"></a>数据库对象全局命名规范</h3><p>1、命名使用具有意义的英文词汇，词汇中间以下划线分隔</p>
+<p>2、命名只能使用英文字母、数字、下划线，以英文字母开头</p>
+<p>3、避免用MySQL的保留字如：backup、call、group等</p>
+<p>4、所有数据库对象使用小写字母，实际上MySQL中是可以设置大小写是否敏感的，为了保证统一性，我们这边规范全部小写表示。</p>
+<h3 id="数据库命名规范"><a href="#数据库命名规范" class="headerlink" title="数据库命名规范"></a>数据库命名规范</h3><p>1、数据库命名尽量不超过30个字符。</p>
+<p>2、数据库命名一般为项目名称+代表库含义的简写，比如IM项目的工作流数据库，可以是 im_flow。</p>
+<p>3、数据库创建时必须添加默认字符集和校对规则子句。默认字符集为UTF8（已迁移dumbo的使用utf8mb4）</p>
+<p>4、命名应使用小写。</p>
         
       
 
@@ -650,7 +667,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Mysql</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码规范</a>
         		</li>
       		
 		</ul>
@@ -660,7 +677,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/08/mysql%E5%AE%89%E8%A3%85/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/07/Mysql%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/">展开全文 >></a>
         </p>
       
 
@@ -690,20 +707,20 @@
 
 
   
-    <article id="post-服务器部署" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java反射机制的应用场景" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/07/%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2/">服务器部署</a>
+      <a class="article-title" href="/2021/11/06/Java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/">Java反射机制的应用场景</a>
     </h1>
   
 
         
-        <a href="/2021/07/07/%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2/" class="archive-article-date">
-  	<time datetime="2021-07-07T01:30:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-07</time>
+        <a href="/2021/11/06/Java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/" class="archive-article-date">
+  	<time datetime="2021-11-06T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-06</time>
 </a>
         
       </header>
@@ -711,15 +728,26 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2.1k字 | 预计阅读时长：7分钟
+		字数：1.6k字 | 预计阅读时长：6分钟
 	  </div> 
       
-        <h3 id="1、XShell安装"><a href="#1、XShell安装" class="headerlink" title="1、XShell安装"></a>1、XShell安装</h3><p><strong>要进行服务器的部署，首先需要一个强大的终端软件，XShell就是一个很好的安全终端软件。</strong></p>
-<h4 id="1）、要先下载XShell"><a href="#1）、要先下载XShell" class="headerlink" title="1）、要先下载XShell"></a>1）、要先下载XShell</h4><p>下载地址：（也可百度搜索）</p>
-<p><a target="_blank" rel="noopener" href="https://xshell.en.softonic.com/">https://xshell.en.softonic.com/</a></p>
-<h4 id="2）、根据指示安装好后打开XShell文件，左上角的文件——》新建会话"><a href="#2）、根据指示安装好后打开XShell文件，左上角的文件——》新建会话" class="headerlink" title="2）、根据指示安装好后打开XShell文件，左上角的文件——》新建会话"></a>2）、根据指示安装好后打开XShell文件，左上角的文件——》新建会话</h4><p><img src="/2021/07/07/%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2/image-20210707111116374.png" alt="image-20210707111116374"></p>
-<p>*<strong>名称可以随便填写，主机填写服务器对应的ip地址，端口号是必填的，没有固定的端口可不修改端口号。</strong></p>
-<h4 id="3）、然后在左侧用户身份验证中输入用户名和密码，这样下次就可以直接连接了，当然如果为了安全考虑也可以不输入密码，在每次连接时再输入。"><a href="#3）、然后在左侧用户身份验证中输入用户名和密码，这样下次就可以直接连接了，当然如果为了安全考虑也可以不输入密码，在每次连接时再输入。" class="headerlink" title="3）、然后在左侧用户身份验证中输入用户名和密码，这样下次就可以直接连接了，当然如果为了安全考虑也可以不输入密码，在每次连接时再输入。"></a>3）、然后在左侧用户身份验证中输入用户名和密码，这样下次就可以直接连接了，当然如果为了安全考虑也可以不输入密码，在每次连接时再输入。</h4><p><img src="/2021/07/07/%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2/2.png" alt="image-20210707111519362"></p>
+        <p>今天来看下Spring反射机制的应用场景，内容摘抄自微信公众号【Java技术栈】。</p>
+<p>近期在维护公司项目的时候遇到一个问题，因为实体类中的 set 方法涉及到了业务逻辑，因此在给对象赋值的过程中不能够使用 set 方法，为了实现功能，所以采用了反射的机制给对象属性赋值，借此机会也了解了反射的一些具体用法和使用场景，分以下两点对反射进行分析：</p>
+<ul>
+<li>反射的优势和劣势</li>
+<li>反射的应用场景</li>
+</ul>
+<h2 id="反射的优势和劣势"><a href="#反射的优势和劣势" class="headerlink" title="反射的优势和劣势"></a>反射的优势和劣势</h2><p>个人理解，反射机制实际上就是上帝模式，如果说方法的调用是 Java 正确的打开方式，那反射机制就是上帝偷偷开的后门，只要存在对应的class，一切都能够被调用。</p>
+<p>那上帝为什么要打开这个后门呢？</p>
+<p><strong>这涉及到了静态和动态的概念</strong></p>
+<ul>
+<li><strong>静态编译：在编译时确定类型，绑定对象</strong></li>
+<li><strong>动态编译：运行时确定类型，绑定对象</strong></li>
+</ul>
+<p><strong>两者的区别在于，动态编译可以最大程度地支持多态，而多态最大的意义在于降低类的耦合性，因此反射的优点就很明显了：解耦以及提高代码的灵活性。</strong></p>
+<p>因此，反射的优势和劣势分别在于：</p>
+<h3 id="优势"><a href="#优势" class="headerlink" title="优势"></a><strong>优势</strong></h3><p>运行期类型的判断，动态类加载：提高代码灵活度</p>
+<h3 id="劣势"><a href="#劣势" class="headerlink" title="劣势"></a><strong>劣势</strong></h3><p>性能瓶颈：反射相当于一系列解释操作，通知 JVM 要做的事情，性能比直接的java代码要慢很多。</p>
         
       
 
@@ -733,7 +761,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">部署</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
         		</li>
       		
 		</ul>
@@ -743,7 +771,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/07/%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/06/Java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/">展开全文 >></a>
         </p>
       
 
@@ -773,20 +801,20 @@
 
 
   
-    <article id="post-redis配置" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-hashcode生成逻辑" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/06/redis%E9%85%8D%E7%BD%AE/">redis配置</a>
+      <a class="article-title" href="/2021/11/05/hashcode%E7%94%9F%E6%88%90%E9%80%BB%E8%BE%91/">hashcode生成逻辑</a>
     </h1>
   
 
         
-        <a href="/2021/07/06/redis%E9%85%8D%E7%BD%AE/" class="archive-article-date">
-  	<time datetime="2021-07-06T01:30:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-06</time>
+        <a href="/2021/11/05/hashcode%E7%94%9F%E6%88%90%E9%80%BB%E8%BE%91/" class="archive-article-date">
+  	<time datetime="2021-11-05T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-05</time>
 </a>
         
       </header>
@@ -794,15 +822,24 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：902字 | 预计阅读时长：3分钟
+		字数：1.4k字 | 预计阅读时长：6分钟
 	  </div> 
       
-        <h2 id="1、redis的安装"><a href="#1、redis的安装" class="headerlink" title="1、redis的安装"></a>1、redis的安装</h2><p>1）、要安装Redis，首先要获取安装包。Windows的Redis安装包需要到以下GitHub链接找到。链接：<a target="_blank" rel="noopener" href="https://github.com/MSOpenTech/redis%E3%80%82%E6%89%93%E5%BC%80%E7%BD%91%E7%AB%99%E5%90%8E%EF%BC%8C%E6%89%BE%E5%88%B0Release%EF%BC%8C%E7%82%B9%E5%87%BB%E5%89%8D%E5%BE%80%E4%B8%8B%E8%BD%BD%E9%A1%B5%E9%9D%A2%E3%80%82">https://github.com/MSOpenTech/redis。打开网站后，找到Release，点击前往下载页面。</a></p>
-<p><img src="/2021/07/06/redis%E9%85%8D%E7%BD%AE/1.png" alt="img"></p>
-<p>2）、在下载网页中，找到最后发行的版本（此处是3.2.100）。找到Redis-x64-3.2.100.msi和Redis-x64-3.2.100.zip，点击下载。这里说明一下，第一个是msi微软格式的安装包，第二个是压缩包。</p>
-<p><img src="/2021/07/06/redis%E9%85%8D%E7%BD%AE/2.png" alt="img"></p>
-<p>3）、双击刚下载好的msi格式的安装包（Redis-x64-3.2.100.msi）开始安装。</p>
-<p>4）、选择“同意协议”，点击下一步继续。</p>
+        <p>今天来看一下java中hashcode的生成算法是怎么样的，跟内存的关系是什么。内容摘抄自微信公众号【Java核心技术】。</p>
+<p>先看一个最简单的打印</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="keyword">new</span> Object());</span><br></pre></td></tr></table></figure>
+
+<p>会输出该类的全限定类名和一串字符串：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java.lang.Object@6659c656</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>@</code>符号后面的是什么？是 hashcode 还是对象的内存地址？还是其他的什么值？</strong></p>
+<p><strong>其实<code>@</code>后面的只是对象的 hashcode 值，16进制展示的 hashcode 而已，来验证一下：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Object o = <span class="keyword">new</span> Object();</span><br><span class="line"><span class="keyword">int</span> hashcode = o.hashCode();</span><br><span class="line"><span class="comment">// toString</span></span><br><span class="line">System.out.println(o);</span><br><span class="line"><span class="comment">// hashcode 十六进制</span></span><br><span class="line">System.out.println(Integer.toHexString(hashcode));</span><br><span class="line"><span class="comment">// hashcode</span></span><br><span class="line">System.out.println(hashcode);</span><br><span class="line"><span class="comment">// 这个方法，也是获取对象的 hashcode；不过和 Object.hashcode 不同的是，该方法会无视重写的hashcode</span></span><br><span class="line">System.out.println(System.identityHashCode(o));</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">java.lang.Object@<span class="number">6659</span>c656</span><br><span class="line"><span class="number">6659</span>c656</span><br><span class="line"><span class="number">1717159510</span></span><br><span class="line"><span class="number">1717159510</span></span><br></pre></td></tr></table></figure>
+
+<p>那对象的 hashcode 到底是怎么生成的呢？真的就是内存地址吗？</p>
         
       
 
@@ -816,7 +853,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -826,7 +863,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/06/redis%E9%85%8D%E7%BD%AE/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/05/hashcode%E7%94%9F%E6%88%90%E9%80%BB%E8%BE%91/">展开全文 >></a>
         </p>
       
 
@@ -856,20 +893,20 @@
 
 
   
-    <article id="post-maven配置问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java常用代码汇总" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/05/maven%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%98/">maven配置问题</a>
+      <a class="article-title" href="/2021/11/04/Java%E5%B8%B8%E7%94%A8%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB/">Java常用代码汇总</a>
     </h1>
   
 
         
-        <a href="/2021/07/05/maven%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%98/" class="archive-article-date">
-  	<time datetime="2021-07-05T14:54:56.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-05</time>
+        <a href="/2021/11/04/Java%E5%B8%B8%E7%94%A8%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB/" class="archive-article-date">
+  	<time datetime="2021-11-04T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-04</time>
 </a>
         
       </header>
@@ -877,11 +914,15 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.9k字 | 预计阅读时长：8分钟
+		字数：900字 | 预计阅读时长：5分钟
 	  </div> 
       
-        <h2 id="配置中遇到的问题"><a href="#配置中遇到的问题" class="headerlink" title="配置中遇到的问题"></a>配置中遇到的问题</h2><h3 id="1、IDEA-中初次创建Maven项目时出现Cannot-resolve-plugin-org-apache-maven-plugins-maven-clean-plugin-2-5的错误"><a href="#1、IDEA-中初次创建Maven项目时出现Cannot-resolve-plugin-org-apache-maven-plugins-maven-clean-plugin-2-5的错误" class="headerlink" title="1、IDEA 中初次创建Maven项目时出现Cannot resolve plugin org.apache.maven.plugins-maven-clean-plugin-2.5的错误"></a>1、<strong>IDEA 中初次创建Maven项目时出现Cannot resolve plugin org.apache.maven.plugins-maven-clean-plugin-2.5的错误</strong></h3><p>原因：<strong>本地maven的配置文件和仓库地址不一致。</strong></p>
-<p><img src="/2021/07/05/maven%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%98/image-20210705164215909.png" alt="image-20210705164215909"></p>
+        <p>今天来汇总一些Java的常用代码，经常会用到的。内容摘抄自微信公众号【springmeng】。</p>
+<h2 id="1-字符串有整型的相互转换"><a href="#1-字符串有整型的相互转换" class="headerlink" title="1. 字符串有整型的相互转换"></a><strong>1. 字符串有整型的相互转换</strong></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String a = String.valueOf(<span class="number">2</span>); <span class="comment">//integer to numeric string</span></span><br><span class="line"><span class="keyword">int</span> i = Integer.parseInt(a); <span class="comment">//numeric string to an int</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-向文件末尾添加内容"><a href="#2-向文件末尾添加内容" class="headerlink" title="2. 向文件末尾添加内容"></a><strong>2. 向文件末尾添加内容</strong></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">BufferedWriter out = <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  out = <span class="keyword">new</span> BufferedWriter(<span class="keyword">new</span> FileWriter(”filename”, <span class="keyword">true</span>));</span><br><span class="line">  out.write(”aString”);</span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">  <span class="comment">// error processing code</span></span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (out != <span class="keyword">null</span>) &#123;</span><br><span class="line">    out.close();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
         
       
 
@@ -895,7 +936,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">maven</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -905,7 +946,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/05/maven%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%98/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/04/Java%E5%B8%B8%E7%94%A8%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB/">展开全文 >></a>
         </p>
       
 
@@ -935,20 +976,20 @@
 
 
   
-    <article id="post-Mybatis和Hibernate的区别" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-对数据进行脱敏处理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/07/04/Mybatis%E5%92%8CHibernate%E7%9A%84%E5%8C%BA%E5%88%AB/">Mybatis和Hibernate的区别</a>
+      <a class="article-title" href="/2021/11/03/%E5%AF%B9%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/">对数据进行脱敏处理</a>
     </h1>
   
 
         
-        <a href="/2021/07/04/Mybatis%E5%92%8CHibernate%E7%9A%84%E5%8C%BA%E5%88%AB/" class="archive-article-date">
-  	<time datetime="2021-07-04T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-07-04</time>
+        <a href="/2021/11/03/%E5%AF%B9%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/" class="archive-article-date">
+  	<time datetime="2021-11-03T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-03</time>
 </a>
         
       </header>
@@ -956,18 +997,20 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.2k字 | 预计阅读时长：4分钟
+		字数：4.6k字 | 预计阅读时长：21分钟
 	  </div> 
       
-        <p>之前面试中问过这个问题，今天来看下Mybatis和Hibernate的区别。</p>
-<blockquote>
-<p><strong>Hibernate</strong> ：流行的ORM框架，对数据库结构提供了较为完整的封装。</p>
-<p><strong>Mybatis</strong>：非常流行的ORM框架，着力点在于POJO 与SQL之间的映射关系。</p>
-</blockquote>
-<h2 id="具体从几个方面说一下两者的区别："><a href="#具体从几个方面说一下两者的区别：" class="headerlink" title="具体从几个方面说一下两者的区别："></a><strong>具体从几个方面说一下两者的区别：</strong></h2><h3 id="1-两者最大的区别："><a href="#1-两者最大的区别：" class="headerlink" title="1.两者最大的区别："></a><strong>1.两者最大的区别：</strong></h3><p>针对<strong>简单逻辑</strong>，Hibernate和MyBatis都有相应的代码生成工具，可以生成简单基本的DAO层方法。</p>
-<p>针对<strong>高级查询</strong>，Mybatis需要手动编写SQL语句，以及ResultMap。而Hibernate有良好的映射机制，开发者无需关心SQL的生成与结果映射，可以更专注于业务流程。</p>
-<h3 id="2-开发难度对比"><a href="#2-开发难度对比" class="headerlink" title="2.开发难度对比"></a><strong>2.开发难度对比</strong></h3><p>Hibernate的开发难度要大于Mybatis。主要由于Hibernate比较复杂、庞大，学习周期较长。</p>
-<p>而Mybatis则相对简单一些，并且Mybatis主要依赖于sql的书写，让开发者感觉更熟悉。</p>
+        <p>今天来看一下如何对数据进行脱敏处理，内容摘抄自微信公众号【Java极客技术】。</p>
+<h1 id="一、在代码层面进行数据脱敏"><a href="#一、在代码层面进行数据脱敏" class="headerlink" title="一、在代码层面进行数据脱敏"></a>一、在代码层面进行数据脱敏</h1><h2 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h2><p>实际的业务开发过程中，我们经常需要<strong>对用户的隐私数据进行脱敏处理，所谓脱敏处理其实就是将数据进行混淆隐藏</strong>，例如下图，将用户的手机号、地址等数据信息，采用<code>*</code>进行隐藏，以免泄露个人隐私信息。</p>
+<p><img src="/2021/11/03/%E5%AF%B9%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/1.png" alt="image1"></p>
+<p>如果需要脱敏的数据范围很小很小，甚至就是指定的字段，一般的处理方式也很简单，就是写一个隐藏方法即可实现数据脱敏。</p>
+<p><img src="/2021/11/03/%E5%AF%B9%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/image2.png" alt="image2"></p>
+<p>如果是需求很少的情况下，采用这种方式实现没太大问题，好维护！</p>
+<p>但如果是类似上面那种很多位置的数据，需要分门别类的进行脱敏处理，通过这种简单粗暴的处理，代码似乎就显得不太优雅了。</p>
+<p>思考一下，我们可不可以在数据输出的阶段，进行统一数据脱敏处理，这样就可以省下不少体力活。</p>
+<p>说到数据输出，很多同学可能会想到 JSON 序列化。是的没错，我们所熟悉的 web 系统，就是将数据通过 json 序列化之后展示给前端。</p>
+<p>那么问题来了，如何在序列化的时候，进行数据脱敏处理呢？</p>
+<p>废话不多说，代码直接撸上！</p>
         
       
 
@@ -981,7 +1024,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Mybatis</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -991,7 +1034,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/07/04/Mybatis%E5%92%8CHibernate%E7%9A%84%E5%8C%BA%E5%88%AB/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/11/03/%E5%AF%B9%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/">展开全文 >></a>
         </p>
       
 
@@ -1023,7 +1066,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/26/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/28/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/26/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="page-number current">27</span><a class="page-number" href="/page/28/">28</a><a class="page-number" href="/page/29/">29</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/28/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1125,15 +1168,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">前端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1173,15 +1236,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常处理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多线程</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">中间件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1229,11 +1292,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">前端</a>
+                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1257,15 +1320,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1273,11 +1332,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+                <a href="javascript:void(0)" class="js-tag color5">并发编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库，缓存</a>
               </li>
             
             <div class="clearfix"></div>

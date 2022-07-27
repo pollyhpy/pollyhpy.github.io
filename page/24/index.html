@@ -79,8 +79,8 @@
 			</ul>
 		</nav>
 		<nav>
-			<a>总文章数 286</a>
-			<a>总字数 <span class="post-count">826k</span></a>
+			<a>总文章数 413</a>
+			<a>总字数 <span class="post-count">1279k</span></a>
 		</nav>
 		<nav class="header-smart-menu">
     		
@@ -165,20 +165,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-FluentMybatis和MybatisPlus对比" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-SQL优化技巧" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/12/FluentMybatis%E5%92%8CMybatisPlus%E5%AF%B9%E6%AF%94/">FluentMybatis和MybatisPlus 对比</a>
+      <a class="article-title" href="/2021/12/12/SQL%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/">SQL优化技巧</a>
     </h1>
   
 
         
-        <a href="/2021/08/12/FluentMybatis%E5%92%8CMybatisPlus%E5%AF%B9%E6%AF%94/" class="archive-article-date">
-  	<time datetime="2021-08-12T07:34:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-12</time>
+        <a href="/2021/12/12/SQL%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/" class="archive-article-date">
+  	<time datetime="2021-12-12T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-12</time>
 </a>
         
       </header>
@@ -186,190 +186,27 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.3k字 | 预计阅读时长：6分钟
+		字数：4.7k字 | 预计阅读时长：17分钟
 	  </div> 
       
-        <p>​        时隔一个多月，再次写博客，实在是因为太懒了，不想动。不过从今天开始，算了，我还是不要轻易立flag了，容易打脸。尽量吧，尽量每天写一篇，总结一下自己遇到的问题或者要学习的技术或者刷的题。</p>
-<p><strong>今天看到一个蛮有意思的东西，叫Fluent Mybatis，看起来比mybatis plus要好用一些，先做个记录说不定之后有机会用到呢。</strong></p>
-<h2 id="用一个例子来说明："><a href="#用一个例子来说明：" class="headerlink" title="用一个例子来说明："></a>用一个例子来说明：</h2><p>学生成绩表结构：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> `student_score`</span><br><span class="line">(</span><br><span class="line">  id      <span class="type">bigint</span> auto_increment comment <span class="string">&#x27;主键ID&#x27;</span> <span class="keyword">primary</span> key,</span><br><span class="line">  student_id  <span class="type">bigint</span>      <span class="keyword">not</span> <span class="keyword">null</span> comment <span class="string">&#x27;学号&#x27;</span>,</span><br><span class="line">  gender_man  tinyint <span class="keyword">default</span> <span class="number">0</span> <span class="keyword">not</span> <span class="keyword">null</span> comment <span class="string">&#x27;性别, 0:女; 1:男&#x27;</span>,</span><br><span class="line">  school_term <span class="type">int</span>        <span class="keyword">null</span> comment <span class="string">&#x27;学期&#x27;</span>,</span><br><span class="line">  subject   <span class="type">varchar</span>(<span class="number">30</span>)    <span class="keyword">null</span> comment <span class="string">&#x27;学科&#x27;</span>,</span><br><span class="line">  score    <span class="type">int</span>        <span class="keyword">null</span> comment <span class="string">&#x27;成绩&#x27;</span>,</span><br><span class="line">  gmt_create  datetime     <span class="keyword">not</span> <span class="keyword">null</span> comment <span class="string">&#x27;记录创建时间&#x27;</span>,</span><br><span class="line">  gmt_modified datetime     <span class="keyword">not</span> <span class="keyword">null</span> comment <span class="string">&#x27;记录最后修改时间&#x27;</span>,</span><br><span class="line">  is_deleted  tinyint <span class="keyword">default</span> <span class="number">0</span> <span class="keyword">not</span> <span class="keyword">null</span> comment <span class="string">&#x27;逻辑删除标识&#x27;</span></span><br><span class="line">) engine <span class="operator">=</span> InnoDB <span class="keyword">default</span> charset<span class="operator">=</span>utf8;</span><br></pre></td></tr></table></figure>
+        <p>今天来看一下SQL的优化技巧，之前已经写过一些了，今天再总结一下，重点是要学会运用。内容摘抄自微信公众号【苏三说技术】。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>sql优化是一个大家都比较关注的热门话题，无论你在面试，还是工作中，都很有可能会遇到。</p>
+<p>如果某天你负责的某个线上接口，出现了性能问题，需要做优化。那么你首先想到的很有可能是优化sql语句，因为它的改造成本相对于代码来说也要小得多。</p>
+<p>那么，如何优化sql语句呢？</p>
+<p>这篇文章从15个方面，分享了sql优化的一些小技巧，希望对你有所帮助。</p>
+<p><img src="/2021/12/12/SQL%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/1.png" alt="img"></p>
+<h2 id="1-避免使用select"><a href="#1-避免使用select" class="headerlink" title="1 避免使用select *"></a>1 避免使用select *</h2><p>很多时候，我们写sql语句时，为了方便，喜欢直接使用<code>select *</code>，一次性查出表中所有列的数据。</p>
+<p><strong>反例：</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span>;</span><br></pre></td></tr></table></figure>
 
-<p>现在有需求:</p>
-<p>统计2000年三门学科(‘英语’, ‘数学’, ‘语文’)及格分数按学期,学科统计最低分，最高分和平均分, 且样本数需要大于1条,统计结果按学期和学科排序。</p>
-<p>*<strong>我们可以写SQL语句如下：</strong></p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> school_term,</span><br><span class="line">    subject,</span><br><span class="line">    <span class="built_in">count</span>(score) <span class="keyword">as</span> count,</span><br><span class="line">    <span class="built_in">min</span>(score)  <span class="keyword">as</span> min_score,</span><br><span class="line">    <span class="built_in">max</span>(score)  <span class="keyword">as</span> max_score,</span><br><span class="line">    <span class="built_in">avg</span>(score)  <span class="keyword">as</span> max_score</span><br><span class="line"><span class="keyword">from</span> student_score</span><br><span class="line"><span class="keyword">where</span> school_term <span class="operator">&gt;=</span> <span class="number">2000</span></span><br><span class="line"> <span class="keyword">and</span> subject <span class="keyword">in</span> (<span class="string">&#x27;英语&#x27;</span>, <span class="string">&#x27;数学&#x27;</span>, <span class="string">&#x27;语文&#x27;</span>)</span><br><span class="line"> <span class="keyword">and</span> score <span class="operator">&gt;=</span> <span class="number">60</span></span><br><span class="line"> <span class="keyword">and</span> is_deleted <span class="operator">=</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> school_term, subject</span><br><span class="line"><span class="keyword">having</span> <span class="built_in">count</span>(score) <span class="operator">&gt;</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> school_term, subject;</span><br></pre></td></tr></table></figure>
-        
-      
+<p>在实际业务场景中，可能我们真正需要使用的只有其中一两列。查了很多数据，但是不用，白白浪费了数据库资源，比如：内存或者cpu。</p>
+<p>此外，多查出来的数据，通过网络IO传输的过程中，也会增加数据传输的时间。</p>
+<p>还有一个最重要的问题是：<code>select *</code>不会走<code>覆盖索引</code>，会出现大量的<code>回表</code>操作，而从导致查询sql的性能很低。</p>
+<p>那么，如何优化呢？</p>
+<p><strong>正例：</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> name,age <span class="keyword">from</span> <span class="keyword">user</span> <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span>;</span><br></pre></td></tr></table></figure>
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">MybatisPlus</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/12/FluentMybatis%E5%92%8CMybatisPlus%E5%AF%B9%E6%AF%94/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java模拟并发请求" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/11/Java%E6%A8%A1%E6%8B%9F%E5%B9%B6%E5%8F%91%E8%AF%B7%E6%B1%82/">Java模拟并发请求</a>
-    </h1>
-  
-
-        
-        <a href="/2021/08/11/Java%E6%A8%A1%E6%8B%9F%E5%B9%B6%E5%8F%91%E8%AF%B7%E6%B1%82/" class="archive-article-date">
-  	<time datetime="2021-08-11T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-11</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：2k字 | 预计阅读时长：9分钟
-	  </div> 
-      
-        <p>今天来看一下java如何模拟并发请求，内容摘抄自微信公众号「Java核心技术」。</p>
-<p>有时需要测试一下某个功能的并发性能，又不要想借助于其他工具，索性就自己的开发语言，来一个并发请求就最方便了。</p>
-<p>java中模拟并发请求，自然是很方便的，只要多开几个线程，发起请求就好了。但是，这种请求，一般会存在启动的先后顺序了，算不得真正的同时并发！</p>
-<p><strong>怎么样才能做到真正的同时并发呢？</strong></p>
-<p>是本文想说的点，java中提供了闭锁 CountDownLatch, 刚好就用来做这种事就最合适了。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/11/Java%E6%A8%A1%E6%8B%9F%E5%B9%B6%E5%8F%91%E8%AF%B7%E6%B1%82/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-left join" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/10/left%20join/">left join</a>
-    </h1>
-  
-
-        
-        <a href="/2021/08/10/left%20join/" class="archive-article-date">
-  	<time datetime="2021-08-10T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-10</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：611字 | 预计阅读时长：2分钟
-	  </div> 
-      
-        <p>今天来看下SQL语句中 left join 后用 on 还是 where的区别，内容摘抄自微信公众号【springmeng】。</p>
-<p>前天写SQL时本想通过 A left B join on and 后面的条件来使查出的两条记录变成一条，奈何发现还是有两条。</p>
-<p>后来发现 join on and 不会过滤结果记录条数，只会根据and后的条件是否显示 B表的记录，A表的记录一定会显示。</p>
-<p>不管and 后面的是A.id=1还是B.id=1,都显示出A表中所有的记录，并关联显示B中对应A表中id为1的记录或者B表中id为1的记录。</p>
-<p>运行sql :</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student s <span class="keyword">left</span> <span class="keyword">join</span> class c <span class="keyword">on</span> s.classId<span class="operator">=</span>c.id <span class="keyword">order</span> <span class="keyword">by</span> s.id</span><br></pre></td></tr></table></figure>
-
-<p>![image1](./left join/image1.png)</p>
-<p>运行sql :</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> student s <span class="keyword">left</span> <span class="keyword">join</span> class c <span class="keyword">on</span> s.classId<span class="operator">=</span>c.id <span class="keyword">and</span> s.name<span class="operator">=</span>&quot;张三&quot; <span class="keyword">order</span> <span class="keyword">by</span> s.id</span><br></pre></td></tr></table></figure>
-
-<p>![image2](./left join/image2.png)</p>
-<p>数据库在通过连接两张或多张表来返回记录时，都会生成一张中间的临时表，然后再将这张临时表返回给用户。</p>
+<p>sql语句查询时，只查需要用到的列，多余的列根本无需查出来。</p>
         
       
 
@@ -385,6 +222,10 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">数据库</a>
         		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">性能优化</a>
+        		</li>
       		
 		</ul>
 	</div>
@@ -393,7 +234,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/10/left%20join/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/12/SQL%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/">展开全文 >></a>
         </p>
       
 
@@ -423,20 +264,20 @@
 
 
   
-    <article id="post-Spring中多个实现类注入" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JWT介绍" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/09/Spring%E4%B8%AD%E5%A4%9A%E4%B8%AA%E5%AE%9E%E7%8E%B0%E7%B1%BB%E6%B3%A8%E5%85%A5/">Spring中多个实现类注入</a>
+      <a class="article-title" href="/2021/12/11/JWT%E4%BB%8B%E7%BB%8D/">JWT介绍</a>
     </h1>
   
 
         
-        <a href="/2021/08/09/Spring%E4%B8%AD%E5%A4%9A%E4%B8%AA%E5%AE%9E%E7%8E%B0%E7%B1%BB%E6%B3%A8%E5%85%A5/" class="archive-article-date">
-  	<time datetime="2021-08-09T02:53:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-09</time>
+        <a href="/2021/12/11/JWT%E4%BB%8B%E7%BB%8D/" class="archive-article-date">
+  	<time datetime="2021-12-11T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-11</time>
 </a>
         
       </header>
@@ -444,23 +285,12 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.2k字 | 预计阅读时长：5分钟
+		字数：2.8k字 | 预计阅读时长：10分钟
 	  </div> 
       
-        <p>在开发中，会遇到这么一个问题，Spring 中的 Service 有多个实现类，这时候如何注入就成为了一个问题。</p>
-<h2 id="一、Service注入"><a href="#一、Service注入" class="headerlink" title="一、Service注入"></a>一、Service注入</h2><p><strong>方法一：Controller中注入service的时候使用@Autowired自动注入，<code>@Qualifier(&quot;beanId&quot;)</code>来指定注入哪一个。</strong></p>
-<p><strong>方法二：Controller中注入service的时候使用<code>@Resource(type = 类名.class)</code>来指定注入哪一个。</strong></p>
-<p><strong>方法三：</strong></p>
-<ol>
-<li><strong>每个service的impl都可以指定名称（使用<code>@Service（“名称”）</code>）</strong></li>
-<li><strong>Controller中注入service的时候使用名称来指定注入哪一个（使用<code>@Resource(name=&quot;名称&quot;)</code>）。</strong></li>
-</ol>
-<h2 id="二、-Service注解，其实做了两件事情："><a href="#二、-Service注解，其实做了两件事情：" class="headerlink" title="二、@Service注解，其实做了两件事情："></a>二、@Service注解，其实做了两件事情：</h2><p>1、声明TeacherServiceImpl.java是一个bean。</p>
-<p>因为TeacherServiceImpl .java是一个bean，其他的类才可以使用@Autowired将TeacherServiceImpl 作为一个成员变量自动注入。</p>
-<p>2、TeacherServiceImpl.java在bean中的id是”teacherServiceImpl “，即类名且首字母小写。</p>
-<blockquote>
-<p>注意：不能有同名的，不然要报错。</p>
-</blockquote>
+        <p>今天来看一下JWT的介绍，内容摘抄自微信公众号【Java技术栈】。</p>
+<p><img src="/2021/12/11/JWT%E4%BB%8B%E7%BB%8D/1.png" alt="img"></p>
+<h2 id="0）前言"><a href="#0）前言" class="headerlink" title="0）前言"></a>0）前言</h2><p>最近在开发一个统一认证服务，涉及到 <code>OIDC</code> 协议，其中授权码模式所颁发的 id_token 使用的是 JWT ( JSON Web Token ) ，因为这次使用的库的默认签名算法和以往不同，所以特地去翻阅了 JWT 的 RFC 文档（ <strong>RFC 7519</strong>[1] ），一番阅读后发现原来对 JWT 的认知只停留在表面，还有更多深层的内容是不知道的。</p>
         
       
 
@@ -474,7 +304,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">token</a>
         		</li>
       		
 		</ul>
@@ -484,7 +314,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/09/Spring%E4%B8%AD%E5%A4%9A%E4%B8%AA%E5%AE%9E%E7%8E%B0%E7%B1%BB%E6%B3%A8%E5%85%A5/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/11/JWT%E4%BB%8B%E7%BB%8D/">展开全文 >></a>
         </p>
       
 
@@ -514,20 +344,20 @@
 
 
   
-    <article id="post-大文件上传断点续存" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-消息队列介绍" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/08/%E5%A4%A7%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%96%AD%E7%82%B9%E7%BB%AD%E5%AD%98/">大文件上传断点续存</a>
+      <a class="article-title" href="/2021/12/10/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%BB%8B%E7%BB%8D/">消息队列介绍</a>
     </h1>
   
 
         
-        <a href="/2021/08/08/%E5%A4%A7%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%96%AD%E7%82%B9%E7%BB%AD%E5%AD%98/" class="archive-article-date">
-  	<time datetime="2021-08-08T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-08</time>
+        <a href="/2021/12/10/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%BB%8B%E7%BB%8D/" class="archive-article-date">
+  	<time datetime="2021-12-10T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-10</time>
 </a>
         
       </header>
@@ -535,25 +365,32 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2.8k字 | 预计阅读时长：11分钟
+		字数：3.5k字 | 预计阅读时长：12分钟
 	  </div> 
       
-        <p>今天来了解一下断点续存问题，主要是前端，内容摘抄自Java技术栈「springmeng」。</p>
-<p>最近接了一个商业的项目，涉及到了大文件上传服务器和断点续传的问题。看到了一篇不错的技术文章和大家分享下。</p>
-<p>最近由于笔者所在的研发集团产品需要，需要支持高性能的大文件http上传，并且要求支持http断点续传。这里在简要归纳一下，方便记忆：</p>
-<ol>
-<li><p>服务器端由C语言实现，而不是用java、PHP这种解释型语言来实现；</p>
-</li>
-<li><p>服务器端即时写入硬盘，因此无需再次调用<code>move_uploaded_file</code>、<code>InputStreamReader</code> 这种需要缓存的技术来避免服务器内存占用与浏览器请求超时；</p>
-</li>
-<li><p>支持HTML5与IFRAME（针对老浏览器），并且支持获取文件上传进度。</p>
-</li>
-</ol>
-<p>为了更好的适应当前的移动互联网，要求对上传服务支持断点续传，断线重连。因为移动互联网并不非常稳定；再者，上传一个大文件发生异常掉线的可能性非常大，为了避免重新上传，支持断点续传就变得非常必要了。</p>
-<p>支持断点续传的思路是：</p>
-<p><strong>客户端（通常是浏览器）向服务器端上传某个文件，并不断记录上传的进度，如果一旦掉线或发生其它异常，客户端可以向服务器查询某个文件已经上传的状态，从上次上传的文件位置接着上传。</strong></p>
-<p>网上也有大师采用分片文件上传方式来实现大文件上传，方法是将文件切成小片，例如4MB一个片段，服务器端每次接收一小片文件保存成一个临时文件，等待所有片段传输完毕后，再执行合并。笔者认为，如果原始文件足够小，这种方式是可以的，但一旦文件有几百兆或者几个GB或者几十个GB，则合并文件的时间会非常长，常常导致浏览器响应超时或服务器阻塞。</p>
-<p>如果自己实现独立客户端（或浏览器的ActiveX插件）来上传文件，则支持断点续传将是一件非常简单的事情，只需在客户端记录文件上传状态。而支持浏览器断点续传（无需安装第三方插件）一般来说是要比自己做独立客户端上传难度大一些，但也不难。我的实现思路如下：</p>
+        <p>今天来看一下消息队列的简介以及各个消息队列的介绍。内容摘抄自微信公众号【IT大咖说】。</p>
+<p>是不是平常听到说消息队列啊，JMS啊，MQ啊 、kafka啊巴啦啦的一堆术语，听不懂？关系混乱？今天就让我们来一起来看看他们都是什么吧。</p>
+<h2 id="1-消息队列介绍"><a href="#1-消息队列介绍" class="headerlink" title="1 消息队列介绍"></a><strong>1 消息队列介绍</strong></h2><p>首先举个收快递的栗子，传统的收快递，快递小哥把我们的快递送到我们的手里。他需要什么条件嗯？a.快递小哥有时间送，b.我们有时间取，c.快递小哥和我们约定一个时间地点。但是嗯。快递小哥有那么多的快递需要送，可能送我快递的时候，我不在家，可能我在家的时候，快递小哥送其他的地方的快递。所以嗯，这个时候，要么就是坐在家里等快递，要么就只能从新约个时间点在送。那怎么办去避免这个情况嗯？</p>
+<p>于是嗯快递柜出现了。快递小哥不用关心我什么时候在家，因为快递小哥有时间了，就把快递放快递柜，而我有时间了，我就去快递柜取我的快递。那么快递柜所起到的作用就是我们今天要收的消息队列。我们可以把消息队列比作是一个存放快递的的快递柜，当我们需要获取我们快递的时候就可以从快递柜里面拿到属于我们的快递。</p>
+<h3 id="1-1-什么是消息队列"><a href="#1-1-什么是消息队列" class="headerlink" title="1.1 什么是消息队列"></a><strong>1.1 什么是消息队列</strong></h3><p>我们可以把消息队列比作是一个存放消息的容器，当我们需要使用消息的时候可以取出消息供自己使用。我们看看维基百科上的描述：在计算机科学中，消息队列（Message queue）是一种进程间通信或同一进程的不同线程间的通信方式，软件的贮列用来处理一系列的输入，通常是来自用户。</p>
+<p>是不是很难理解，我们换个说法来理解</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">我们可以把消息队列比作是一个存放消息的容器，当我们需要使用消息的时候可以取出消息供自己使用。</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-2-消息队列（Message-queue）有什么用？"><a href="#1-2-消息队列（Message-queue）有什么用？" class="headerlink" title="1.2 消息队列（Message queue）有什么用？"></a><strong>1.2 消息队列（Message queue）有什么用？</strong></h3><p>消息队列是分布式系统中重要的组件，使用消息队列主要是为了通过异步处理提高系统性能和削峰、降低系统耦合性。</p>
+<p>通过异步处理提高系统性能（削峰、减少响应所需时间）</p>
+<p>举个例子：我们在某个网站进行注册账号，我们需要做如下四件事：</p>
+<p>a.填写我们的注册信息；</p>
+<p>b.提交我们的注册信息；</p>
+<p>c.我们的邮箱收到注册信息；</p>
+<p>d.我们的短信收到注册信息。</p>
+<p>如果采用同步串行，所需要的时间是：a+b+c+d</p>
+<p><img src="/2021/12/10/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%BB%8B%E7%BB%8D/1.png" alt="img"></p>
+<p>如果采用同步并行，所需要的时间是：a+b+max(c,d)</p>
+<p><img src="/2021/12/10/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%BB%8B%E7%BB%8D/2.png" alt="img"></p>
+<p>如果采用消息队列，所需要的时间是：a+b+消息队列</p>
+<p><img src="/2021/12/10/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%BB%8B%E7%BB%8D/3.png" alt="img"></p>
         
       
 
@@ -567,7 +404,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
         		</li>
       		
 		</ul>
@@ -577,7 +414,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/08/%E5%A4%A7%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%96%AD%E7%82%B9%E7%BB%AD%E5%AD%98/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/10/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%BB%8B%E7%BB%8D/">展开全文 >></a>
         </p>
       
 
@@ -607,20 +444,20 @@
 
 
   
-    <article id="post-Java在线生成pdf文档" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-WebSocket分布式集群" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/07/Java%E5%9C%A8%E7%BA%BF%E7%94%9F%E6%88%90pdf%E6%96%87%E6%A1%A3/">Java在线生成pdf文档</a>
+      <a class="article-title" href="/2021/12/09/WebSocket%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4/">WebSocket分布式集群</a>
     </h1>
   
 
         
-        <a href="/2021/08/07/Java%E5%9C%A8%E7%BA%BF%E7%94%9F%E6%88%90pdf%E6%96%87%E6%A1%A3/" class="archive-article-date">
-  	<time datetime="2021-08-07T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-07</time>
+        <a href="/2021/12/09/WebSocket%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4/" class="archive-article-date">
+  	<time datetime="2021-12-09T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-09</time>
 </a>
         
       </header>
@@ -628,15 +465,581 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2.6k字 | 预计阅读时长：13分钟
+		字数：4.6k字 | 预计阅读时长：17分钟
 	  </div> 
       
-        <p>今天来看下java如何生成pdf文档，内容摘抄自微信公众号「Java极客技术」。</p>
-<h3 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h3><p>在实际的业务开发的时候，研发人员往往会碰到很多这样的一些场景，需要提供相关的电子凭证信息给用户，例如网银／支付宝／微信购物支付的电子发票、订单的库存打印单、各种电子签署合同等等，以方便用户查看、打印或者下载。</p>
-<p>例如下图的电子发票！</p>
-<p><img src="/2021/08/07/Java%E5%9C%A8%E7%BA%BF%E7%94%9F%E6%88%90pdf%E6%96%87%E6%A1%A3/image1.png" alt="image1"></p>
-<p>熟悉这块业务的童鞋，一定特别清楚，目前最常用的解决方案是：把相关的数据信息，通过一些技术手段生成对应的 PDF 文件，然后返回给用户，以便预览、下载或者打印。</p>
-<p>不太熟悉这项技术的童鞋，也不用着急，今天我们一起来详细了解一下在线生成 PDF 文件的技术实现手段！</p>
+        <p>今天来看一下WebSocket分布式集群的一些问题。内容摘抄自微信公众号【Java技术栈】。</p>
+<h2 id="问题起因"><a href="#问题起因" class="headerlink" title="问题起因"></a><strong>问题起因</strong></h2><p>最近做项目时遇到了需要多用户之间通信的问题，涉及到了WebSocket握手请求，以及集群中WebSocket Session共享的问题。</p>
+<p>期间我经过了几天的研究，总结出了几个实现分布式WebSocket集群的办法，从zuul到spring cloud gateway的不同尝试，总结出了这篇文章，希望能帮助到某些人，并且能一起分享这方面的想法与研究。</p>
+<p>以下是我的场景描述</p>
+<ul>
+<li><strong>资源</strong>：4台服务器。其中只有一台服务器具备ssl认证域名，一台redis+mysql服务器，两台应用服务器（集群）</li>
+<li><strong>应用发布限制条件</strong>：由于场景需要，应用场所需要ssl认证的域名才能发布。因此ssl认证的域名服务器用来当api网关，负责https请求与wss（安全认证的ws）连接。俗称https卸载，用户请求https域名服务器，但真实访问到的是http+ip地址的形式。只要网关配置高，能handle多个应用</li>
+<li><strong>需求</strong>：用户登录应用，需要与服务器建立wss连接，不同角色之间可以单发消息，也可以群发消息</li>
+<li><strong>集群中的应用服务类型</strong>：每个集群实例都负责http无状态请求服务与ws长连接服务</li>
+</ul>
+<h2 id="系统架构图"><a href="#系统架构图" class="headerlink" title="系统架构图"></a><strong>系统架构图</strong></h2><p><img src="/2021/12/09/WebSocket%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4/1.png" alt="img"></p>
+<p>在我的实现里，每个应用服务器都负责http and ws请求，其实也可以将ws请求建立的聊天模型单独成立为一个模块。从分布式的角度来看，这两种实现类型差不多，但从实现方便性来说，一个应用服务http+ws请求的方式更为方便。下文会有解释</p>
+<p>本文涉及的技术栈</p>
+<ul>
+<li>Eureka 服务发现与注册</li>
+<li>Redis Session共享</li>
+<li>Redis 消息订阅</li>
+<li>Spring Boot</li>
+<li>Zuul 网关</li>
+<li>Spring Cloud Gateway 网关</li>
+<li>Ribbon 负载均衡</li>
+<li>Netty 多协议NIO网络通信框架</li>
+<li>Consistent Hash 一致性哈希算法</li>
+</ul>
+<p>相信能走到这一步的人都了解过我上面列举的技术栈了，如果还没有，可以先去网上找找入门教程了解一下。下面的内容都与上述技术相关，题主默认大家都了解过了…</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">WebSocket</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/12/09/WebSocket%E5%88%86%E5%B8%83%E5%BC%8F%E9%9B%86%E7%BE%A4/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-接口性能优化技巧" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/12/08/%E6%8E%A5%E5%8F%A3%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/">接口性能优化技巧</a>
+    </h1>
+  
+
+        
+        <a href="/2021/12/08/%E6%8E%A5%E5%8F%A3%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/" class="archive-article-date">
+  	<time datetime="2021-12-08T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-08</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：8.4k字 | 预计阅读时长：30分钟
+	  </div> 
+      
+        <p>接口性能优化是开发过程中十分重要的一个环节，也是区分普通的程序员和高级程序员的一个很重要的部分。今天就来看下接口性能优化的一些技巧，内容摘抄自微信公众号【苏三说技术】。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><strong>接口性能优化</strong>对于从事后端开发的同学来说，肯定再熟悉不过了，因为它是一个跟开发语言无关的公共问题。</p>
+<p>该问题说简单也简单，说复杂也复杂。</p>
+<p>有时候，只需加个索引就能解决问题。</p>
+<p>有时候，需要做代码重构。</p>
+<p>有时候，需要增加缓存。</p>
+<p>有时候，需要引入一些中间件，比如mq。</p>
+<p>有时候，需要需要分库分表。</p>
+<p>有时候，需要拆分服务。</p>
+<p>等等。。。</p>
+<p>导致接口性能问题的原因千奇百怪，不同的项目不同的接口，原因可能也不一样。</p>
+<p>本文我总结了一些行之有效的，优化接口性能的办法，给有需要的朋友一个参考。</p>
+<h2 id="1-索引"><a href="#1-索引" class="headerlink" title="1.索引"></a>1.索引</h2><p>接口性能优化大家第一个想到的可能是：<code>优化索引</code>。</p>
+<p>没错，优化索引的成本是最小的。</p>
+<p>你通过查看线上日志或者监控报告，查到某个接口用到的某条sql语句耗时比较长。</p>
+<p>这时你可能会有下面这些疑问：</p>
+<ol>
+<li>该sql语句加索引了没？</li>
+<li>加的索引生效了没？</li>
+<li>mysql选错索引了没？</li>
+</ol>
+<h3 id="1-1-没加索引"><a href="#1-1-没加索引" class="headerlink" title="1.1 没加索引"></a>1.1 没加索引</h3><p>sql语句中<code>where</code>条件的关键字段，或者<code>order by</code>后面的排序字段，忘了加索引，这个问题在项目中很常见。</p>
+<p>项目刚开始的时候，由于表中的数据量小，加不加索引sql查询性能差别不大。</p>
+<p>后来，随着业务的发展，表中数据量越来越多，就不得不加索引了。</p>
+<p>可以通过命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show index from `order`;</span><br></pre></td></tr></table></figure>
+
+<p>能单独查看某张表的索引情况。</p>
+<p>也可以通过命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show create table `order`;</span><br></pre></td></tr></table></figure>
+
+<p>查看整张表的建表语句，里面同样会显示索引情况。</p>
+<p>通过<code>ALTER TABLE</code>命令可以添加索引：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE `order` ADD INDEX idx_name (name);</span><br></pre></td></tr></table></figure>
+
+<p>也可以通过<code>CREATE INDEX</code>命令添加索引：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE INDEX idx_name ON `order` (name);</span><br></pre></td></tr></table></figure>
+
+<p>不过这里有一个需要注意的地方是：想通过命令修改索引，是不行的。</p>
+<p>目前在mysql中如果想要修改索引，只能先删除索引，再重新添加新的。</p>
+<p>删除索引可以用<code>DROP INDEX</code>命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE `order` DROP INDEX idx_name;</span><br></pre></td></tr></table></figure>
+
+<p>用<code>DROP INDEX</code>命令也行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DROP INDEX idx_name ON `order`;</span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">性能优化</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/12/08/%E6%8E%A5%E5%8F%A3%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-十种定时任务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/12/07/%E5%8D%81%E7%A7%8D%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/">十种定时任务</a>
+    </h1>
+  
+
+        
+        <a href="/2021/12/07/%E5%8D%81%E7%A7%8D%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" class="archive-article-date">
+  	<time datetime="2021-12-07T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-07</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：5.8k字 | 预计阅读时长：22分钟
+	  </div> 
+      
+        <p>今天来看一下十种实用的定时任务，分别对应不同的应用场景。内容摘抄自微信公众号【苏三说技术】。</p>
+<h1 id="一-linux自带的定时任务"><a href="#一-linux自带的定时任务" class="headerlink" title="一. linux自带的定时任务"></a>一. linux自带的定时任务</h1><h2 id="crontab"><a href="#crontab" class="headerlink" title="crontab"></a>crontab</h2><p>不知道你有没有遇到过这种场景：有时需要临时统计线上的数据，然后导出到excel表格中。这种需求有时较为复杂，光靠写sql语句是无法满足需求的，这就需要写java代码了。然后将该程序打成一个jar包，在线上环境执行，最后将生成的excel文件下载到本地。</p>
+<p>为了减小对线上环境的影响，我们一般会选择在<code>凌晨1-2点</code>，趁用户量少的时候，执行统计程序。（其实凌晨4点左右，用户才是最少的）</p>
+<p>由于时间太晚了，我们完全没必要守在那里等执行结果，一个定时任务就能可以搞定。</p>
+<p>那么，这种情况用哪种定时任务更合适呢？</p>
+<p>答案是：<code>linux</code>系统的<code>crontab</code>。（不过也不排除有些项目没部署在linux系统中）</p>
+<p>运行<code>crontab -e</code>，可以编辑定时器，然后加入如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0 2 * * * /usr/local/java/jdk1.8/bin/java -jar /data/app/tool.jar &gt; /logs/tool.log &amp;</span><br></pre></td></tr></table></figure>
+
+<p>就可以在<code>每天凌晨2点</code>，定时执行<code>tool.jar</code>程序，并且把日志输出到<code>tool.log</code>文件中。当然你也可以把后面的执行java程序的命令写成shell脚本，更方便维护。</p>
+<p>使用这种定时任务支持方便修改定时规则，有界面可以统一管理配置的各种定时脚本。</p>
+<p>crontab命令的基本格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab [参数] [文件名]</span><br></pre></td></tr></table></figure>
+
+<p>如果没有指定文件名，则接收键盘上输入的命令，并将它载入到<code>crontab</code>。</p>
+<p>参数功能对照表如下：</p>
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="center">功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">-u</td>
+<td align="center">指定用户</td>
+</tr>
+<tr>
+<td align="left">-e</td>
+<td align="center">编辑某个用户的crontab文件内容</td>
+</tr>
+<tr>
+<td align="left">-l</td>
+<td align="center">显示某个用户的crontab文件内容</td>
+</tr>
+<tr>
+<td align="left">-r</td>
+<td align="center">删除某用户的crontab文件</td>
+</tr>
+<tr>
+<td align="left">-i</td>
+<td align="center">删除某用户的crontab文件时需确认</td>
+</tr>
+</tbody></table>
+<p>以上参数，如果没有使用<code>-u</code>指定用户，则默认使用的当前用户。</p>
+<p>通过<code>crontab -e</code>命令编辑文件内容，具体语法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[分] [小时] [日期] [月] [星期] 具体任务</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<ul>
+<li>分，表示多少分钟，范围：0-59</li>
+<li>小时，表示多少小时，范围：0-23</li>
+<li>日期，表示具体在哪一天，范围：1-31</li>
+<li>月，表示多少月，范围：1-12</li>
+<li>星期，表示多少周，范围：0-7，0和7都代表星期日</li>
+</ul>
+<p>还有一些特殊字符，比如：</p>
+<ul>
+<li><code>*</code>代表如何时间，比如：<code>*1***</code> 表示每天凌晨1点执行。</li>
+<li><code>/</code>代表每隔多久执行一次，比如：<code>*/5 ****</code> 表示每隔5分钟执行一次。</li>
+<li><code>,</code>代表支持多个，比如：<code>10 7,9,12 ***</code> 表示在每天的7、9、12点10分各执行一次。</li>
+<li><code>-</code>代表支持一个范围，比如：<code>10 7-9 ***</code> 表示在每天的7、8、9点10分各执行一次。</li>
+</ul>
+<p>此外，顺便说一下<code>crontab</code>需要<code>crond</code>服务支持，<code>crond</code>是<code>linux</code>下用来周期地执行某种任务的一个守护进程，在安装<code>linux</code>操作系统后，默认会安装<code>crond</code>服务工具，且<code>crond</code>服务默认就是自启动的。<code>crond</code>进程每分钟会定期检查是否有要执行的任务，如果有，则会自动执行该任务。</p>
+<p>可以通过以下命令操作相关服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">service crond status // 查看运行状态</span><br><span class="line">service crond start //启动服务</span><br><span class="line">service crond stop //关闭服务</span><br><span class="line">service crond restart //重启服务</span><br><span class="line">service crond reload //重新载入配置</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用<code>crontab</code>的优缺点：</strong></p>
+<ul>
+<li>优点：方便修改定时规则，支持一些较复杂的定时规则，通过文件可以统一管理配好的各种定时脚本。</li>
+<li>缺点：如果定时任务非常多，不太好找，而且必须要求操作系统是<code>linux</code>，否则无法执行。</li>
+</ul>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">设计</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/12/07/%E5%8D%81%E7%A7%8D%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Redis常见问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/12/06/Redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">Redis常见问题</a>
+    </h1>
+  
+
+        
+        <a href="/2021/12/06/Redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" class="archive-article-date">
+  	<time datetime="2021-12-06T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-06</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：5.2k字 | 预计阅读时长：18分钟
+	  </div> 
+      
+        <p>今天来看一下Redis的常见问题，也是面试常问的问题。内容摘抄自微信公众号【苏三说技术】。</p>
+<h2 id="1-redis为什么响应快"><a href="#1-redis为什么响应快" class="headerlink" title="1 redis为什么响应快"></a>1 redis为什么响应快</h2><h3 id="1-1数据保存在内存中"><a href="#1-1数据保存在内存中" class="headerlink" title="1.1数据保存在内存中"></a>1.1数据保存在内存中</h3><p><code>redis</code>数据保存在内存中，读写操作只要访问内存，不需要磁盘<code>IO</code>。</p>
+<h3 id="1-2-底层数据结构"><a href="#1-2-底层数据结构" class="headerlink" title="1.2.底层数据结构"></a>1.2.底层数据结构</h3><ul>
+<li><code>redis</code>的数据以<code>key:value</code>的格式存储在散列表中，时间复杂度<code>o(1)</code>。</li>
+<li><code>redis</code>为<code>value</code>定义了丰富的数据结构，包括动态字符串、双向链表、压缩列表、<code>hash</code>、跳表和整数数组，可以根据value的特性选择选择最高效的数据结构。</li>
+</ul>
+<h3 id="1-3-单线程模型"><a href="#1-3-单线程模型" class="headerlink" title="1.3.单线程模型"></a>1.3.单线程模型</h3><p><code>redis</code>的网络<code>IO</code>和数据读写使用单线程模型，可以绑定<code>CPU</code>，这避免了线程上下文切换带来的开销。</p>
+<p><strong>「注意：redis6.0对网络请求引入了多线程模型，读写操作还是用单线程。」</strong></p>
+<p><code>redis</code>多线程网络模型见下图：</p>
+<p><img src="/2021/12/06/Redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/1.png" alt="img"></p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/12/06/Redis%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-空对象模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/12/05/%E7%A9%BA%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%BC%8F/">空对象模式</a>
+    </h1>
+  
+
+        
+        <a href="/2021/12/05/%E7%A9%BA%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%BC%8F/" class="archive-article-date">
+  	<time datetime="2021-12-05T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-05</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：836字 | 预计阅读时长：3分钟
+	  </div> 
+      
+        <p>在实际的开发过程中，经常会遇到空指针的问题。那么如何解决空指针呢？今天来介绍一种设计模式叫空对象模式。内容摘抄自微信公众号【Java极客技术】。</p>
+<h2 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h2><p>在实际的系统运行过程中，难免会出现报<code>NullPointerException</code>空指针的错误，造成这样的本质原因就是数据或者对象为空，导致程序进一步执行的时候报错！</p>
+<p>一般的常规解决办法也就是加一个<code>if</code>判断。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(obj != <span class="keyword">null</span>)&#123;</span><br><span class="line">  <span class="comment">//doSomthing</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果出现需要判断的对象过多，难以避免的会出现很多对<code>Null</code>的判断语句，而这些语句一旦多起来，我们的代码就会变的惨不忍睹。</p>
+<p>针对这种情况，我们可以引入了<strong>空对象模式</strong>以此来使我们的代码变的更优雅一点。</p>
+<p>废话也不多说了，代码直接撸起来！</p>
+<h2 id="二、程序示例"><a href="#二、程序示例" class="headerlink" title="二、程序示例"></a>二、程序示例</h2><p>下面，我们以获取从一个书籍库中获取书籍为例，实现过程如下！</p>
+<p>先创建一个书籍抽象类<code>AbstractBook</code>，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractBook</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//书名</span></span><br><span class="line">    <span class="keyword">protected</span> String bookName;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//判断是否存在</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isExist</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取书名</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">getName</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2021/12/05/%E7%A9%BA%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%BC%8F/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Steam详细用法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2021/12/04/Steam%E8%AF%A6%E7%BB%86%E7%94%A8%E6%B3%95/">Steam详细用法</a>
+    </h1>
+  
+
+        
+        <a href="/2021/12/04/Steam%E8%AF%A6%E7%BB%86%E7%94%A8%E6%B3%95/" class="archive-article-date">
+  	<time datetime="2021-12-04T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-04</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：3.8k字 | 预计阅读时长：17分钟
+	  </div> 
+      
+        <p>今天来看一下Steam的详细用法，之前已经写过一篇了，就做一个补充吧。 内容摘抄自微信公众号【Java极客技术】。</p>
+<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><p>Java 8 是一个非常成功的版本，这个版本新增的Stream，配合同版本出现的Lambda ，给我们操作集合（Collection）提供了极大的便利。Stream流是JDK8新增的成员，允许以声明性方式处理数据集合，可以把Stream流看作是遍历数据集合的一个高级迭代器。Stream 是 Java8 中处理集合的关键抽象概念，它可以指定你希望对集合进行的操作，可以执行非常复杂的查找/筛选/过滤、排序、聚合和映射数据等操作。使用Stream API 对集合数据进行操作，就类似于使用 SQL 执行的数据库查询。也可以使用 Stream API 来并行执行操作。简而言之，Stream API 提供了一种高效且易于使用的处理数据的方式。</p>
+<h3 id="1、使用流的好处"><a href="#1、使用流的好处" class="headerlink" title="1、使用流的好处"></a>1、使用流的好处</h3><p>代码以声明性方式书写，说明想要完成什么，而不是说明如何完成一个操作。</p>
+<p>可以把几个基础操作连接起来，来表达复杂的数据处理的流水线，同时保持代码清晰可读。</p>
+<h3 id="2、流是什么"><a href="#2、流是什么" class="headerlink" title="2、流是什么?"></a>2、流是什么?</h3><p>从支持数据处理操作的源生成元素序列.数据源可以是集合,数组或IO资源。</p>
+<p>从操作角度来看,流与集合是不同的. 流不存储数据值; 流的目的是处理数据,它是关于算法与计算的。</p>
+<p>如果把集合作为流的数据源,创建流时不会导致数据流动; 如果流的终止操作需要值时,流会从集合中获取值; 流只使用一次。</p>
+<p>流中心思想是延迟计算,流直到需要时才计算值。</p>
+<p><img src="/2021/12/04/Steam%E8%AF%A6%E7%BB%86%E7%94%A8%E6%B3%95/1.png" alt="img"></p>
+<p>Stream可以由数组或集合创建，对流的操作分为两种：</p>
+<ol>
+<li>中间操作，每次返回一个新的流，可以有多个。</li>
+<li>终端操作，每个流只能进行一次终端操作，终端操作结束后流无法再次使用。终端操作会产生一个新的集合或值。</li>
+</ol>
+<p><strong>特性：</strong></p>
+<ol>
+<li>不是数据结构，不会保存数据。</li>
+<li>不会修改原来的数据源，它会将操作后的数据保存到另外一个对象中。（保留意见：毕竟peek方法可以修改流中元素）</li>
+<li>惰性求值，流在中间处理过程中，只是对操作进行了记录，并不会立即执行，需要等到执行终止操作的时候才会进行实际的计算。</li>
+</ol>
         
       
 
@@ -660,7 +1063,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/07/Java%E5%9C%A8%E7%BA%BF%E7%94%9F%E6%88%90pdf%E6%96%87%E6%A1%A3/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/04/Steam%E8%AF%A6%E7%BB%86%E7%94%A8%E6%B3%95/">展开全文 >></a>
         </p>
       
 
@@ -690,20 +1093,20 @@
 
 
   
-    <article id="post-netstat命令" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Zuul动态路由" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/06/netstat%E5%91%BD%E4%BB%A4/">netstat命令</a>
+      <a class="article-title" href="/2021/12/03/Zuul%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/">Zuul动态路由</a>
     </h1>
   
 
         
-        <a href="/2021/08/06/netstat%E5%91%BD%E4%BB%A4/" class="archive-article-date">
-  	<time datetime="2021-08-06T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-06</time>
+        <a href="/2021/12/03/Zuul%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/" class="archive-article-date">
+  	<time datetime="2021-12-03T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-03</time>
 </a>
         
       </header>
@@ -711,18 +1114,16 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：8.2k字 | 预计阅读时长：35分钟
+		字数：1.7k字 | 预计阅读时长：6分钟
 	  </div> 
       
-        <p>今天来看一下netstat命令，在部署时经常会用到，查询进程或线程的状态以及端口的使用情况。</p>
-<h1 id="一、Linux下netstat命令的使用"><a href="#一、Linux下netstat命令的使用" class="headerlink" title="一、Linux下netstat命令的使用"></a>一、Linux下netstat命令的使用</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a><strong>简介</strong></h2><p>Netstat 命令用于显示各种网络相关信息，如网络连接，路由表，接口状态 (Interface Statistics)，masquerade 连接，多播成员 (Multicast Memberships) 等等。</p>
-<h2 id="输出信息含义"><a href="#输出信息含义" class="headerlink" title="输出信息含义"></a><strong>输出信息含义</strong></h2><p>执行netstat后，其输出结果为</p>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Active Internet connections (w/o servers)</span><br><span class="line">Proto Recv-Q Send-Q Local Address Foreign Address State</span><br><span class="line">tcp <span class="number">0</span> <span class="number">2</span> <span class="number">210</span>.<span class="number">34</span>.<span class="number">6</span>.<span class="number">89</span>:telnet <span class="number">210</span>.<span class="number">34</span>.<span class="number">6</span>.<span class="number">96</span>:<span class="number">2873</span> ESTABLISHED</span><br><span class="line">tcp <span class="number">296</span> <span class="number">0</span> <span class="number">210</span>.<span class="number">34</span>.<span class="number">6</span>.<span class="number">89</span>:<span class="number">1165</span> <span class="number">210</span>.<span class="number">34</span>.<span class="number">6</span>.<span class="number">84</span>:netbios-ssn ESTABLISHED</span><br><span class="line">tcp <span class="number">0</span> <span class="number">0</span> localhost.localdom:<span class="number">9001</span> localhost.localdom:<span class="number">1162</span> ESTABLISHED</span><br><span class="line">tcp <span class="number">0</span> <span class="number">0</span> localhost.localdom:<span class="number">1162</span> localhost.localdom:<span class="number">9001</span> ESTABLISHED</span><br><span class="line">tcp <span class="number">0</span> <span class="number">80</span> <span class="number">210</span>.<span class="number">34</span>.<span class="number">6</span>.<span class="number">89</span>:<span class="number">1161</span> <span class="number">210</span>.<span class="number">34</span>.<span class="number">6</span>.<span class="number">10</span>:netbios-ssn CLOSE</span><br><span class="line"></span><br><span class="line">Active UNIX domain sockets (w/o servers)</span><br><span class="line">Proto RefCnt Flags <span class="built_in">Type</span> State I-Node <span class="built_in">Path</span></span><br><span class="line">unix <span class="number">1</span> [ ] STREAM CONNECTED <span class="number">16178</span> @<span class="number">000000</span>dd</span><br><span class="line">unix <span class="number">1</span> [ ] STREAM CONNECTED <span class="number">16176</span> @<span class="number">000000</span>dc</span><br><span class="line">unix <span class="number">9</span> [ ] DGRAM <span class="number">5292</span> /dev/log</span><br><span class="line">unix <span class="number">1</span> [ ] STREAM CONNECTED <span class="number">16182</span> @<span class="number">000000</span>df</span><br></pre></td></tr></table></figure>
-
-
-<p>从整体上看，netstat的输出结果可以分为两个部分：</p>
-<p>一个是Active Internet connections，称为有源TCP连接，其中”Recv-Q”和”Send-Q”指%0A的是接收队列和发送队列。这些数字一般都应该是0。如果不是则表示软件包正在队列中堆积。这种情况只能在非常少的情况见到。</p>
-<p>另一个是Active UNIX domain sockets，称为有源Unix域套接口(和网络套接字一样，但是只能用于本机通信，性能可以提高一倍)。<br>Proto显示连接使用的协议,RefCnt表示连接到本套接口上的进程号,Types显示套接口的类型,State显示套接口当前的状态,Path表示连接到套接口的其它进程使用的路径名。</p>
+        <p>今天来看一下微服务网关：Zuul的动态路由，内容摘抄自微信公众号【IT大咖说】。</p>
+<h2 id="Zuul的动态路由"><a href="#Zuul的动态路由" class="headerlink" title="Zuul的动态路由"></a>Zuul的动态路由</h2><p>启动时Zuul会读取静态配置文件加载路由信息，将URL Path与路由映射关系建立好，提前加载到内存。在很多场景下，我们需要在不停止Zuul进程的前提下，完成路由映射规则的重新建立，这时候我们就需要动态路由（Dynamic Routing）功能，有两种实现动态路由的方式。</p>
+<p>方式一：通过Spring Boot Acturator开启Zuul的Endpoint功能，它支持Refresh动态刷新配置文件，这种方式的好处是Zuul无须做任何修改，也不需要维护路由映射规则，缺点是没有可视化界面，维护起来比较烦琐。</p>
+<p>方式二：覆写RouteLocator的List<Route>getRoutes（）方法，通过事件刷新机制，从数据库中读取路由配置规则。这是常用的Zuul动态路由解决方案，它可以轻松地实现可视化管理，减少引入新的Spring Cloud组件的依赖绑定。Sia-Gateway（GitHub已开源项目）使用了基于MySQL DB的动态路由机制。如下图所示是Zuul动态路由架构图。</Route></p>
+<p><img src="/2021/12/03/Zuul%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/1.png" alt="img"></p>
+<h3 id="Zuul的动态路由思路及解决方案如下。"><a href="#Zuul的动态路由思路及解决方案如下。" class="headerlink" title="Zuul的动态路由思路及解决方案如下。"></a>Zuul的动态路由思路及解决方案如下。</h3><p>首先，Admin作为前端管理界面将用户对路由的添加、修改、删除等操作通过RouteService存储到DB中。DB中的存储结构如下图所示。</p>
+<p><img src="/2021/12/03/Zuul%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/2.png" alt="img"></p>
         
       
 
@@ -736,7 +1137,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">部署</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">SpringCloud</a>
         		</li>
       		
 		</ul>
@@ -746,273 +1147,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/06/netstat%E5%91%BD%E4%BB%A4/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-代码规范" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/05/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/">代码规范</a>
-    </h1>
-  
-
-        
-        <a href="/2021/08/05/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" class="archive-article-date">
-  	<time datetime="2021-08-05T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-05</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：3k字 | 预计阅读时长：13分钟
-	  </div> 
-      
-        <p>今天来看下代码规范，除了实现以外，规范写代码也很重要。内容摘抄自微信公众号【springmeng】。</p>
-<p>如何更规范化编写Java 代码</p>
-<p>Many of the happiest people are those who own the least. But are we really so happy with our IPhones, our big houses, our fancy cars?</p>
-<p>忘川如斯，拥有一切的人才更怕失去。</p>
-<p>背景：如何更规范化编写Java 代码的重要性想必毋需多言，其中最重要的几点当属提高代码性能、使代码远离Bug、令代码更优雅。</p>
-<h3 id="一、MyBatis-不要为了多个查询条件而写-1-1"><a href="#一、MyBatis-不要为了多个查询条件而写-1-1" class="headerlink" title="一、MyBatis 不要为了多个查询条件而写 1 = 1"></a><strong>一、MyBatis 不要为了多个查询条件而写 1 = 1</strong></h3><p>当遇到多个查询条件，使用where 1=1 可以很方便的解决我们的问题，但是这样很可能会造成非常大的性能损失，因为添加了 “where 1=1 ”的过滤条件之后，数据库系统就无法使用索引等查询优化策略，数据库系统将会被迫对每行数据进行扫描（即全表扫描） 以比较此行是否满足过滤条件，当表中的数据量较大时查询速度会非常慢；此外，还会存在SQL 注入的风险。</p>
-<p>反例：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;queryBookInfo&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.tjt.platform.entity.BookInfo&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;java.lang.Integer&quot;</span>&gt;</span></span><br><span class="line">select count(*) from t_rule_BookInfo t where 1=1</span><br><span class="line">    <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;title !=null and title !=&#x27;&#x27; &quot;</span>&gt;</span></span><br><span class="line">     AND title = #&#123;title&#125; </span><br><span class="line">    <span class="tag">&lt;/<span class="name">if</span>&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;author !=null and author !=&#x27;&#x27; &quot;</span>&gt;</span></span><br><span class="line">     AND author = #&#123;author&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">if</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>正例：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;queryBookInfo&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;com.tjt.platform.entity.BookInfo&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;java.lang.Integer&quot;</span>&gt;</span></span><br><span class="line">select count(*) from t_rule_BookInfo t</span><br><span class="line">    <span class="tag">&lt;<span class="name">where</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;title !=null and title !=&#x27;&#x27; &quot;</span>&gt;</span></span><br><span class="line">         title = #&#123;title&#125; </span><br><span class="line">        <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;author !=null and author !=&#x27;&#x27; &quot;</span>&gt;</span> </span><br><span class="line">         AND author = #&#123;author&#125;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">where</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>UPDATE 操作也一样，可以用<set> 标记代替 1=1。</set></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码规范</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/05/%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-SpringBoot四大核心组件" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/04/SpringBoot%E5%9B%9B%E5%A4%A7%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6/">SpringBoot四大核心组件</a>
-    </h1>
-  
-
-        
-        <a href="/2021/08/04/SpringBoot%E5%9B%9B%E5%A4%A7%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6/" class="archive-article-date">
-  	<time datetime="2021-08-04T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-04</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：2k字 | 预计阅读时长：9分钟
-	  </div> 
-      
-        <p>今天来看一下SpringBoot四大核心组件，内容摘抄自微信公众号【springmeng】。</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>先透露一下，四大组件分别是：starter， autoconfigure, CLI 以及actuator。下面我们就来详细介绍一些他们有什么用。</p>
-<h2 id="一、Spring-Boot-Starter"><a href="#一、Spring-Boot-Starter" class="headerlink" title="一、Spring Boot Starter"></a><strong>一、Spring Boot Starter</strong></h2><h3 id="1-1-Starter的应用示例"><a href="#1-1-Starter的应用示例" class="headerlink" title="1.1 Starter的应用示例"></a>1.1 Starter的应用示例</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.3.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>在我们的Spring Boot项目种的POM文件中总会看到这两种依赖：</p>
-<p><code>spring-boot-starter-xxx</code> 和 <code>xxx-spring-boot-starter</code>。</p>
-<p>这就是spring boot的四大组件之一的starter。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SpringBoot</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/04/SpringBoot%E5%9B%9B%E5%A4%A7%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spring注解总结" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/03/Spring%E6%B3%A8%E8%A7%A3%E6%80%BB%E7%BB%93/">Spring注解总结</a>
-    </h1>
-  
-
-        
-        <a href="/2021/08/03/Spring%E6%B3%A8%E8%A7%A3%E6%80%BB%E7%BB%93/" class="archive-article-date">
-  	<time datetime="2021-08-03T03:18:06.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-03</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：2.2k字 | 预计阅读时长：9分钟
-	  </div> 
-      
-        <p>在spring中，注解可以说是最核心的一部分了，今天来总结一下各种注解的使用方法。</p>
-<p><strong>Spring中的注解大概可以分为两大类：</strong></p>
-<ol>
-<li><strong>spring的bean容器相关的注解，或者说bean工厂相关的注解；</strong></li>
-<li><strong>springmvc相关的注解。</strong></li>
-</ol>
-<p>spring的bean容器相关的注解，先后有：@Required， @Autowired, @PostConstruct, @PreDestory</p>
-<p>还有Spring3.0开始支持的JSR-330标准javax.inject.*中的注解(@Inject, @Named, @Qualifier, @Provider, @Scope, @Singleton).</p>
-<p>springmvc相关的注解有：@Controller, @RequestMapping, @RequestParam， @ResponseBody等等。</p>
-<p>要理解Spring中的注解，先要理解Java中的注解。</p>
-<h2 id="1-Java中的注解"><a href="#1-Java中的注解" class="headerlink" title="1. Java中的注解"></a>1. Java中的注解</h2><p>Java中1.5中开始引入注解，我们最熟悉的应该是：@Override, 它的定义如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Indicates that a method declaration is intended to override a</span></span><br><span class="line"><span class="comment"> * method declaration in a supertype. If a method is annotated with</span></span><br><span class="line"><span class="comment"> * this annotation type compilers are required to generate an error</span></span><br><span class="line"><span class="comment"> * message unless at least one of the following conditions hold:</span></span><br><span class="line"><span class="comment"> * The method does override or implement a method declared in a</span></span><br><span class="line"><span class="comment"> * supertype.</span></span><br><span class="line"><span class="comment"> * The method has a signature that is override-equivalent to that of</span></span><br><span class="line"><span class="comment"> * any public method declared in Object.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>  Peter von der Ahé</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>  Joshua Bloch</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@jls</span> 9.6.1.4 <span class="doctag">@Override</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 1.5</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.SOURCE)</span></span><br><span class="line"><span class="keyword">public</span><span class="meta">@interface</span> Override &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>从注释，我们可以看出，@Override的作用是，提示编译器，使用了@Override注解的方法必须override父类或者java.lang.Object中的一个同名方法。</p>
-<p>我们看到@Override的定义中使用到了 @Target, @Retention，它们就是所谓的“元注解”——就是定义注解的注解，或者说注解注解的注解(晕了…)。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/03/Spring%E6%B3%A8%E8%A7%A3%E6%80%BB%E7%BB%93/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/03/Zuul%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1/">展开全文 >></a>
         </p>
       
 
@@ -1044,7 +1179,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/23/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/25/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/23/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/22/">22</a><a class="page-number" href="/page/23/">23</a><span class="page-number current">24</span><a class="page-number" href="/page/25/">25</a><a class="page-number" href="/page/26/">26</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/25/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1146,15 +1281,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">前端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1194,15 +1349,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常处理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多线程</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">中间件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1250,11 +1405,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">前端</a>
+                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1278,15 +1433,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1294,11 +1445,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+                <a href="javascript:void(0)" class="js-tag color5">并发编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库，缓存</a>
               </li>
             
             <div class="clearfix"></div>

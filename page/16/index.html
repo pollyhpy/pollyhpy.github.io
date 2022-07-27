@@ -79,8 +79,8 @@
 			</ul>
 		</nav>
 		<nav>
-			<a>总文章数 286</a>
-			<a>总字数 <span class="post-count">826k</span></a>
+			<a>总文章数 413</a>
+			<a>总字数 <span class="post-count">1279k</span></a>
 		</nav>
 		<nav class="header-smart-menu">
     		
@@ -165,20 +165,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Zookeeper的选举流程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Mysql索引面试相关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/26/Zookeeper%E7%9A%84%E9%80%89%E4%B8%BE%E6%B5%81%E7%A8%8B/">Zookeeper的选举流程</a>
+      <a class="article-title" href="/2022/03/02/Mysql%E7%B4%A2%E5%BC%95%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">Mysql索引面试相关</a>
     </h1>
   
 
         
-        <a href="/2021/10/26/Zookeeper%E7%9A%84%E9%80%89%E4%B8%BE%E6%B5%81%E7%A8%8B/" class="archive-article-date">
-  	<time datetime="2021-10-26T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-26</time>
+        <a href="/2022/03/02/Mysql%E7%B4%A2%E5%BC%95%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/" class="archive-article-date">
+  	<time datetime="2022-03-02T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-02</time>
 </a>
         
       </header>
@@ -186,49 +186,33 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2.1k字 | 预计阅读时长：7分钟
+		字数：5.1k字 | 预计阅读时长：18分钟
 	  </div> 
       
-        <p>很久没看有关Zookeeper的东西了，今天来了解下Zookeeper的选举流程是怎么样的。内容摘抄自微信公众号【Java技术栈】。</p>
-<p>有一说一， Zookeeper 这些工作原理、选举流程，也许大多数人在工作中不会用到，但了解多一点也是自己的优势，避免求职面试被面试官打压工资。Zookeeper 也是现在后端主流的分布式协调框架，很多热门框架都有直接或者间接依赖它，比如：Dubbo、Elastic Job、Kafka 等，所以掌握 ZK 选举流程也是非常有必要的。</p>
-<p>本文会以通俗易懂的方式进行， ZK 小白也能看懂。另外，我也将 Zookeeper 系列主流面试题和参考答案都整理好了，关注公众号Java技术栈回复关键字 “面试” 进行刷题。</p>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>了解选举前你得了解一些 Zookeeper 的基本概念。</p>
-<h4 id="集群机器-ID"><a href="#集群机器-ID" class="headerlink" title="集群机器 ID"></a>集群机器 ID</h4><p>集群机器 ID 是指 myid，它是每一个集群机器中的编号文件，代表 ZooKeeper 集群服务器的标识，手动生成，全局全一。</p>
-<h4 id="事务-ID"><a href="#事务-ID" class="headerlink" title="事务 ID"></a>事务 ID</h4><p>事务 ID 是指 zxid，Zookeeper 会给每个更新请求分配一个事务 ID，它是一个 64 位的数字，由 Leader 统一进行分配，全局唯一，不断递增，在一个节点的状态信息中可以查看到最新的事务 ID 信息。</p>
-<h4 id="集群服务器角色"><a href="#集群服务器角色" class="headerlink" title="集群服务器角色"></a>集群服务器角色</h4><p>Zookeeper 集群服务器有以下 3 种角色：</p>
-<p>1、Leader（主）</p>
-<p>2、Follower（从，参与投票）</p>
-<p>3、Observer（观察者，不参与投票）</p>
-<h4 id="集群服务器状态"><a href="#集群服务器状态" class="headerlink" title="集群服务器状态"></a>集群服务器状态</h4><p>Zookeeper 集群服务器有以下 4 种状态：</p>
-<p><strong>1、LOOKING</strong></p>
-<p>寻找 Leader 状态，当服务器处于该状态时，表示当前集群没有 Leader，因此会进入 Leader 选举状态。</p>
-<p><strong>2、FOLLOWING</strong></p>
-<p>跟随者状态，表示当前服务器角色是 Follower。</p>
-<p><strong>3、LEADING</strong></p>
-<p>领导者状态，表示当前服务器角色是 Leader。</p>
-<p><strong>4、OBSERVING</strong></p>
-<p>观察者状态，表示当前服务器角色是 Observer。</p>
-<h4 id="选举方式"><a href="#选举方式" class="headerlink" title="选举方式"></a><strong>选举方式</strong></h4><p>Zookeeper 提供了 3 种选举方式：</p>
+        <p>今天来看一下Mysql索引面试相关的一些问题。内容摘抄自微信公众号【苏三说技术】。</p>
+<h2 id="1-索引是什么？"><a href="#1-索引是什么？" class="headerlink" title="1. 索引是什么？"></a>1. 索引是什么？</h2><p>索引是一种特殊的文件(InnoDB数据表上的索引是表空间的一个组成部分)，它们包含着对数据表里所有记录的引用指针。</p>
+<p>索引是一种数据结构。数据库索引，是数据库管理系统中一个排序的数据结构，以协助快速查询、更新数据库表中数据。索引的实现通常使用B树及其变种B+树。更通俗的说，索引就相当于目录。为了方便查找书中的内容，通过对内容建立索引形成目录。而且索引是一个文件，它是要占据物理空间的。</p>
+<p>MySQL索引的建立对于MySQL的高效运行是很重要的，索引可以大大提高MySQL的检索速度。比如我们在查字典的时候，前面都有检索的拼音和偏旁、笔画等，然后找到对应字典页码，这样然后就打开字典的页数就可以知道我们要搜索的某一个key的全部值的信息了。</p>
+<h2 id="2-索引有哪些优缺点？"><a href="#2-索引有哪些优缺点？" class="headerlink" title="2. 索引有哪些优缺点？"></a>2. 索引有哪些优缺点？</h2><p><strong>索引的优点</strong></p>
 <ul>
-<li>LeaderElection</li>
-<li>AuthFastLeaderElection</li>
-<li><strong>FastLeaderElection （最新默认）</strong></li>
+<li>可以大大加快数据的检索速度，这也是创建索引的最主要的原因。</li>
+<li>通过使用索引，可以在查询的过程中，使用优化隐藏器，提高系统的性能。</li>
 </ul>
-<h4 id="选举场景"><a href="#选举场景" class="headerlink" title="选举场景"></a>选举场景</h4><p>Zookeeper 会在以下场景进行选举：</p>
-<p>1、Zookeeper 集群启动初始化时进行选举</p>
-<p>2、Zookeeper 集群 Leader 失联时重新选举</p>
-<h4 id="选举前提条件"><a href="#选举前提条件" class="headerlink" title="选举前提条件"></a>选举前提条件</h4><p><strong>1、Zookeeper 服务器处于 LOOKING 竞选状态</strong></p>
-<p>此时说明 Zookeeper 服务器集群处于群龙无首状态，另外，观察者状态不能参与竞选投票。</p>
-<p><strong>2、Zookeeper 集群规模至少要 3 台机器或以上</strong></p>
-<p>集群规则为：2N + 1台，N &gt; 0，即最少需要 3 台，因为 ZK 集群的机制是只要超过半数的节点正常，集群就能正常提供服务。只有在 ZK 节点挂得太多，只剩一半或不到一半节点能工作时，集群才会失效。</p>
-<p><strong>如以下分析所示：</strong></p>
-<blockquote>
-<p>3 个节点的 Cluster 可以挂掉 1 个节点（Leader 可以得到 2 票 &gt; 1.5)</p>
-<p>2 个节点的 Cluster 就不能挂掉任何 1 个节点了（Leader 可以得到 1 票 &lt;= 1)</p>
-</blockquote>
-<p>所以你知道 ZK 集群为什么至少要 3 台了吧？</p>
-<p><strong>3、Zookeeper 集群要 2 台及以上机器可以互相通信</strong></p>
-<p>只要达到 2 台服务器通信了才能进行选举，只有一台服务器启动时无法进行选举，因为服务器之间通信了才可以互相同步投票结果。</p>
+<p><strong>索引的缺点</strong></p>
+<ul>
+<li>时间方面：创建索引和维护索引要耗费时间，具体地，当对表中的数据进行增加、删除和修改的时候，索引也要动态的维护，会降低增/改/删的执行效率；</li>
+<li>空间方面：索引需要占物理空间。</li>
+</ul>
+<h2 id="3-MySQL有哪几种索引类型？"><a href="#3-MySQL有哪几种索引类型？" class="headerlink" title="3. MySQL有哪几种索引类型？"></a>3. MySQL有哪几种索引类型？</h2><p>1、从存储结构上来划分：BTree索引（B-Tree或B+Tree索引），Hash索引，full-index全文索引，R-Tree索引。这里所描述的是索引存储时保存的形式，</p>
+<p>2、从应用层次来分：普通索引，唯一索引，复合索引。</p>
+<ul>
+<li>普通索引：即一个索引只包含单个列，一个表可以有多个单列索引</li>
+<li>唯一索引：索引列的值必须唯一，但允许有空值</li>
+<li>复合索引：多列值组成一个索引，专门用于组合搜索，其效率大于索引合并</li>
+<li>聚簇索引(聚集索引)：并不是一种单独的索引类型，而是一种数据存储方式。具体细节取决于不同的实现，InnoDB的聚簇索引其实就是在同一个结构中保存了B-Tree索引(技术上来说是B+Tree)和数据行。</li>
+<li>非聚簇索引：不是聚簇索引，就是非聚簇索引</li>
+</ul>
+<p>3、根据中数据的物理顺序与键值的逻辑（索引）顺序关系：聚集索引，非聚集索引。</p>
         
       
 
@@ -242,7 +226,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Zookeeper</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Mysql</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
         		</li>
       		
 		</ul>
@@ -252,7 +240,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/26/Zookeeper%E7%9A%84%E9%80%89%E4%B8%BE%E6%B5%81%E7%A8%8B/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/03/02/Mysql%E7%B4%A2%E5%BC%95%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">展开全文 >></a>
         </p>
       
 
@@ -282,20 +270,20 @@
 
 
   
-    <article id="post-SpringBoot定时任务实现动态增删启停" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-SpringBoot集成Shiro框架" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/25/SpringBoot%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81%E5%A2%9E%E5%88%A0%E5%90%AF%E5%81%9C/">SpringBoot定时任务实现动态增删启停</a>
+      <a class="article-title" href="/2022/03/01/SpringBoot%E9%9B%86%E6%88%90Shiro%E6%A1%86%E6%9E%B6/">SpringBoot集成Shiro框架</a>
     </h1>
   
 
         
-        <a href="/2021/10/25/SpringBoot%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81%E5%A2%9E%E5%88%A0%E5%90%AF%E5%81%9C/" class="archive-article-date">
-  	<time datetime="2021-10-25T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-25</time>
+        <a href="/2022/03/01/SpringBoot%E9%9B%86%E6%88%90Shiro%E6%A1%86%E6%9E%B6/" class="archive-article-date">
+  	<time datetime="2022-03-01T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-01</time>
 </a>
         
       </header>
@@ -303,16 +291,18 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.7k字 | 预计阅读时长：8分钟
+		字数：2.6k字 | 预计阅读时长：13分钟
 	  </div> 
       
-        <p>今天看一个很重要的问题，就是SpringBoot定时任务实现动态增删启停。内容摘抄自微信公众号【Java技术栈】。</p>
-<p><strong>在spring boot项目中，可以通过@EnableScheduling注解和@Scheduled注解实现定时任务，也可以通过SchedulingConfigurer接口来实现定时任务。但是这两种方式不能动态添加、删除、启动、停止任务。要实现动态增删启停定时任务功能，比较广泛的做法是集成Quartz框架。</strong></p>
-<p><strong>但是本人的开发原则是：在满足项目需求的情况下，尽量少的依赖其它框架，避免项目过于臃肿和复杂。查看spring-context这个jar包中org.springframework.scheduling.ScheduledTaskRegistrar这个类的源代码，发现可以通过改造这个类就能实现动态增删启停定时任务功能。</strong></p>
-<p><img src="/2021/10/25/SpringBoot%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81%E5%A2%9E%E5%88%A0%E5%90%AF%E5%81%9C/image1.png" alt="image1"></p>
-<p>​                                                                                                                           定时任务列表页</p>
-<p><img src="/2021/10/25/SpringBoot%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81%E5%A2%9E%E5%88%A0%E5%90%AF%E5%81%9C/image2.png" alt="image2"></p>
-<p>​                                                                                                                定时任务执行日志</p>
+        <p>时间过的真快，转眼就到了三月。今天来看一下在SpringBoot中集成Shiro框架。内容摘抄自微信公众号【Java大后端】。</p>
+<h2 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h2><p>Apache Shiro是一个功能强大且易于使用的Java安全框架，提供了认证，授权，加密，和会话管理。</p>
+<p><img src="/2022/03/01/SpringBoot%E9%9B%86%E6%88%90Shiro%E6%A1%86%E6%9E%B6/1.png" alt="img"></p>
+<p>Shiro有三大核心组件：</p>
+<ul>
+<li><strong>Subject：</strong> 即当前用户，在权限管理的应用程序里往往需要知道谁能够操作什么，谁拥有操作该程序的权利，shiro中则需要通过Subject来提供基础的当前用户信息，Subject 不仅仅代表某个用户，与当前应用交互的任何东西都是Subject，如网络爬虫等。所有的Subject都要绑定到SecurityManager上，与Subject的交互实际上是被转换为与SecurityManager的交互。</li>
+<li><strong>SecurityManager：</strong> 即所有Subject的管理者，这是Shiro框架的核心组件，可以把他看做是一个Shiro框架的全局管理组件，用于调度各种Shiro框架的服务。作用类似于SpringMVC中的DispatcherServlet，用于拦截所有请求并进行处理。</li>
+<li><strong>Realm：</strong> Realm是用户的信息认证器和用户的权限人证器，我们需要自己来实现Realm来自定义的管理我们自己系统内部的权限规则。SecurityManager要验证用户，需要从Realm中获取用户。可以把Realm看做是数据源。</li>
+</ul>
         
       
 
@@ -326,7 +316,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SpringBoot</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">token</a>
         		</li>
       		
 		</ul>
@@ -336,7 +326,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/25/SpringBoot%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81%E5%A2%9E%E5%88%A0%E5%90%AF%E5%81%9C/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/03/01/SpringBoot%E9%9B%86%E6%88%90Shiro%E6%A1%86%E6%9E%B6/">展开全文 >></a>
         </p>
       
 
@@ -366,20 +356,20 @@
 
 
   
-    <article id="post-EasyExcel" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-HashMap底层原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/24/EasyExcel/">EasyExcel</a>
+      <a class="article-title" href="/2022/02/28/HashMap%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/">HashMap底层原理</a>
     </h1>
   
 
         
-        <a href="/2021/10/24/EasyExcel/" class="archive-article-date">
-  	<time datetime="2021-10-24T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-24</time>
+        <a href="/2022/02/28/HashMap%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/" class="archive-article-date">
+  	<time datetime="2022-02-28T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-28</time>
 </a>
         
       </header>
@@ -387,14 +377,29 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2k字 | 预计阅读时长：8分钟
+		字数：6.3k字 | 预计阅读时长：27分钟
 	  </div> 
       
-        <p>今天来看一个很实用的报表导入导出工具，<strong>EasyExcel</strong>，内容摘抄自微信公众号【springmeng】。</p>
-<h1 id="EasyExcel"><a href="#EasyExcel" class="headerlink" title="EasyExcel"></a>EasyExcel</h1><p>在做excel导入导出的时候,发现项目中封装的工具类及其难用,于是去gitHub上找了一些相关的框架,最终选定了EasyExcel。之前早有听闻该框架，但是一直没有去了解，这次借此学习一波，提高以后的工作效率。</p>
-<p>实际使用中，发现是真的很easy，大部分api通过名称就能知道大致意思，这点做的很nice。参考文档，大部分场景的需求基本都能够满足。</p>
-<h2 id="GitHub上的官方说明"><a href="#GitHub上的官方说明" class="headerlink" title="GitHub上的官方说明"></a>GitHub上的官方说明</h2><p><img src="/2021/10/24/EasyExcel/image1.png" alt="image1"></p>
-<h1 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h1><h2 id="maven仓库地址"><a href="#maven仓库地址" class="headerlink" title="maven仓库地址"></a>maven仓库地址</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;easyexcel&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.1.2&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+        <p>今天来看一下从Map到HashMap的转化是怎么样的，内容摘抄自微信公众号【Java核心技术】。</p>
+<h2 id="一、-Map"><a href="#一、-Map" class="headerlink" title="一、 Map"></a>一、 Map</h2><h3 id="1-1-Map-接口"><a href="#1-1-Map-接口" class="headerlink" title="1.1 Map 接口"></a>1.1 Map 接口</h3><p>在 Java 中, Map 提供了键——值的映射关系。映射不能包含重复的键,并且每个键只能映射到一个值。</p>
+<p>以 Map 键——值映射为基础，java.util 提供了 HashMap（最常用）、 TreeMap、Hashtble、LinkedHashMap 等数据结构。</p>
+<p>衍生的几种 Map 的主要特点：</p>
+<ul>
+<li>HashMap：最常用的数据结构。键和值之间通过 Hash函数 来实现映射关系。当进行遍历的 key 是无序的</li>
+<li>TreeMap：使用红黑树构建的数据结构，因为红黑树的原理，可以很自然的对 key 进行排序，所以 TreeMap 的 key 遍历时是默认按照自然顺序（升序）排列的。</li>
+<li>LinkedHashMap: 保存了插入的顺序。遍历得到的记录是按照插入顺序的。</li>
+</ul>
+<h3 id="1-2-Hash-散列函数"><a href="#1-2-Hash-散列函数" class="headerlink" title="1.2 Hash 散列函数"></a>1.2 Hash 散列函数</h3><p>Hash （散列函数）是把任意长度的输入通过散列算法变换成固定长度的输出。Hash 函数的返回值也称为 哈希值 哈希码 摘要或哈希。Hash作用如下图所示:</p>
+<p><img src="/2022/02/28/HashMap%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/1.png" alt="img"></p>
+<p>Hash 函数可以通过选取适当的函数，可以在时间和空间上取得较好平衡。</p>
+<p>解决 Hash 的两种方式：拉链法和线性探测法</p>
+<h3 id="1-3-键值关系的实现"><a href="#1-3-键值关系的实现" class="headerlink" title="1.3 键值关系的实现"></a>1.3 键值关系的实现</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">interface Entry&lt;K,V&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在 HashMap 中基于链表的实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">implements</span> <span class="title">Map</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> hash;</span><br><span class="line">        <span class="keyword">final</span> K key;</span><br><span class="line">        V value;</span><br><span class="line">        Node&lt;K,V&gt; next;</span><br><span class="line"></span><br><span class="line">        Node(<span class="keyword">int</span> hash, K key, V value, Node&lt;K,V&gt; next) &#123;</span><br><span class="line">            <span class="keyword">this</span>.hash = hash;</span><br><span class="line">            <span class="keyword">this</span>.key = key;</span><br><span class="line">            <span class="keyword">this</span>.value = value;</span><br><span class="line">            <span class="keyword">this</span>.next = next;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>用树的方式实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">TreeNode</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; <span class="keyword">extends</span> <span class="title">LinkedHashMap</span>.<span class="title">Entry</span>&lt;<span class="title">K</span>,<span class="title">V</span>&gt; </span>&#123;</span><br><span class="line">        TreeNode&lt;K,V&gt; parent;  <span class="comment">// red-black tree links</span></span><br><span class="line">        TreeNode&lt;K,V&gt; left;</span><br><span class="line">        TreeNode&lt;K,V&gt; right;</span><br><span class="line">        TreeNode&lt;K,V&gt; prev;    <span class="comment">// needed to unlink next upon deletion</span></span><br><span class="line">        <span class="keyword">boolean</span> red;</span><br><span class="line">        TreeNode(<span class="keyword">int</span> hash, K key, V val, Node&lt;K,V&gt; next) &#123;</span><br><span class="line">            <span class="keyword">super</span>(hash, key, val, next);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
         
       
 
@@ -418,7 +423,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/24/EasyExcel/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/02/28/HashMap%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/">展开全文 >></a>
         </p>
       
 
@@ -448,20 +453,20 @@
 
 
   
-    <article id="post-数据库查询超时优化问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Redis原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9F%A5%E8%AF%A2%E8%B6%85%E6%97%B6%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98/">数据库查询超时优化问题</a>
+      <a class="article-title" href="/2022/02/27/Redis%E5%8E%9F%E7%90%86/">Redis原理</a>
     </h1>
   
 
         
-        <a href="/2021/10/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9F%A5%E8%AF%A2%E8%B6%85%E6%97%B6%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98/" class="archive-article-date">
-  	<time datetime="2021-10-23T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-23</time>
+        <a href="/2022/02/27/Redis%E5%8E%9F%E7%90%86/" class="archive-article-date">
+  	<time datetime="2022-02-27T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-27</time>
 </a>
         
       </header>
@@ -469,12 +474,30 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.1k字 | 预计阅读时长：4分钟
+		字数：1.9k字 | 预计阅读时长：6分钟
 	  </div> 
       
-        <p>今天来看一个数据库查询的超时优化问题。内容摘抄自微信公众号【IT大咖说】。</p>
-<h2 id="◆-问题发现"><a href="#◆-问题发现" class="headerlink" title="◆ 问题发现"></a><strong>◆</strong> <strong>问题发现</strong></h2><p>期初在七月份时，经常发现有几个定时任务报错，查看了下异常原因，大概定位是数据库执行异常</p>
-<p><img src="/2021/10/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9F%A5%E8%AF%A2%E8%B6%85%E6%97%B6%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98/1.png" alt="img"></p>
+        <p>今天来看一下Redis原理。内容摘抄自微信公众号【springmeng】。</p>
+<h1 id="redis通讯-与-Netty"><a href="#redis通讯-与-Netty" class="headerlink" title="redis通讯 与 Netty"></a>redis通讯 与 Netty</h1><h2 id="tcp"><a href="#tcp" class="headerlink" title="tcp"></a><strong>tcp</strong></h2><p>连到Redis服务器的客户端建立了一个到6379端口的TCP连接。</p>
+<p>虽然RESP在技术上不特定于TCP，但是在Redis的上下文中，该协议仅用于TCP连接（或类似的面向流的连接，如unix套接字）。</p>
+<p>使用netty作为通讯框架。</p>
+<h2 id="协议"><a href="#协议" class="headerlink" title="协议"></a><strong>协议</strong></h2><p>Redis客户端和服务器端通信使用名为 <strong>RESP (REdis Serialization Protocol)</strong> 的协议。虽然这个协议是专门为Redis设计的，它也可以用在其它 client-server 通信模式的软件上。</p>
+<p>RESP 协议在Redis1.2被引入，直到Redis2.0才成为和Redis服务器通信的标准。这个协议需要在你的Redis客户端实现。</p>
+<p>RESP 是一个支持多种数据类型的序列化协议：<strong>简单字符串（Simple Strings）,错误（ Errors）,整型（ Integers）, 大容量字符串（Bulk Strings）和数组（Arrays）</strong>。</p>
+<p>RESP在Redis中作为一个请求-响应协议以如下方式使用：</p>
+<p>客户端以大容量字符串RESP数组的方式发送命令给服务器端。服务器端根据命令的具体实现返回某一种RESP数据类型。在 RESP 中，数据的类型依赖于首字节：</p>
+<p><strong>单行字符串（Simple Strings）：响应的首字节是 “+” 错误（Errors）：响应的首字节是 “-“ 整型（Integers）：响应的首字节是 “:” 多行字符串（Bulk Strings）：响应的首字节是”$” 数组（Arrays）：响应的首字节是 “*“</strong> </p>
+<p>另外，RESP可以使用大容量字符串或者数组类型的特殊变量表示空值，下面会具体解释。RESP协议的不同部分总是以 <strong>“\r\n” (CRLF)</strong> 结束。字符串 “foobar” 编码如下:</p>
+<ul>
+<li></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;$6\r\nfoobar\r\n&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>实际redis命令是什么样的，比如 <strong>SET lhjljh lhjkjhkh</strong></p>
+<ul>
+<li></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*3\r\n$3\r\nSET\r\n$6\r\nlhjljh\r\n$8\r\nlhjkjhkh</span><br></pre></td></tr></table></figure>
         
       
 
@@ -488,7 +511,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">数据库</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
         		</li>
       		
 		</ul>
@@ -498,7 +521,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/23/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9F%A5%E8%AF%A2%E8%B6%85%E6%97%B6%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/02/27/Redis%E5%8E%9F%E7%90%86/">展开全文 >></a>
         </p>
       
 
@@ -528,20 +551,224 @@
 
 
   
-    <article id="post-InnoDB自增原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-HTTPS防止重放攻击" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/22/InnoDB%E8%87%AA%E5%A2%9E%E5%8E%9F%E7%90%86/">InnoDB自增原理</a>
+      <a class="article-title" href="/2022/02/26/HTTPS%E9%98%B2%E6%AD%A2%E9%87%8D%E6%94%BE%E6%94%BB%E5%87%BB/">HTTPS防止重放攻击</a>
     </h1>
   
 
         
-        <a href="/2021/10/22/InnoDB%E8%87%AA%E5%A2%9E%E5%8E%9F%E7%90%86/" class="archive-article-date">
-  	<time datetime="2021-10-22T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-22</time>
+        <a href="/2022/02/26/HTTPS%E9%98%B2%E6%AD%A2%E9%87%8D%E6%94%BE%E6%94%BB%E5%87%BB/" class="archive-article-date">
+  	<time datetime="2022-02-26T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-26</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：1.6k字 | 预计阅读时长：5分钟
+	  </div> 
+      
+        <p>今天来看一下https的通讯流程、加密算法以及协议方式，以及他是否能够防止重放攻击。内容摘抄自微信公众号【Java后端技术】。</p>
+<h2 id="协议流程"><a href="#协议流程" class="headerlink" title="协议流程"></a>协议流程</h2><p>我们先来回忆一下HTTPS的通信流程，HTTPS协议 = HTTP协议 + SSL/TLS协议，摘取一下网上一些八股文的回答(以RSA密钥交换的为例)！</p>
+<ul>
+<li><p>(1)客户端生成一个随机数client_random,TLS版本号，发送到服务端</p>
+</li>
+<li><p>(2)服务端发送自己的随机数server_random，服务器使用的证书，发送到客户端</p>
+</li>
+<li><p>(3)客户端利用CA公钥对证书进行验证，取出服务器公钥</p>
+</li>
+<li><p>(4)客户端生成随机数pre_master_secret,利用服务器公钥进行加密，传送到服务端</p>
+</li>
+<li><p>(5)服务端利用服务器私钥进行解密取出pre_master_secret</p>
+</li>
+<li><p>(6)服务端和客户端此时利用随机数client_random,server_random,</p>
+<p>pre_master_secret算出对称密钥(master_secret)，利用对称密钥进行对称加密通信</p>
+</li>
+</ul>
+<p>*画外音:*是不是贼熟悉，有背过网络八股文的，一看就懂！</p>
+<p>关键问题就在步骤(6)，怎么进行加密的？很多文章都没有说明，甚至有的人以为，拿client_random+server_random+pre_master_secret直接拼成一个字符串，然后就是对称加密密钥，客户端和服务端拿这个密钥对数据进行加密通信！！</p>
+<p>对此，我只能说:”Too young too simple!离谱啊！！”</p>
+<p>那正确的过程是怎么样的呢，我们继续往下看！</p>
+<h2 id="协议分析"><a href="#协议分析" class="headerlink" title="协议分析"></a>协议分析</h2><p>我先给本文提到的英文单词，给上我的中文翻译，以防大家混淆:</p>
+<ul>
+<li>client_random 客户端随机数</li>
+<li>server_random 服务端随机数</li>
+<li>pre_master_secret 预备主密钥</li>
+<li>master_secret 主密钥</li>
+<li>key_block 密钥块(有的文章把这个东西称为会话密钥)</li>
+</ul>
+<p>先大致有个印象，继续往下阅读</p>
+<p>现在我们已经有三个参数client_random，pre_master_secret，server_random，服务端和客户端分别会根据这三个参数，推导出master_secret，一旦master_secret被推导出来，会立刻删除pre_master_secret。(<strong>摘自rfc2246,section8.1</strong>）</p>
+<p>当master_secret计算出以后，立刻计算key_block(<strong>摘自rfc2246,section6.3</strong>)，这个密钥块，有的文章里又说他是会话密钥！计算公示如下，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">key_block = PRF(master_secret,</span><br><span class="line">        &quot;key expansion&quot;,</span><br><span class="line">        server_random +</span><br><span class="line">        client_random)</span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/02/26/HTTPS%E9%98%B2%E6%AD%A2%E9%87%8D%E6%94%BE%E6%94%BB%E5%87%BB/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Java业务代码规范" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/25/Java%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/">Java业务代码规范</a>
+    </h1>
+  
+
+        
+        <a href="/2022/02/25/Java%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" class="archive-article-date">
+  	<time datetime="2022-02-25T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-25</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：3.2k字 | 预计阅读时长：12分钟
+	  </div> 
+      
+        <p>今天来看一下Java编写业务代码的代码规范，内容摘抄自微信公众号【Java技术栈】。</p>
+<h2 id="为什么要写好业务代码？"><a href="#为什么要写好业务代码？" class="headerlink" title="为什么要写好业务代码？"></a>为什么要写好业务代码？</h2><p>直接分享一段痛苦的项目维护经历吧，看大家有没有类似的经历。当时，我接手了一个维护项目，刚上班就接到新增一个显示字段的任务。我以为这应该是一个分分钟就能够搞定的小需求，没有想到这就开始了我的痛苦之旅。我梳理了关联的api后，发现每个api都是从controller控制层-》service-》服务层-dao数据层，甚至每个api都对应一个sql查询。</p>
+<p>但是，所有的api之间又有很大类似的代码。我开始阅读代码的时候，发现一个特殊的controller，在该controller里包括身份校验，参数校验，各种业务代码，各种if else，for循环语句，甚至dao层的逻辑都融到了一块。</p>
+<p>更让人悲痛欲绝的是项目没有文档，代码也几乎没注释，没有测试用例，我还是直接撸代码梳理业务，很多属性字段无法理解到底代表什么，例如，ajAmount，gjjAmount；在sql语句中写status in（1，2，4，6），case when，等很多魔法数条件判断。</p>
+<p>我最后直接抓包调用了一下api，然后，通过与页面的展示端字段匹配我才知道ajAmount，gjjAmount分别表示按揭贷款，公积金代码，status的部分字段是什么意思。这样的项目维护经历，你有没有类似的经历？</p>
+<p>个人认为，只要我们做到api拒绝烟囱式开发，业务代码拒绝All in one，项目做好代码注释，就可以写出易阅读，好扩展的代码。</p>
+<h2 id="api如何拒绝烟囱式开发"><a href="#api如何拒绝烟囱式开发" class="headerlink" title="api如何拒绝烟囱式开发"></a>api如何拒绝烟囱式开发</h2><p>上述的api开发开发过程就是典型的烟囱式开发模式，所有的api服务与相似业务，但是每个api都是完全独立的开发，其开发流程如图：</p>
+<p><img src="/2022/02/25/Java%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/1.png" alt="img"></p>
+<p>如上的开发流程有几个弊端，如下：</p>
+<p>业务代码重复，在不同的service实现中，业务相似的话会有大量重复代码。</p>
+<p>数据库表结构的改动需要修改所有涉及到的dao层，维护成本比较高。</p>
+<p>此类相似业务，api层定义各自显示对象，dao层负责获取全量数据（例如，用户查询，就获取整个用户表字段的数据），service层定义业务对象，根据不同api不同业务类型的判断，根据dao查询的数据组转业务对象，以及业务对象向api显示对象的转换。</p>
+<p>开发流程如图：</p>
+<p><img src="/2022/02/25/Java%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/2.png" alt="img"></p>
+<p><strong>这样的开发模式有如下优势：</strong></p>
+<p>业务代码集中在service层，专注业务对象bo的封装，以及业务对象向给类显示层vo的转换；封装复用逻辑，可以大量减少重复代码。如果，设计模式从一开始就设计得易扩展，后期维护就快捷的多。</p>
+<p>数据库的改动只涉及到db层，能够快速的在各个业务响应。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">代码规范</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/02/25/Java%E4%B8%9A%E5%8A%A1%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-通用Auth认证" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/24/%E9%80%9A%E7%94%A8Auth%E8%AE%A4%E8%AF%81/">通用Auth认证</a>
+    </h1>
+  
+
+        
+        <a href="/2022/02/24/%E9%80%9A%E7%94%A8Auth%E8%AE%A4%E8%AF%81/" class="archive-article-date">
+  	<time datetime="2022-02-24T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-24</time>
 </a>
         
       </header>
@@ -552,30 +779,24 @@
 		字数：2k字 | 预计阅读时长：7分钟
 	  </div> 
       
-        <p>今天来看下InnoDB引擎中的自增原理，内容摘抄自【Java极客技术】。</p>
-<p><strong>虽然我们习惯于给主键ID指定<code>AUTO_INCREMENT</code>属性，但是<code>AUTO_INCREMENT</code>也是可以指定到非主键字段的，唯一的约束就是这个字段上面得加索引，有了索引，就可以通过类似<code>SELECT MAX(*</code>ai_col<code>*)</code>的语句快速读到这列数据的最大值。</strong></p>
-<p><strong>本文要探讨的话题是<code>MySql</code>的<code>InnoDB</code>引擎处理自增数据列的原理</strong></p>
-<h2 id="MySql-5-1之前的实现"><a href="#MySql-5-1之前的实现" class="headerlink" title="MySql 5.1之前的实现"></a>MySql 5.1之前的实现</h2><p>在这个版本之前，用<code>AUTO_INCREMENT</code>修饰的数据列确实是严格连续自增的。<code>MySql</code>的实现是会针对每个插入语句加一个全表维度的锁，这个锁可以保证每次只有一条插入语句在执行，每插入一行数据，就会生成一个自增数据。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">CREATE</span> <span class="keyword">TABLE</span> t1 (</span><br><span class="line">    <span class="operator">-</span><span class="operator">&gt;</span> c1 <span class="type">INT</span> UNSIGNED <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT <span class="keyword">PRIMARY</span> KEY, </span><br><span class="line">    <span class="operator">-</span><span class="operator">&gt;</span> c2 <span class="type">CHAR</span>(<span class="number">1</span>)</span><br><span class="line">    <span class="operator">-</span><span class="operator">&gt;</span> ) ENGINE<span class="operator">=</span>InnoDB AUTO_INCREMENT<span class="operator">=</span><span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+        <p>今天来看一下Spring Boot 实现通用 Auth 认证的 4 种方式，内容摘抄自微信公众号【IT大咖说】。</p>
+<h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a><strong>一、前言</strong></h2><p>好久没输出了，于是挑一个方面总结一下，希望在梳理过程中再了解一些其他的东西。由于 Java 繁荣的生态，下面每一个模块都有大量的文章专门讲述。所以我选了另外一个角度，从实际问题出发，将这些分散的知识串联起来，各位可以作为一个综述来看。各个模块的极致详细介绍，大家可以去翻官方文档或看网络上的其他博客。</p>
+<p>需求很简单清晰，跟产品们提的妖艳需求一点也不一样：在我们的 web 框架里添加一个通用的 appkey 白名单校验功能，希望它的扩展性更好一些。</p>
+<p>这个 web 框架是部门前驱者基于 spring-boot 实现的，介于业务和 Spring 框架之间，做一些偏向于业务的通用性功能，如 日志输出、功能开关、通用参数解析等。平常是对业务透明的，最近一直忙于把需求做好，代码写好，甚至从没注意过它的存在。</p>
+<h2 id="二、传统-AOP"><a href="#二、传统-AOP" class="headerlink" title="二、传统 AOP"></a><strong>二、传统 AOP</strong></h2><p>对于这种需求，首先想到的当然是 Spring-boot 提供的 AOP 接口，只需要在 Controller 方法前添加切点，然后再对切点进行处理即可。</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a><strong>实现</strong></h3><p>其使用步骤如下：</p>
+<ul>
+<li>使用 @Aspect 声明一下切面类 WhitelistAspect；</li>
+<li>在切面类内添加一个切点 whitelistPointcut()，为了实现此切点灵活可装配的能力，这里不使用 execution 全部拦截，而是添加一个注解 @Whitelist，被注解的方法才会校验白名单。</li>
+<li>在切面类中使用 spring 的 AOP 注解 @Before 声明一个通知方法 checkWhitelist() 在 Controller 方法被执行之前校验白名单。</li>
+</ul>
+<p>切面类伪代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WhitelistAspect</span> </span>&#123;</span><br><span class="line"> <span class="meta">@Before(value = &quot;whitelistPointcut() &amp;&amp; @annotation(whitelist)&quot;)</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">checkAppkeyWhitelist</span><span class="params">(JoinPoint joinPoint, Whitelist </span></span></span><br><span class="line"><span class="params"><span class="function"> whitelist)</span> </span>&#123;</span><br><span class="line">     checkWhitelist();</span><br><span class="line">     <span class="comment">// 可使用 joinPoint.getArgs() 获取Controller方法的参数</span></span><br><span class="line">     <span class="comment">// 可以使用 whitelist 变量获取注解参数</span></span><br><span class="line"> &#125;</span><br><span class="line"> <span class="meta">@Pointcut(&quot;@annotation(com.zhenbianshu.Whitelist)&quot;)</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">whitelistPointCut</span><span class="params">()</span> </span>&#123;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>假如我们在数据库中新建上面的这张表，接着我们执行插入语句。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">INSERT</span> <span class="keyword">INTO</span> t1 (c1,c2) <span class="keyword">VALUES</span> (<span class="keyword">NULL</span>,<span class="string">&#x27;a&#x27;</span>), (<span class="keyword">NULL</span>,<span class="string">&#x27;b&#x27;</span>), (<span class="keyword">NULL</span>,<span class="string">&#x27;c&#x27;</span>), (<span class="keyword">NULL</span>,<span class="string">&#x27;d&#x27;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>针对这条<code>MySql</code>执行的流程为：</p>
-<blockquote>
-<ol>
-<li><p>全表加 <code>AUTO-INC</code>锁</p>
-<p>1.1 生成主键ID：101</p>
-<p>1.2 将行(101, ‘a’)插入表中</p>
-<p>1.3 生成主键ID: 102</p>
-<p>1.4 将行(102, ‘b’)插入表中</p>
-<p>…</p>
-</li>
-<li><p>释放 <code>AUTO-INC</code>锁</p>
-</li>
-</ol>
-</blockquote>
-<p><code>MySql</code>5.1之前的这种实现方式可以保证<code>AUTO_INCREMENT</code>严格自增，但是并发程度也最差，因为<code>AUTO_INCREMENT</code>锁是全表加锁直到这条语句结束</p>
+<p>在Controller方法上添加 @Whitelist 注解实现功能。</p>
+<h3 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a><strong>拓展</strong></h3><p>本例中使用了 注解 来声明切点，并且我实现了通过注解参数来声明要校验的白名单，如果之后还需要添加其他白名单的话，如通过 UID 来校验，则可以为此注解添加 uid() 等方法，实现自定义校验。</p>
+<p>此外，spring 的 AOP 还支持 execution（执行方法） 、bean（匹配特定名称的 Bean 对象的执行方法）等切点声明方法和 @Around（在目标函数执行中执行） 、@After（方法执行后） 等通知方法。</p>
+<p>如此，功能已经实现了，但领导并不满意=_=，原因是项目中 AOP 用得太多了，都用滥了，建议我换一种方式。嗯，只好搞起。</p>
         
       
 
@@ -589,7 +810,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Mysql</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">token</a>
         		</li>
       		
 		</ul>
@@ -599,7 +820,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/22/InnoDB%E8%87%AA%E5%A2%9E%E5%8E%9F%E7%90%86/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/02/24/%E9%80%9A%E7%94%A8Auth%E8%AE%A4%E8%AF%81/">展开全文 >></a>
         </p>
       
 
@@ -629,20 +850,20 @@
 
 
   
-    <article id="post-SpringBoot的ClassLoader加载机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Redis实现延时队列" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/21/SpringBoot%E7%9A%84ClassLoader%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">SpringBoot的ClassLoader加载机制</a>
+      <a class="article-title" href="/2022/02/23/Redis%E5%AE%9E%E7%8E%B0%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97/">Redis实现延时队列</a>
     </h1>
   
 
         
-        <a href="/2021/10/21/SpringBoot%E7%9A%84ClassLoader%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/" class="archive-article-date">
-  	<time datetime="2021-10-21T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-21</time>
+        <a href="/2022/02/23/Redis%E5%AE%9E%E7%8E%B0%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97/" class="archive-article-date">
+  	<time datetime="2022-02-23T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-23</time>
 </a>
         
       </header>
@@ -650,14 +871,145 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.7k字 | 预计阅读时长：6分钟
+		字数：1.1k字 | 预计阅读时长：5分钟
 	  </div> 
       
-        <p>今天来看下SpringBoot的ClassLoader加载机制，有个大概的了解。内容摘抄自微信公众号【IT大咖说】。</p>
-<h1 id="◆-SpringBoot的ClassLoader加载机制"><a href="#◆-SpringBoot的ClassLoader加载机制" class="headerlink" title="◆ SpringBoot的ClassLoader加载机制"></a><strong>◆</strong> SpringBoot的ClassLoader加载机制</h1><p>在Spring Boot的嵌入式Web容器原理一节中，我们已经介绍了Spring Boot对Tomcat容器的加载过程，本节我们进一步讲解SpringBoot的ClassLoader加载机制。</p>
-<p>熟悉Tomcat工作原理的人应该知道，Tomcat内部实现了自定义的类加载器，打破了Java的双亲委派机制，下面我们先看看什么是双亲委派机制。</p>
-<p><img src="/2021/10/21/SpringBoot%E7%9A%84ClassLoader%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/1.png" alt="img"></p>
+        <p>延时队列之前已经写过一些了，今天就来看一下如何用redis实现延时队列。内容摘抄自微信公众号【IT大咖说】。</p>
+<h2 id="什么是延迟队列？"><a href="#什么是延迟队列？" class="headerlink" title="什么是延迟队列？"></a>什么是延迟队列？</h2><p>首先，队列这种数据结构相信大家都不陌生，它是一种先进先出的数据结构。普通队列中的元素是有序的，先进入队列中的元素会被优先取出进行消费；</p>
+<p>延时队列相比于普通队列最大的区别就体现在其延时的属性上，普通队列的元素是先进先出，按入队顺序进行处理，而延时队列中的元素在入队时会指定一个延迟时间，表示其希望能够在经过该指定时间后处理。从某种意义上来讲，延迟队列的结构并不像一个队列，而更像是一种以时间为权重的有序堆结构。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
+<li><p>下单成功后，X分钟内没有支付，自动取消订单</p>
+</li>
+<li><p>外卖场景，快要超时时给外卖小哥发送提醒通知</p>
+</li>
+<li><p>预定的会议开始前X分钟提醒</p>
+</li>
+<li><p>等等</p>
+</li>
+</ul>
+<h2 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h2><ul>
+<li>JDK中DelayQueue相关API</li>
+<li>Quartz</li>
+<li>Redis Zset（本文）</li>
+<li>MQ</li>
+<li>等等</li>
+</ul>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>本文使用Redis Zset来实现延迟队列。</p>
+<blockquote>
+<p>zset 是 Redis 提供的最具特色的数据类型之一，首先它是一个 set，这保证了内部 value 值的唯一性，其次它给每个 value 添加了一个 score（分值）属性，通过对分值的排序实现了有序化。比如用 zset 结构来存储学生的成绩，value 值代表学生的 ID，score 则是的考试成绩。我们可以对成绩按分数进行排序从而得到学生的的名次。</p>
+</blockquote>
+<h3 id="1、pom-xml"><a href="#1、pom-xml" class="headerlink" title="1、pom.xml"></a><strong>1、pom.xml</strong></h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>application.yml</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">host:</span> <span class="string">localhost</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">6379</span></span><br><span class="line">    <span class="attr">password:</span> <span class="string">xxx</span></span><br><span class="line">    <span class="attr">database:</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
         
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/02/23/Redis%E5%AE%9E%E7%8E%B0%E5%BB%B6%E6%97%B6%E9%98%9F%E5%88%97/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-拦截器" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/22/%E6%8B%A6%E6%88%AA%E5%99%A8/">拦截器</a>
+    </h1>
+  
+
+        
+        <a href="/2022/02/22/%E6%8B%A6%E6%88%AA%E5%99%A8/" class="archive-article-date">
+  	<time datetime="2022-02-22T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-22</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：689字 | 预计阅读时长：2分钟
+	  </div> 
+      
+        <p>今天来看一下如何在SpringBoot中使用拦截器，内容摘抄自微信公众号【IT大咖说】。</p>
+<p>拦截器Interceptor，是SpringMVC中的核心内容，利用spring的AOP（Aspect Oriented Programming， 面向切面编程）特性，可以很方便的对用户的业务代码进行横向抽取，根据具体业务需求对应用功能进行增强。<br>在SpringBoot中使用Interceptor，同时采用全注解开发，涉及到以下接口和类：</p>
+<ul>
+<li><p>HandlerInterceptor：处理器拦截器，handler就是处理器，在springboot web开发中，由控制器来处理web请求，因此handler具体指控制器</p>
+</li>
+<li><p>使用全注解开发，通过@Configuration注解，让一个java对象主任到IOC容器，并作为配置对象，这里的JavaConfig类相当于一个xml配置文件；</p>
+</li>
+<li><p>在以前的xml配置中<br>（1）通过引入一些标签进行配置，在JavaConfig中，通过继承一个类或者实现一个接口来实现配置，这里所继承的类、所实现的接口就相当于引入的标签；</p>
+<p>（3）通过设置所引入标签的属性和值，可以实现个性化配置，在JavaConfig中通过覆盖类或者接口的方法来实现个性化配置。</p>
+</li>
+</ul>
+<p>下面通过一个案例来实现自定义拦截器<br>拦截/user/开头的请求，不拦截/usr/login请求</p>
+<h2 id="1-定义拦截器"><a href="#1-定义拦截器" class="headerlink" title="1. 定义拦截器"></a>1. 定义拦截器</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">1234567891011121314package cn.eis220.web;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.web.servlet.HandlerInterceptor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginInterceptor</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;执行了logininterceptor的preHandle方法&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-使用JavaConfig注册拦截器"><a href="#2-使用JavaConfig注册拦截器" class="headerlink" title="2. 使用JavaConfig注册拦截器"></a>2. 使用JavaConfig注册拦截器</h2><p>java配置类相当于xml配置文件<br>xml中通过引入interceptor标签来进行配置，java配置类通过实现WebMvcController进行配置；<br>xml中通过修改标签的属性和值来个性化配置，java配置类通过实现WebMvcController的方法进行个性化配置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">123456789101112131415161718package cn.eis220.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> cn.eis220.web.LoginInterceptor;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.servlet.config.annotation.InterceptorRegistry;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.servlet.config.annotation.WebMvcConfigurer;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyAppCofnig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> </span>&#123;</span><br><span class="line">        LoginInterceptor loginInterceptor = <span class="keyword">new</span> LoginInterceptor();</span><br><span class="line"></span><br><span class="line">        String[] path = &#123;<span class="string">&quot;/user/**&quot;</span>&#125;;</span><br><span class="line">        String[] excludePath = &#123;<span class="string">&quot;/user/login&quot;</span>&#125;;</span><br><span class="line">	registry.addInterceptor(loginInterceptor).addPathPatterns(path).excludePathPatterns(excludePath);    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-定义控制器，测试拦截器"><a href="#3-定义控制器，测试拦截器" class="headerlink" title="3. 定义控制器，测试拦截器"></a>3. 定义控制器，测试拦截器</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">123456789101112131415161718192021package cn.eis220.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestBody;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.ResponseBody;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BootController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/user/account&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">userAccount</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;/user/account&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/user/login&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">userLogin</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;/user/login&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h2><p>步骤：</p>
+<ul>
+<li>如何定义自己的拦截器：<br>实现HandlerInterceptor接口的方法，来自定义拦截器</li>
+<li>如何注册拦截器：<br>JavaConfig配置类实现WebMvcConfigurer接口的addInterceptor方法来注册拦截器</li>
+</ul>
+
       
 
       
@@ -680,7 +1032,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/21/SpringBoot%E7%9A%84ClassLoader%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/02/22/%E6%8B%A6%E6%88%AA%E5%99%A8/">展开全文 >></a>
         </p>
       
 
@@ -710,20 +1062,20 @@
 
 
   
-    <article id="post-线程池的创建、关闭、监控" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Redis性能优化技巧" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/20/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%88%9B%E5%BB%BA%E3%80%81%E5%85%B3%E9%97%AD%E3%80%81%E7%9B%91%E6%8E%A7/">线程池的创建、关闭、监控</a>
+      <a class="article-title" href="/2022/02/21/Redis%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/">Redis性能优化技巧</a>
     </h1>
   
 
         
-        <a href="/2021/10/20/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%88%9B%E5%BB%BA%E3%80%81%E5%85%B3%E9%97%AD%E3%80%81%E7%9B%91%E6%8E%A7/" class="archive-article-date">
-  	<time datetime="2021-10-20T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-20</time>
+        <a href="/2022/02/21/Redis%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/" class="archive-article-date">
+  	<time datetime="2022-02-21T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-21</time>
 </a>
         
       </header>
@@ -731,120 +1083,39 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：3.9k字 | 预计阅读时长：16分钟
+		字数：4.3k字 | 预计阅读时长：15分钟
 	  </div> 
       
-        <p>最近在工作中经常用到多线程，今天就来看下线程池的创建、关闭和监控。</p>
-<p><img src="/2021/10/20/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%88%9B%E5%BB%BA%E3%80%81%E5%85%B3%E9%97%AD%E3%80%81%E7%9B%91%E6%8E%A7/1.png" alt="img"></p>
-<h2 id="构造器创建线程池"><a href="#构造器创建线程池" class="headerlink" title="构造器创建线程池"></a><strong>构造器创建线程池</strong></h2><p><strong>1、直接使用 ThreadPoolExecutor 的构造器创建线程池</strong></p>
-<p><strong>2、ThreadPoolExecutor 类提供了四个构造器，常用的如下所示：</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize,</span></span></span><br><span class="line"><span class="params"><span class="function">                          <span class="keyword">int</span> maximumPoolSize,</span></span></span><br><span class="line"><span class="params"><span class="function">                          <span class="keyword">long</span> keepAliveTime,</span></span></span><br><span class="line"><span class="params"><span class="function">                          TimeUnit unit,</span></span></span><br><span class="line"><span class="params"><span class="function">                          BlockingQueue&lt;Runnable&gt; workQueue,</span></span></span><br><span class="line"><span class="params"><span class="function">                          RejectedExecutionHandler handler)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,</span><br><span class="line">         Executors.defaultThreadFactory(), handler);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>@param corePoolSize    核心线程数，池中所保存的线程数，包括空闲线程。活动线程小于corePoolSize时则直接创建，大于等于时则添加到 workQueue(工作队列) 中等待执行。</strong><br><strong>@param maximumPoolSize    池中允许的最大线程数。每个线程都有自己约定大小的 workQueue(工作队列)，如果corePoolSize 已经满了，而且所有核心线程的 workQueue 也已经排满了，当前线程池活动线程总数又小于maximumPoolSize时，则创建新的线程执行任务。如果线程池中活动线程数已经超过maximumPoolSize了，则执行饱和策略(handler)</strong><br><strong>@param keepAliveTime    当线程数大于核心线程时，此为终止当前多余的空闲线程等待新任务的最长时间。最大线程数量大于核心线程数时，当线程执行任务完成后，就要关闭多余的线程(它们此时处于空闲状态)，直到线程池中线程的数量恢复到 corePoolSize 的大小。为了提高线程的利用效率，可约定空闲线程保持存活的时间，大小为 keepAliveTime。对于数量多，时间短的任务，可以适当将 keepAliveTime 放大一点。</strong><br><strong>@param unit    keepAliveTime 参数的时间单位。</strong><br><strong>@param workQueue    此工作队列仅保持由 execute 方法提交的 Runnable 任务，每个活动(工作)线程都有一个工作队列，然后从这里获取任务依次进行执行</strong><br><strong>@param handler    当线程池中线程总数已经超过了maximumPoolSize，且每个线程的workQueue(工作队列)也已经排满时，则执行饱和策略。通俗的说是线程池中的任务已经爆满了，此时对于新加的任务应该如何处理？可以参考《线程池理论》中的饱和策略部分。</strong></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">多线程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/20/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%88%9B%E5%BB%BA%E3%80%81%E5%85%B3%E9%97%AD%E3%80%81%E7%9B%91%E6%8E%A7/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-对象池" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/19/%E5%AF%B9%E8%B1%A1%E6%B1%A0/">对象池</a>
-    </h1>
-  
-
-        
-        <a href="/2021/10/19/%E5%AF%B9%E8%B1%A1%E6%B1%A0/" class="archive-article-date">
-  	<time datetime="2021-10-19T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-19</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：4k字 | 预计阅读时长：17分钟
-	  </div> 
-      
-        <p>今天来了解下什么是对象池。内容摘抄自微信公众号【Java技术栈】。</p>
-<p>对象池顾名思义就是存放对象的池，与我们常听到的线程池、数据库连接池、http连接池等一样，都是典型的池化设计思想。</p>
-<p>对象池的优点就是可以集中管理池中对象，减少频繁创建和销毁长期使用的对象，从而提升复用性，以节约资源的消耗，可以有效避免频繁为对象分配内存和释放堆中内存，进而减轻jvm垃圾收集器的负担，避免内存抖动。</p>
-<p>Apache Common Pool2 是Apache提供的一个通用对象池技术实现，可以方便定制化自己需要的对象池，大名鼎鼎的 Redis 客户端 Jedis 内部连接池就是基于它来实现的。</p>
-<h2 id="核心接口"><a href="#核心接口" class="headerlink" title="核心接口"></a>核心接口</h2><p>Apache Common Pool2 的核心内部类如下：</p>
+        <p>今天来看一下Redis的一些性能优化技巧。内容摘抄自微信公众号【苏三说技术】。</p>
+<blockquote>
+<p>Redis 是基于单线程模型实现的，也就是 Redis 是使用一个线程来处理所有的客户端请求的，尽管 Redis 使用了非阻塞式 IO，并且对各种命令都做了优化（大部分命令操作时间复杂度都是 O(1)），但由于 Redis 是单线程执行的特点，因此它对性能的要求更加苛刻，本文我们将通过一些优化手段，让 Redis 更加高效的运行。</p>
+</blockquote>
+<p>本文我们将使用以下手段，来提升 Redis 的运行速度：</p>
+<ol>
+<li>缩短键值对的存储长度；</li>
+<li>使用 lazy free（延迟删除）特性；</li>
+<li>设置键值的过期时间；</li>
+<li>禁用长耗时的查询命令；</li>
+<li>使用 slowlog 优化耗时命令；</li>
+<li>使用 Pipeline 批量操作数据；</li>
+<li>避免大量数据同时失效；</li>
+<li>客户端使用优化；</li>
+<li>限制 Redis 内存大小；</li>
+<li>使用物理机而非虚拟机安装 Redis 服务；</li>
+<li>检查数据持久化策略；</li>
+<li>禁用 THP 特性；</li>
+<li>使用分布式架构来增加读写速度。</li>
+</ol>
+<h2 id="1-缩短键值对的存储长度"><a href="#1-缩短键值对的存储长度" class="headerlink" title="1.缩短键值对的存储长度"></a>1.缩短键值对的存储长度</h2><p>键值对的长度是和性能成反比的，比如我们来做一组写入数据的性能测试，执行结果如下：</p>
+<p><img src="/2022/02/21/Redis%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/1.png" alt="img"></p>
+<p>从以上数据可以看出，在 key 不变的情况下，value 值越大操作效率越慢，因为 Redis 对于同一种数据类型会使用不同的内部编码进行存储，比如字符串的内部编码就有三种：int（整数编码）、raw（优化内存分配的字符串编码）、embstr（动态字符串编码），这是因为 Redis 的作者是想通过不同编码实现效率和空间的平衡，然而数据量越大使用的内部编码就越复杂，而越是复杂的内部编码存储的性能就越低。</p>
+<p>这还只是写入时的速度，当键值对内容较大时，还会带来另外几个问题：</p>
 <ul>
-<li><p>ObjectPool：对象池接口，对象池实体，取用对象的地方</p>
-</li>
-<li></li>
-<li><ul>
-<li>对象的提供与归还(工厂来操作)：<code>borrowObject</code> <code>returnObject</code></li>
-<li>创建对象(使用工厂来创建)：<code>addObject</code></li>
-<li>销毁对象(使用工厂来销毁)：<code>invalidateObject</code></li>
-<li>池中空闲对象数量、被使用对象数量：<code>getNumActive</code> <code>getNumIdle</code></li>
+<li>内容越大需要的持久化时间就越长，需要挂起的时间越长，Redis 的性能就会越低；</li>
+<li>内容越大在网络上传输的内容就越多，需要的时间就越长，整体的运行速度就越低；</li>
+<li>内容越大占用的内存就越多，就会更频繁的触发内存淘汰机制，从而给 Redis 带来了更多的运行负担。</li>
 </ul>
-</li>
-<li><p>PooledObject：被包装的对象，是池中的对象，除了对象本身之外包含了创建时间、上次被调用时间等众多信息</p>
-</li>
-<li><p>PooledObjectFactory：对象工厂，管理对象的生命周期，提供了对象创建、销毁、验证、钝化、激活等一系列功能</p>
-</li>
-<li><p>BaseObjectPoolConfig：提供一些必要的配置，例如空闲队列是否先进先出、工厂创建对象前是否需要测试、对象从对象池取出时是否测试等基础属性，<code>GenericObjectPoolConfig</code>继承了本类做了默认配置，我们在实际使用中继承它即可，可以结合业务情况扩展对象池配置，例如数据库连接池线程前缀、字符串池长度或名称规则等</p>
-</li>
-<li><p>KeyedObjectPool&lt;K,V&gt;：键值对形式的对象池接口，使用场景很少</p>
-</li>
-<li><p>KeyedPooledObjectFactory&lt;K,V&gt;：同上，为键值对对象池管理对象的工厂</p>
-</li>
-</ul>
+<p>因此在保证完整语义的同时，我们要尽量的缩短键值对的存储长度，必要时要对数据进行序列化和压缩再存储，以 Java 为例，序列化我们可以使用 protostuff 或 kryo，压缩我们可以使用 snappy。</p>
         
       
 
@@ -858,97 +1129,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">设计</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/19/%E5%AF%B9%E8%B1%A1%E6%B1%A0/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-netty自定义编码器和解码器" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/18/netty%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BC%96%E7%A0%81%E5%99%A8%E5%92%8C%E8%A7%A3%E7%A0%81%E5%99%A8/">netty自定义编码器和解码器</a>
-    </h1>
-  
-
-        
-        <a href="/2021/10/18/netty%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BC%96%E7%A0%81%E5%99%A8%E5%92%8C%E8%A7%A3%E7%A0%81%E5%99%A8/" class="archive-article-date">
-  	<time datetime="2021-10-18T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-18</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：1.4k字 | 预计阅读时长：6分钟
-	  </div> 
-      
-        <p>今天总结下在工作中遇到的问题，就是netty需要自定义编码器和解码器。这篇博客就来总结一下。</p>
-<ul>
-<li>服务端接收的是字节数据，通过“入站解码”，得到知道格式的数据；</li>
-<li>服务器发送指定格式数据通过 “出站编码” 转换成字节数据，然后发送给客户端；</li>
-<li>客户端类似；</li>
-<li> ChannelPipeLine 管理一系列 ChannelHandler,入站消息解码后转发给下一个 handler 进行处理</li>
-</ul>
-<h2 id="一、解码器"><a href="#一、解码器" class="headerlink" title="一、解码器"></a>一、解码器</h2><h3 id="1、自定义消息解码器"><a href="#1、自定义消息解码器" class="headerlink" title="1、自定义消息解码器"></a>1、自定义消息解码器</h3><p>继承ByteToMessageDecoder类，重写decode方法进行解码。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.southgnss.modules.netty;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.ByteBuf;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.ChannelHandlerContext;</span><br><span class="line"><span class="keyword">import</span> io.netty.handler.codec.ByteToMessageDecoder;</span><br><span class="line"><span class="keyword">import</span> io.netty.handler.codec.CorruptedFrameException;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.slf4j.Slf4j;</span><br><span class="line"><span class="keyword">import</span> org.southgnss.modules.utils.DigitalTransUtil;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.apache.commons.lang.CharEncoding.UTF_8;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyCustomMessageDecoder</span> <span class="keyword">extends</span> <span class="title">ByteToMessageDecoder</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * decode() 会根据接收的数据，被调用多次，知道确定没有新的元素添加到list,</span></span><br><span class="line"><span class="comment">     * 或者是 ByteBuf 没有更多的可读字节为止。</span></span><br><span class="line"><span class="comment">     * 如果 list 不为空，就会将 list 的内容传递给下一个 handler</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ctx 上下文对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> in 入站后的 ByteBuf</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> out 将解码后的数据传递给下一个 handler</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">decode</span><span class="params">(ChannelHandlerContext ctx, ByteBuf in, List&lt;Object&gt; out)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//in.markReaderIndex();</span></span><br><span class="line">        <span class="comment">// 读取消息长度</span></span><br><span class="line">        <span class="comment">//int length = in.readInt();</span></span><br><span class="line">        <span class="comment">// 如果可以读的数据小于协议中的数据，需要重置一下</span></span><br><span class="line">        <span class="keyword">int</span> len = in.readableBytes();</span><br><span class="line"><span class="comment">//        if (len &lt; length) &#123;</span></span><br><span class="line"><span class="comment">//            in.resetReaderIndex();</span></span><br><span class="line"><span class="comment">//            return;</span></span><br><span class="line"><span class="comment">//        &#125;</span></span><br><span class="line">        <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[len];</span><br><span class="line">        <span class="comment">// 将读取的字节填充到空的数组中</span></span><br><span class="line">        in.readBytes(bytes);</span><br><span class="line">        <span class="comment">// 将传输的字节数组转换为字符串传递给下一个入站类处理</span></span><br><span class="line">        String msg = <span class="keyword">new</span> String(bytes,UTF_8);</span><br><span class="line">        <span class="keyword">if</span>(msg.endsWith(<span class="string">&quot;\r\n&quot;</span>)) msg = msg.replace(<span class="string">&quot;\r\n&quot;</span>,<span class="string">&quot;&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span>(len == <span class="number">14</span>)&#123;</span><br><span class="line">            msg = DigitalTransUtil.byte2hex(bytes);</span><br><span class="line">        &#125;</span><br><span class="line">        out.add(msg);</span><br><span class="line"></span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">WebSocket</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">性能优化</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">netty</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
         		</li>
       		
 		</ul>
@@ -958,89 +1143,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/18/netty%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BC%96%E7%A0%81%E5%99%A8%E5%92%8C%E8%A7%A3%E7%A0%81%E5%99%A8/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-线程池异常处理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/17/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/">线程池异常处理</a>
-    </h1>
-  
-
-        
-        <a href="/2021/10/17/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" class="archive-article-date">
-  	<time datetime="2021-10-17T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-17</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：1.6k字 | 预计阅读时长：7分钟
-	  </div> 
-      
-        <p>今天来看下线程池的异常处理，内容摘抄自微信公众号【Java技术栈】。</p>
-<h2 id="可能出现的问题"><a href="#可能出现的问题" class="headerlink" title="可能出现的问题"></a>可能出现的问题</h2><h3 id="线程遇到未处理的异常就结束了"><a href="#线程遇到未处理的异常就结束了" class="headerlink" title="线程遇到未处理的异常就结束了"></a>线程遇到未处理的异常就结束了</h3><p>这个好理解，当线程出现未捕获异常的时候就执行不下去了，留给它的就是垃圾回收了。</p>
-<h3 id="线程池中线程频繁出现未捕获异常"><a href="#线程池中线程频繁出现未捕获异常" class="headerlink" title="线程池中线程频繁出现未捕获异常"></a>线程池中线程频繁出现未捕获异常</h3><p>当线程池中线程频繁出现未捕获的异常，那线程的复用率就大大降低了，需要不断地创建新线程。</p>
-<p>做个实验：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadExecutor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">private</span> ThreadPoolExecutor threadPoolExecutor = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">1</span>, <span class="number">1</span>, <span class="number">60</span>, TimeUnit.SECONDS,</span><br><span class="line">   <span class="keyword">new</span> ArrayBlockingQueue&lt;&gt;(<span class="number">200</span>), <span class="keyword">new</span> ThreadFactoryBuilder().setNameFormat(<span class="string">&quot;customThread %d&quot;</span>).build());</span><br><span class="line"></span><br><span class="line"> <span class="meta">@Test</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  IntStream.rangeClosed(<span class="number">1</span>, <span class="number">5</span>).forEach(i -&gt; &#123;</span><br><span class="line">   <span class="keyword">try</span> &#123;</span><br><span class="line">    Thread.sleep(<span class="number">100</span>);</span><br><span class="line">   &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">   &#125;</span><br><span class="line">   threadPoolExecutor.execute(() -&gt; &#123;</span><br><span class="line">     <span class="keyword">int</span> j = <span class="number">1</span>/<span class="number">0</span>;</span><br><span class="line">  &#125;);&#125;);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">多线程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/17/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/02/21/Redis%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7/">展开全文 >></a>
         </p>
       
 
@@ -1072,7 +1175,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/15/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/17/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/15/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/">14</a><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="page-number" href="/page/18/">18</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/17/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1174,15 +1277,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">前端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1222,15 +1345,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常处理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多线程</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">中间件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1278,11 +1401,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">前端</a>
+                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1306,15 +1429,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1322,11 +1441,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+                <a href="javascript:void(0)" class="js-tag color5">并发编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库，缓存</a>
               </li>
             
             <div class="clearfix"></div>

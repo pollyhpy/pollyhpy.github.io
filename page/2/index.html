@@ -79,8 +79,8 @@
 			</ul>
 		</nav>
 		<nav>
-			<a>总文章数 286</a>
-			<a>总字数 <span class="post-count">826k</span></a>
+			<a>总文章数 413</a>
+			<a>总字数 <span class="post-count">1279k</span></a>
 		</nav>
 		<nav class="header-smart-menu">
     		
@@ -165,20 +165,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-同步式微服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-并发编程的业务场景" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/15/%E5%90%8C%E6%AD%A5%E5%BC%8F%E5%BE%AE%E6%9C%8D%E5%8A%A1/">同步式微服务</a>
+      <a class="article-title" href="/2022/07/21/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%9A%84%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF/">并发编程的业务场景</a>
     </h1>
   
 
         
-        <a href="/2022/03/15/%E5%90%8C%E6%AD%A5%E5%BC%8F%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="archive-article-date">
-  	<time datetime="2022-03-15T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-15</time>
+        <a href="/2022/07/21/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%9A%84%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF/" class="archive-article-date">
+  	<time datetime="2022-07-21T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-21</time>
 </a>
         
       </header>
@@ -186,554 +186,36 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.7k字 | 预计阅读时长：5分钟
+		字数：6.2k字 | 预计阅读时长：24分钟
 	  </div> 
       
-        <p>今天来看一下什么是同步式微服务以及它的优缺点。内容摘抄自微信公众号【IT大咖说】。</p>
-<p>微服务可以通过事件（本书所建议的方法）实现成异步的形式，或者实现成同步的形式（同步服务通常出现在面向服务的架构中）。同步的微服务通常采用“请求–响应”的方法来实现，服务间通信直接通过 API 来满足业务需求。</p>
-<h2 id="同步式微服务的缺点"><a href="#同步式微服务的缺点" class="headerlink" title="同步式微服务的缺点"></a>同步式微服务的缺点</h2><p>同步式微服务有很多问题，这使得它们难以大规模地使用。这并不是说一个公司不能用同步式微服务来获得成功，Netflix、Lyft、Uber 和 Facebook等公司的成功就证明了这一点。但是也有许多公司使用过时的、混乱的意大利面式代码和单体应用发了大财，所以不要把公司的最终成功与底层架构的质量混为一谈。市面上有许多介绍如何实现同步式微服务的图书，可以读读它们以更好地理解同步方法。</p>
-<blockquote>
-<p>例如由 Sam Newman 所著的《微服务设计》以及由 Kasun Indrasiri 和 Prabath Siriwardena合著的 Microservices for the Enterprise。</p>
-</blockquote>
-<p>此外，请注意，无论是点到点的“请求–响应”型微服务还是异步的事件驱动型微服务，严格来说都没有绝对的优劣之分。在一个组织里它们都有自己的一席之地，因为有些任务更适合采用其中的一种模式。然而，我以及我的许多同行和同事的经验表明，事件驱动型微服务架构提供了无与伦比的灵活性，这是同步的“请求–响应”型微服务所不具备的。当你继续阅读本书时可能会同意我的观点，至少你会了解它们的优缺点。</p>
-<p><strong>以下是同步的“请求–响应”型微服务的几大缺点。</strong></p>
-<h3 id="点到点的耦合"><a href="#点到点的耦合" class="headerlink" title="点到点的耦合"></a>点到点的耦合</h3><p>同步的微服务依赖其他服务来帮助它们执行业务任务。那些服务同样有自己的依赖服务，而这些依赖服务又有自己的依赖服务，以此类推。这会导致过度的扇出，且难以跟踪哪些服务要为实现业务逻辑的特定部分负责。服务之间的连接数量多得惊人，这会进一步增强现有的沟通结构并使得未来的变更更加困难。</p>
-<h3 id="有依赖的可伸缩性"><a href="#有依赖的可伸缩性" class="headerlink" title="有依赖的可伸缩性"></a>有依赖的可伸缩性</h3><p>你自身服务的扩容能力依赖于所有依赖服务的扩容能力，并且直接与通信的扇出程度有关。实现技术可能是可伸缩性的瓶颈。高度变化的负载和激增的请求模式会使情况更加复杂，所有这些都需要在整个体系架构内同步处理。</p>
-<h3 id="服务故障的处理"><a href="#服务故障的处理" class="headerlink" title="服务故障的处理"></a>服务故障的处理</h3><p>如果一个依赖服务关闭，则必须做出如何处理这个异常的决策。生态系统中的微服务越多，决定如何处理停机、何时重试、何时失败以及何时恢复以确保数据一致性就越困难。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">微服务</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/15/%E5%90%8C%E6%AD%A5%E5%BC%8F%E5%BE%AE%E6%9C%8D%E5%8A%A1/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Bean实例化过程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/14/Bean%E5%AE%9E%E4%BE%8B%E5%8C%96%E8%BF%87%E7%A8%8B/">Bean实例化过程</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/14/Bean%E5%AE%9E%E4%BE%8B%E5%8C%96%E8%BF%87%E7%A8%8B/" class="archive-article-date">
-  	<time datetime="2022-03-14T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-14</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：4.2k字 | 预计阅读时长：15分钟
-	  </div> 
-      
-        <p>今天来看一下Spring中的bean的实例化过程，内容摘抄自微信公众号【Java大后端】。</p>
-<p>对于写Java的程序员来说，Spring已经成为了目前最流行的第三方开源框架之一，在我们充分享受Spring IOC容器带来的红利的同时，我们也应该考虑一下Spring这个大工厂是如何将一个个的Bean生产出来的，本期我们就一起来讨论一下Spring中Bean的实例化过程。</p>
-<blockquote>
-<p>这里我们并不会详细的分析源代码，只是给出Spring在完成哪些工作的时候使用到了什么类，这些类具体的职责都是什么，如果我们要弄清楚Spring Bean实例化的内幕与详细信息，那么可以看哪些源代码? 至于具体的详细的代码信息，大家可以查看Spring相关类的代码。</p>
-</blockquote>
-<h2 id="两个阶段"><a href="#两个阶段" class="headerlink" title="两个阶段"></a>两个阶段</h2><p>这里首先声明一下，Spring将管理的一个个的依赖对象称之为Bean,这从xml配置文件中也可以看出。</p>
-<p>Spring IOC容器就好像一个生产产品的流水线上的机器，Spring创建出来的Bean就好像是流水线的终点生产出来的一个个精美绝伦的产品。既然是机器，总要先启动，Spring也不例外。因此Bean的一生从总体上来说可以分为两个阶段：</p>
-<ul>
-<li>容器启动阶段</li>
-<li>Bean实例化阶段</li>
-</ul>
-<p>容器的启动阶段做了很多的预热工作，为后面Bean的实例化做好了充分的准备，我们首先看一下容器的启动阶段都做了哪些预热工作。</p>
-<h2 id="容器启动阶段"><a href="#容器启动阶段" class="headerlink" title="容器启动阶段"></a>容器启动阶段</h2><h3 id="1、配置元信息"><a href="#1、配置元信息" class="headerlink" title="1、配置元信息"></a>1、配置元信息</h3><p>我们说Spring IOC容器将对象实例的创建与对象实例的使用分离，我们的业务中需要依赖哪个对象不再依靠我们自己手动创建，只要向Spring要，Spring就会以注入的方式交给我们需要的依赖对象。</p>
-<p>但是，你不干，我不干，总要有人干，既然我们将对象创建的任务交给了Spring，那么Spring就需要知道创建一个对象所需要的一些必要的信息。而这些必要的信息可以是Spring过去支持最完善的xml配置文件，或者是其他形式的例如properties的磁盘文件，也可以是现在主流的注解，甚至是直接的代码硬编码。总之，这些创建对象所需要的必要信息称为配置元信息。</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;role&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.wbg.springxmlbean.entity.Role&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- property元素是定义类的属性，name属性定义的是属性名称 value是值</span></span><br><span class="line"><span class="comment">    相当于：</span></span><br><span class="line"><span class="comment">    Role role=new Role();</span></span><br><span class="line"><span class="comment">    role.setId(1);</span></span><br><span class="line"><span class="comment">    role.setRoleName(&quot;高级工程师&quot;);</span></span><br><span class="line"><span class="comment">    role.setNote(&quot;重要人员&quot;);--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;id&quot;</span> <span class="attr">value</span>=<span class="string">&quot;1&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;roleName&quot;</span> <span class="attr">value</span>=<span class="string">&quot;高级工程师&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;note&quot;</span> <span class="attr">value</span>=<span class="string">&quot;重要人员&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="2、BeanDefination"><a href="#2、BeanDefination" class="headerlink" title="2、BeanDefination"></a>2、BeanDefination</h3><p>我们大家都知道，在Java世界中，万物皆对象，散落于程序代码各处的注解以及保存在磁盘上的xml或者其他文件等等配置元信息，在内存中总要以一种对象的形式表示，就好比我们活生生的人对应到Java世界中就是一个Person类。</p>
-<p>而Spring选择在内存中表示这些配置元信息的方式就是BeanDefination，这里我们不会去分析BeanDefination的代码，感兴趣的可以去看相关源码，这里我们只是需要知道配置元信息被加载到内存之后是以BeanDefination的形存在的即可。</p>
-<h3 id="3、BeanDefinationReader"><a href="#3、BeanDefinationReader" class="headerlink" title="3、BeanDefinationReader"></a>3、BeanDefinationReader</h3><p>大家肯定很好奇，我们是看得懂Spring中xml配置文件中一个个的Bean定义，但是Spring是如何看懂这些配置元信息的呢？这个就要靠我们的BeanDefinationReader了。</p>
-<p>不同的BeanDefinationReader就像葫芦兄弟一样，各自拥有各自的本领。如果我们要读取xml配置元信息，那么可以使用XmlBeanDefinationReader。如果我们要读取properties配置文件，那么可以使用PropertiesBeanDefinitionReader加载。</p>
-<p>而如果我们要读取注解配置元信息，那么可以使用 AnnotatedBeanDefinitionReader加载。我们也可以很方便的自定义BeanDefinationReader来自己控制配置元信息的加载。例如我们的配置元信息存在于三界之外，那么我们可以自定义From天界之外BeanDefinationReader。</p>
-<p>总的来说，BeanDefinationReader的作用就是加载配置元信息，并将其转化为内存形式的BeanDefination，存在某一个地方，至于这个地方在哪里，不要着急，接着往下看！</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/14/Bean%E5%AE%9E%E4%BE%8B%E5%8C%96%E8%BF%87%E7%A8%8B/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-数据库和缓存双写数据一致性" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/13/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%BC%93%E5%AD%98%E5%8F%8C%E5%86%99%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/">数据库和缓存双写数据一致性</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/13/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%BC%93%E5%AD%98%E5%8F%8C%E5%86%99%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" class="archive-article-date">
-  	<time datetime="2022-03-13T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-13</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：1.7k字 | 预计阅读时长：5分钟
-	  </div> 
-      
-        <p>今天来看一下如何保证数据库和缓存双写数据的一致性，内容摘抄自微信公众号【springmeng】。</p>
-<h2 id="如何保证缓存与数据库双写时的数据一致性？"><a href="#如何保证缓存与数据库双写时的数据一致性？" class="headerlink" title="如何保证缓存与数据库双写时的数据一致性？"></a>如何保证缓存与数据库双写时的数据一致性？</h2><p>在做系统优化时，想到了将数据进行分级存储的思路。因为在系统中会存在一些数据，有些数据的实时性要求不高，比如一些配置信息。基本上配置了很久才会变一次。而有一些数据实时性要求非常高，比如订单和流水的数据。所以这里根据数据要求实时性不同将数据分为三级。</p>
-<ul>
-<li>第1级：订单数据和支付流水数据；这两块数据对实时性和精确性要求很高，所以不添加任何缓存，读写操作将直接操作数据库。</li>
-<li>第2级：用户相关数据；这些数据和用户相关，具有读多写少的特征，所以我们使用redis进行缓存。</li>
-<li>第3级：支付配置信息；这些数据和用户无关，具有数据量小，频繁读，几乎不修改的特征，所以我们使用本地内存进行缓存。</li>
-</ul>
-<p>但是只要使用到缓存，无论是本地内存做缓存还是使用 redis 做缓存，那么就会存在数据同步的问题，因为配置信息缓存在内存中，而内存时无法感知到数据在数据库的修改。这样就会造成数据库中的数据与缓存中数据不一致的问题。接下来就讨论一下关于保证缓存和数据库双写时的数据一致性。</p>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>那么我们这里列出来所有策略，并且讨论他们优劣性。</p>
+        <p>今天来看下<strong>并发编程的业务场景</strong>，内容摘抄自微信公众号【苏三说技术】。</p>
+<p>并发编程是一项非常重要的技术，无论在面试，还是工作中出现的频率非常高。</p>
+<p>之前我发表的一篇《<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkwNjMwMTgzMQ==&mid=2247492962&idx=1&sn=17ed1d2ed950b4e9160218b296d19d4e&chksm=c0e83d8af79fb49cc72fcafc8ed62822263106e54675ea8406a2e3daadb44e25364275af9082&token=245805875&lang=zh_CN&scene=21#wechat_redirect">聊聊并发编程的10个坑</a>》，在全网广受好评。说明了这类文章还是比较有价值的，接下来，打算继续聊聊并发编程这个话题。</p>
+<p>并发编程说白了就是多线程编程，但多线程一定比单线程效率更高？</p>
+<p>答：不一定，要看具体业务场景。</p>
+<p>毕竟如果使用了多线程，那么线程之间的竞争和抢占cpu资源，线程的上下文切换，也是相对来说比较耗时的操作。</p>
+<p>下面这几个问题在面试中，你必定遇到过：</p>
 <ol>
-<li>先更新数据库，后更新缓存</li>
-<li>先更新数据库，后删除缓存</li>
-<li>先更新缓存，后更新数据库</li>
-<li>先删除缓存，后更新数据库</li>
+<li>你在哪来业务场景中使用过多线程？</li>
+<li>怎么用的？</li>
+<li>踩过哪些坑？</li>
 </ol>
-<h3 id="先更新数据库，后更新缓存"><a href="#先更新数据库，后更新缓存" class="headerlink" title="先更新数据库，后更新缓存"></a>先更新数据库，后更新缓存</h3><p>这种场景一般是没有人使用的，主要原因是在更新缓存那一步，为什么呢？因为有的业务需求缓存中存在的值并不是直接从数据库中查出来的，有的是需要经过一系列计算来的缓存值，那么这时候后你要更新缓存的话其实代价是很高的。如果此时有大量的对数据库进行写数据的请求，但是读请求并不多，那么此时如果每次写请求都更新一下缓存，那么性能损耗是非常大的。</p>
-<p>举个例子比如在数据库中有一个值为 1 的值，此时我们有 10 个请求对其每次加一的操作，但是这期间并没有读操作进来，如果用了先更新数据库的办法，那么此时就会有十个请求对缓存进行更新，会有大量的冷数据产生，如果我们不更新缓存而是删除缓存，那么在有读请求来的时候那么就会只更新缓存一次。</p>
-<h3 id="先更新缓存，后更新数据库"><a href="#先更新缓存，后更新数据库" class="headerlink" title="先更新缓存，后更新数据库"></a>先更新缓存，后更新数据库</h3><p>这一种情况应该不需要我们考虑了吧，和第一种情况是一样的。</p>
-        
-      
+<p>今天聊聊我之前在项目中用并发编程的12种业务场景，给有需要的朋友一个参考。</p>
+<p><img src="/2022/07/21/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%9A%84%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF/1.png" alt="img"></p>
+<h2 id="1-简单定时任务"><a href="#1-简单定时任务" class="headerlink" title="1. 简单定时任务"></a>1. 简单定时任务</h2><p>各位亲爱的朋友，你没看错，<code>Thread</code>类真的能做定时任务。如果你看过一些<code>定时任务框架</code>的源码，你最后会发现，它们的底层也会使用Thread类。</p>
+<p>实现这种定时任务的具体代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;下载文件&quot;</span>);</span><br><span class="line">                Thread.sleep(<span class="number">1000</span> * <span class="number">60</span> * <span class="number">5</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                log.error(e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;).start();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">数据库</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/13/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%BC%93%E5%AD%98%E5%8F%8C%E5%86%99%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-高可用" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/12/%E9%AB%98%E5%8F%AF%E7%94%A8/">高可用</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/12/%E9%AB%98%E5%8F%AF%E7%94%A8/" class="archive-article-date">
-  	<time datetime="2022-03-12T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-12</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：5.5k字 | 预计阅读时长：19分钟
-	  </div> 
-      
-        <p>今天来看一个设计原理，高可用，内容摘抄自微信公众号【苏三说技术】。</p>
-<p>今天我们来聊一下互联网三高（高并发、高性能、高可用）中的高可用，看完本文相信能解开你关于高可用设计的大部分困惑</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>高可用（High availability，即 HA）的主要目的是为了保障「业务的连续性」，即在用户眼里，业务永远是正常（或者说基本正常）对外提供服务的。高可用主要是针对架构而言，那么要做好高可用，就要首先设计好架构，第一步我们一般会采用分层的思想将一个庞大的 IT 系统拆分成为应用层，中间件，数据存储层等独立的层，每一层再拆分成为更细粒度的组件，第二步就是让每个组件对外提供服务，毕竟每个组件都不是孤立存在的，都需要互相协作，对外提供服务才有意义。</p>
-<p>要保证架构的高可用，就要保证架构中所有组件以及其对外暴露服务都要做高可用设计，任何一个组件或其服务没做高可用，都意味着系统存在风险。</p>
-<p>那么这么多组件该怎么做高可用设计呢，其实任何组件要做高可用，都离不开「冗余」和「自动故障转移」，众所周知单点是高可用的大敌，所以组件一般是以集群（至少两台机器）的形式存在的，这样只要某台机器出现问题，集群中的其他机器就可以随时顶替，这就是「冗余」。简单计算一下，假设一台机器的可用性为 90%，则两台机器组成的集群可用性为 1-0.1*0.1 = 99%，所以显然冗余的机器越多，可用性越高。</p>
-<p>但光有冗余还不够，如果机器出现问题，需要人工切换的话也是费时费力，而且容易出错，所以我们还需要借助第三方工具（即仲裁者）的力量来实现「自动」的故障转移，以达到实现<strong>近实时</strong>的故障转移的目的，<strong>近实时的故障转移才是高可用的主要意义</strong></p>
-<p>怎样的系统可以称之为高可用呢，业界一般用几个九来衡量系统的可用性，如下</p>
-<table>
-<thead>
-<tr>
-<th>可用性级别</th>
-<th>系统可用性%</th>
-<th>宕机时间/年</th>
-<th>宕机时间/月</th>
-<th>宕机时间/周</th>
-<th>宕机时间/天</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>不可用</td>
-<td>90%</td>
-<td>36.5 天</td>
-<td>73 小时</td>
-<td>16.8 小时</td>
-<td>144 分钟</td>
-</tr>
-<tr>
-<td>基本可用</td>
-<td>99%</td>
-<td>87.6 小时</td>
-<td>7.3 小时</td>
-<td>1.68 小时</td>
-<td>14.4 分钟</td>
-</tr>
-<tr>
-<td>较高可用</td>
-<td>99.9%</td>
-<td>8.76 小时</td>
-<td>43.8 分钟</td>
-<td>10.1 分钟</td>
-<td>1.44 分钟</td>
-</tr>
-<tr>
-<td>高可用</td>
-<td>99.99%</td>
-<td>52.56 分钟</td>
-<td>4.38 分钟</td>
-<td>1.01 秒</td>
-<td>8.64 秒</td>
-</tr>
-<tr>
-<td>极高可用</td>
-<td>99.999%</td>
-<td>5.26 分钟</td>
-<td>26.28 秒</td>
-<td>6.06 秒</td>
-<td>0.86 秒</td>
-</tr>
-</tbody></table>
-<p>一般实现两个 9 很简单，毕竟每天宕机 14 分钟已经严重影响业务了，这样的公司迟早歇菜，大厂一般要求 4 个 9，其他要求严苛的业务要达到五个九以上，比如如果因为一个电脑的故障导致所有列车停驶，那么就会有数以万计的人正常生活受到阻碍，这种情况就要求五个九以上</p>
-<p>接下来我们就来一起看看架构中的各个组件如何借助「冗余」和「自动故障转移」来实现高可用。</p>
-<h2 id="互联网架构剖析"><a href="#互联网架构剖析" class="headerlink" title="互联网架构剖析"></a>互联网架构剖析</h2><p>目前多数互联网都会采用微服务架构，常见架构如下:</p>
-<p><img src="/2022/03/12/%E9%AB%98%E5%8F%AF%E7%94%A8/1.png" alt="img"></p>
-<p>可以看到架构主要分以下几层</p>
-<ol>
-<li>接入层：主要由 F5 硬件或 LVS 软件来承载所有的流量入口</li>
-<li>反向代理层：Nginx，主要负责根据 url 来分发流量，限流等</li>
-<li>网关：主要负责流控，风控，协议转换等</li>
-<li>站点层：主要负责调用会员，促销等基本服务来装配 json 等数据并返回给客户端</li>
-<li>基础 service：其实与站点层都属于微服务，是平级关系，只不过基础 service 属于基础设施，能被上层的各个业务层 server 调用而已</li>
-<li>存储层：也就是 DB，如 MySQL，Oracle 等，一般由基础 service 调用返回给站点层</li>
-<li>中间件：ZK，ES，Redis，MQ 等，主要起到加速访问数据等功能，在下文中我们会简单介绍下各个组件的作用</li>
-</ol>
-<p>如前所述，要实现整体架构的高可用，必须要实现每一层组件的高可用，接下来我们就来分别看一下每一层的组件都是如何实现高可用的</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">设计</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/12/%E9%AB%98%E5%8F%AF%E7%94%A8/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-参数校验" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/11/%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/">参数校验</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/11/%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/" class="archive-article-date">
-  	<time datetime="2022-03-11T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-11</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：2.4k字 | 预计阅读时长：11分钟
-	  </div> 
-      
-        <p>今天来看一下如何对参数进行校验，内容摘抄自微信公众号【Java大后端】。</p>
-<p>很痛苦遇到大量的参数进行校验，在业务中还要抛出异常或者不断的返回异常时的校验信息，在代码中相当冗长，充满了if-else这种校验代码，今天我们就来学习spring的javax.validation 注解式参数校验。</p>
-<h2 id="1-为什么要用validator"><a href="#1-为什么要用validator" class="headerlink" title="1.为什么要用validator"></a>1.为什么要用validator</h2><p>javax.validation的一系列注解可以帮我们完成参数校验,免去繁琐的串行校验</p>
-<p>不然我们的代码就像下面这样：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  http://localhost:8080/api/user/save/serial</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 走串行校验</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> userVO</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/save/serial&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">save</span><span class="params">(<span class="meta">@RequestBody</span> UserVO userVO)</span> </span>&#123;</span><br><span class="line">    String mobile = userVO.getMobile();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//手动逐个 参数校验~ 写法</span></span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isBlank(mobile)) &#123;</span><br><span class="line">        <span class="keyword">return</span> RspDTO.paramFail(<span class="string">&quot;mobile:手机号码不能为空&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!Pattern.matches(<span class="string">&quot;^[1][3,4,5,6,7,8,9][0-9]&#123;9&#125;$&quot;</span>, mobile)) &#123;</span><br><span class="line">        <span class="keyword">return</span> RspDTO.paramFail(<span class="string">&quot;mobile:手机号码格式不对&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//抛出自定义异常等~写法</span></span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isBlank(userVO.getUsername())) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> BizException(Constant.PARAM_FAIL_CODE, <span class="string">&quot;用户名不能为空&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 比如写一个map返回</span></span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isBlank(userVO.getSex())) &#123;</span><br><span class="line">        Map&lt;String, Object&gt; result = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">5</span>);</span><br><span class="line">        result.put(<span class="string">&quot;code&quot;</span>, Constant.PARAM_FAIL_CODE);</span><br><span class="line">        result.put(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;性别不能为空&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//.........各种写法 ...</span></span><br><span class="line">    userService.save(userVO);</span><br><span class="line">    <span class="keyword">return</span> RspDTO.success();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h2 id="2-什么是javax-validation"><a href="#2-什么是javax-validation" class="headerlink" title="2.什么是javax.validation"></a>2.什么是javax.validation</h2><p>JSR303 是一套JavaBean参数校验的标准，它定义了很多常用的校验注解，我们可以直接将这些注解加在我们JavaBean的属性上面(面向注解编程的时代)，就可以在需要校验的时候进行校验了。</p>
-<p>在SpringBoot中已经包含在starter-web中,再其他项目中可以引用依赖，并自行调整版本：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--jsr 303--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.validation<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>validation-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.0.Final<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- hibernate validator--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.hibernate<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hibernate-validator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.2.0.Final<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="/2022/03/11/%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/1.png" alt="img"></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/11/%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-中断线程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/10/%E4%B8%AD%E6%96%AD%E7%BA%BF%E7%A8%8B/">中断线程</a>
-    </h1>
-  
-
-        
-        <a href="/2022/03/10/%E4%B8%AD%E6%96%AD%E7%BA%BF%E7%A8%8B/" class="archive-article-date">
-  	<time datetime="2022-03-10T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-10</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：4.4k字 | 预计阅读时长：18分钟
-	  </div> 
-      
-        <p>今天看一下线程相关的内容，如何中断线程。内容摘抄自微信公众号【Java核心技术】。</p>
-<h2 id="中断线程"><a href="#中断线程" class="headerlink" title="中断线程"></a>中断线程</h2><p>线程的<code>thread.interrupt()</code>方法是中断线程，将会设置该线程的中断状态位，即设置为true，中断的结果线程是死亡、还是等待新的任务或是继续运行至下一步，就取决于这个程序本身。线程会不时地检测这个中断标示位，以判断线程是否应该被中断（中断标示值是否为true）。它并不像stop方法那样会中断一个正在运行的线程。</p>
-<h2 id="判断线程是否被中断"><a href="#判断线程是否被中断" class="headerlink" title="判断线程是否被中断"></a>判断线程是否被中断</h2><p>判断某个线程是否已被发送过中断请求，请使用<code>Thread.currentThread().isInterrupted()</code>方法（因为它将线程中断标示位设置为true后，不会立刻清除中断标示位，即不会将中断标设置为false），而不要使用<code>thread.interrupted()</code>（该方法调用后会将中断标示位清除，即重新设置为false）方法来判断，下面是线程在循环中时的中断方式：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(!Thread.currentThread().isInterrupted() &amp;&amp; more work to <span class="keyword">do</span>)&#123;</span><br><span class="line">    <span class="keyword">do</span> more work</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="如何中断线程"><a href="#如何中断线程" class="headerlink" title="如何中断线程"></a>如何中断线程</h2><p>如果一个线程处于了阻塞状态（如线程调用了<code>thread.sleep</code>、<code>thread.join</code>、<code>thread.wait</code>、1.5中的<code>condition.awai</code>t、以及可中断的通道上的 I/O 操作方法后可进入阻塞状态），则在线程在检查中断标示时如果发现中断标示为true，则会在这些阻塞方法（sleep、join、wait、1.5中的<code>condition.await</code>及可中断的通道上的 I/O 操作方法）调用处抛出InterruptedException异常，并且在抛出异常后立即将线程的中断标示位清除，即重新设置为false。抛出异常是为了线程从阻塞状态醒过来，并在结束线程前让程序员有足够的时间来处理中断请求。</p>
-<p><strong>注，synchronized在获锁的过程中是不能被中断的</strong>，意思是说如果产生了死锁，则不可能被中断（请参考后面的测试例子）。与synchronized功能相似的<code>reentrantLock.lock()</code>方法也是一样，它也不可中断的，即如果发生死锁，那么<code>reentrantLock.lock()</code>方法无法终止，如果调用时被阻塞，则它一直阻塞到它获取到锁为止。但是如果调用带超时的tryLock方法reentrantLock.tryLock(long timeout, TimeUnit unit)，那么如果线程在等待时被中断，将抛出一个InterruptedException异常，这是一个非常有用的特性，因为它允许程序打破死锁。你也可以调用<code>reentrantLock.lockInterruptibly()</code>方法，它就相当于一个超时设为无限的tryLock方法。</p>
-<p>没有任何语言方面的需求一个被中断的线程应该终止。中断一个线程只是为了引起该线程的注意，被中断线程可以决定如何应对中断。某些线程非常重要，以至于它们应该不理会中断，而是在处理完抛出的异常之后继续执行，但是更普遍的情况是，一个线程将把中断看作一个终止请求，这种线程的run方法遵循如下形式：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * 不管循环里是否调用过线程阻塞的方法如sleep、join、wait，这里还是需要加上</span></span><br><span class="line"><span class="comment">         * !Thread.currentThread().isInterrupted()条件，虽然抛出异常后退出了循环，显</span></span><br><span class="line"><span class="comment">         * 得用阻塞的情况下是多余的，但如果调用了阻塞方法但没有阻塞时，这样会更安全、更及时。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">while</span> (!Thread.currentThread().isInterrupted()&amp;&amp; more work to <span class="keyword">do</span>) &#123;</span><br><span class="line">            <span class="keyword">do</span> more work</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        <span class="comment">//线程在wait或sleep期间被中断了</span></span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">//线程结束前做一些清理工作</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面是while循环在try块里，如果try在while循环里时，因该在catch块里重新设置一下中断标示，因为抛出InterruptedException异常后，中断标示位会自动清除，此时应该这样：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!Thread.currentThread().isInterrupted()&amp;&amp; more work to <span class="keyword">do</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">            sleep(delay);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            Thread.currentThread().interrupt();<span class="comment">//重新设置中断标示</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用Thread类可以做最简单的定时任务，在run方法中有个while的死循环（当然还有其他方式），执行我们自己的任务。有个需要特别注意的地方是，需要用<code>try...catch</code>捕获异常，否则如果出现异常，就直接退出循环，下次将无法继续执行了。</p>
+<p>但这种方式做的定时任务，只能周期性执行，不能支持定时在某个时间点执行。</p>
+<p>特别提醒一下，该线程建议定义成<code>守护线程</code>，可以通过<code>setDaemon</code>方法设置，让它在后台默默执行就好。</p>
+<p>使用场景：比如项目中有时需要每隔5分钟去<code>下载某个文件</code>，或者每隔10分钟去读取模板文件<code>生成静态html页面</code>等等，一些简单的周期性任务场景。</p>
+<p>使用<code>Thread</code>类做定时任务的优缺点：</p>
+<ul>
+<li>优点：这种定时任务非常简单，学习成本低，容易入手，对于那些简单的周期性任务，是个不错的选择。</li>
+<li>缺点：不支持指定某个时间点执行任务，不支持延迟执行等操作，功能过于单一，无法应对一些较为复杂的场景。</li>
+</ul>
         
       
 
@@ -757,7 +239,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/10/%E4%B8%AD%E6%96%AD%E7%BA%BF%E7%A8%8B/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/07/21/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%9A%84%E4%B8%9A%E5%8A%A1%E5%9C%BA%E6%99%AF/">展开全文 >></a>
         </p>
       
 
@@ -787,20 +269,20 @@
 
 
   
-    <article id="post-Mysql面试相关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-VPN技术原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/09/Mysql%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">Mysql面试相关</a>
+      <a class="article-title" href="/2022/07/20/VPN%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/">VPN技术原理</a>
     </h1>
   
 
         
-        <a href="/2022/03/09/Mysql%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/" class="archive-article-date">
-  	<time datetime="2022-03-09T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-09</time>
+        <a href="/2022/07/20/VPN%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/" class="archive-article-date">
+  	<time datetime="2022-07-20T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-20</time>
 </a>
         
       </header>
@@ -808,15 +290,16 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：3k字 | 预计阅读时长：10分钟
+		字数：2.2k字 | 预计阅读时长：7分钟
 	  </div> 
       
-        <p>今天来看一下mysql面试相关的一些问题。内容摘抄自微信公众号【苏三说技术】。</p>
-<p><img src="/2022/03/09/Mysql%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/1.png" alt="img"></p>
-<h2 id="MyISAM-和-InnoDB-的区别？"><a href="#MyISAM-和-InnoDB-的区别？" class="headerlink" title="MyISAM 和 InnoDB 的区别？"></a><strong>MyISAM 和 InnoDB 的区别？</strong></h2><p>答案：InnoDB 支持 事务、外键、聚集索引，通过MVCC来支持高并发，索引和数据存储在一起。InnoDB 不保存表的具体行数，执行 <code>select count(*) from table</code> 时需要全表扫描。而MyISAM 用一个变量保存了整个表的行数。</p>
-<p>InnoDB 最小的锁粒度是行锁，MyISAM 最小的锁粒度是表锁，并发能力低。MySQL 将默认存储引擎是 InnoDB</p>
-<h2 id="mysql-锁有哪些类型？"><a href="#mysql-锁有哪些类型？" class="headerlink" title="mysql 锁有哪些类型？"></a><strong>mysql 锁有哪些类型？</strong></h2><p>答案：mysql锁分为共享锁( S lock ) 、排他锁 ( X lock )，也叫做读锁和写锁。根据粒度，可以分为表锁、页锁、行锁。</p>
-<h2 id="什么是间隙锁？"><a href="#什么是间隙锁？" class="headerlink" title="什么是间隙锁？"></a><strong>什么是间隙锁？</strong></h2><p>答案：间隙锁是可重复读级别下才会有的锁，mysql会帮我们生成了若干<code>左开右闭</code>的区间，结合MVCC和间隙锁可以解决幻读问题。</p>
+        <p>今天来看一下vpn的技术原理是怎么样的，内容摘抄自微信公众号【springmeng】。</p>
+<h2 id="SSL-VPN技术"><a href="#SSL-VPN技术" class="headerlink" title="SSL VPN技术"></a>SSL VPN技术</h2><p><img src="/2022/07/20/VPN%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/1.png" alt="img"></p>
+<p>SSl协议支队通信双方传输的应用数据进行加密，而不是对从一个主机到另一个主机的所有数据进行加密。</p>
+<h3 id="IPSec缺陷"><a href="#IPSec缺陷" class="headerlink" title="IPSec缺陷"></a>IPSec缺陷</h3><p>由于IPSec是基于网络层的协议，很难穿越NAT和防火墙，特别是在接入一些防护措施较为严格的个人网络和公共计算机时，往往会导致访问受阻。移动用户使用IPSec VPN需要安装专用的客户端软件，为日益增长的用户群发放、安装、配置、维护客户端软件已经使管理员不堪重负。因此，IPSec VPN在Point- to-Site远程移动通信方面并不适用。</p>
+<h3 id="SSL-VPN功能技术"><a href="#SSL-VPN功能技术" class="headerlink" title="SSL VPN功能技术"></a>SSL VPN功能技术</h3><h4 id="虚拟网关"><a href="#虚拟网关" class="headerlink" title="虚拟网关"></a>虚拟网关</h4><p><img src="/2022/07/20/VPN%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/2.png" alt="img"></p>
+<p>每个虚拟网关都是独立可管理的，可以配置各自的资源、用户、认证方式、访问控制规则以及管理员等。</p>
+<p>当企业有多个部门时，可以为每个部门或者用户群体分配不同的虚拟网关，从而形成完全隔离的访问体系。</p>
         
       
 
@@ -830,7 +313,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
         		</li>
       		
 		</ul>
@@ -840,7 +323,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/09/Mysql%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/07/20/VPN%E6%8A%80%E6%9C%AF%E5%8E%9F%E7%90%86/">展开全文 >></a>
         </p>
       
 
@@ -870,20 +353,20 @@
 
 
   
-    <article id="post-Kafka和Zookeeper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-B+树和跳表" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/08/Kafka%E5%92%8CZookeeper/">Kafka和Zookeeper</a>
+      <a class="article-title" href="/2022/07/19/B+%E6%A0%91%E5%92%8C%E8%B7%B3%E8%A1%A8/">B+树和跳表</a>
     </h1>
   
 
         
-        <a href="/2022/03/08/Kafka%E5%92%8CZookeeper/" class="archive-article-date">
-  	<time datetime="2022-03-08T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-08</time>
+        <a href="/2022/07/19/B+%E6%A0%91%E5%92%8C%E8%B7%B3%E8%A1%A8/" class="archive-article-date">
+  	<time datetime="2022-07-19T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-19</time>
 </a>
         
       </header>
@@ -891,52 +374,23 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2k字 | 预计阅读时长：7分钟
+		字数：2.8k字 | 预计阅读时长：9分钟
 	  </div> 
       
-        <p>今天来看一下<strong>Kafka和Zookeeper</strong>的关系，内容摘抄自微信公众号【苏三说技术】。</p>
-<p>最近，<code>confluent</code>社区发表了一篇文章，主要讲述了<code>Kafka</code>未来的<code>2.8</code>版本将要放弃<code>Zookeeper</code>，这对于<code>Kafka</code>用户来说，是一个重要的改进。之前部署<code>Kafka</code>就必须得部署<code>Zookeeper</code>，而之后就只要单独部署<code>Kafka</code>就行了。</p>
-<h2 id="1-Kafka简介"><a href="#1-Kafka简介" class="headerlink" title="1.Kafka简介"></a>1.Kafka简介</h2><p><code>Apache Kafka</code>最早是由<code>Linkedin</code>公司开发，后来捐献给了<code>Apack</code>基金会。</p>
-<p><code>Kafka</code>被官方定义为分布式流式处理平台，因为具备高吞吐、可持久化、可水平扩展等特性而被广泛使用。目前<code>Kafka</code>具体如下功能：</p>
-<ul>
-<li>消息队列,<code>Kafka</code>具有系统解耦、流量削峰、缓冲、异步通信等消息队列的功能。</li>
-<li>分布式存储系统，<code>Kafka</code>可以把消息持久化，同时用多副本来实现故障转移，可以作为数据存储系统来使用。</li>
-<li>实时数据处理，<code>Kafka</code>提供了一些和数据处理相关的组件，比如<code>Kafka Streams</code>、<code>Kafka Connect</code>，具备了实时数据的处理功能。</li>
-</ul>
-<p>下面这张图是<code>Kafka</code>的消息模型：</p>
-<p><img src="/2022/03/08/Kafka%E5%92%8CZookeeper/1.png" alt="img"></p>
-<p>通过上面这张图，介绍一下<code>Kafka</code>中的几个主要概念：</p>
-<ul>
-<li><code>producer</code>和<code>consumer</code>: 消息队列中的生产者和消费者，生产者将消息推送到队列，消费者从队列中拉取消息。</li>
-<li><code>consumer group</code>:消费者集合，这些消费者可以并行消费同一个<code>topic</code>下不同<code>partition</code>中的消息。</li>
-<li><code>broker</code>：<code>Kafka</code>集群中的服务器。</li>
-<li><code>topic</code>：消息的分类。</li>
-<li><code>partition</code>：<code>topic</code>物理上的分组，一个<code>topic</code>可以有<code>partition</code>，每个<code>partition</code>中的消息会被分配一个有序的<code>id</code>作为<code>offset</code>。每个<code>consumer group</code>只能有一个消费者来消费一个<code>partition</code>。</li>
-</ul>
-<h2 id="2-Kafka和Zookeeper关系"><a href="#2-Kafka和Zookeeper关系" class="headerlink" title="2.Kafka和Zookeeper关系"></a>2.Kafka和Zookeeper关系</h2><p>Kafka架构如下图：</p>
-<p><img src="/2022/03/08/Kafka%E5%92%8CZookeeper/2.png" alt="img"></p>
-<p>从图中可以看到，<code>Kafka</code>的工作需要<code>Zookeeper</code>的配合。那他们到底是怎么配合工作呢？</p>
-<p>看下面这张图：</p>
-<p><img src="/2022/03/08/Kafka%E5%92%8CZookeeper/3.png" alt="img"></p>
-<h3 id="2-1-注册中心"><a href="#2-1-注册中心" class="headerlink" title="2.1 注册中心"></a>2.1 注册中心</h3><h4 id="2-1-1-broker注册"><a href="#2-1-1-broker注册" class="headerlink" title="2.1.1 broker注册"></a>2.1.1 broker注册</h4><p>从上面的图中可以看到，<code>broker</code>分布式部署，就需要一个注册中心来进行统一管理。<code>Zookeeper</code>用一个专门节点保存<code>Broker</code>服务列表，也就是 <code>/brokers/ids</code>。</p>
-<p><code>broker</code>在启动时，向<code>Zookeeper</code>发送注册请求，<code>Zookeeper</code>会在<code>/brokers/ids</code>下创建这个<code>broker</code>节点，如<code>/brokers/ids/[0...N]</code>，并保存<code>broker</code>的<code>IP</code>地址和端口。</p>
-<blockquote>
-<p>❝</p>
-<p>这个节点临时节点，一旦<code>broker</code>宕机，这个临时节点会被自动删除。</p>
-<p>❞</p>
-</blockquote>
-<h4 id="2-1-2-topic注册"><a href="#2-1-2-topic注册" class="headerlink" title="2.1.2 topic注册"></a>2.1.2 topic注册</h4><p><code>Zookeeper</code>也会为<code>topic</code>分配一个单独节点，每个<code>topic</code>都会以<code>/brokers/topics/[topic_name]</code>的形式记录在<code>Zookeeper</code>。</p>
-<p>一个<code>topic</code>的消息会被保存到多个<code>partition</code>，这些<code>partition</code>跟<code>broker</code>的对应关系也需要保存到<code>Zookeeper</code>。</p>
-<p><code>partition</code>是多副本保存的，上图中红色<code>partition</code>是<code>leader</code>副本。当<code>leader</code>副本所在的broker发生故障时，<code>partition</code>需要重新选举<code>leader</code>，这个需要由<code>Zookeeper</code>主导完成。</p>
-<p><code>broker</code>启动后，会把自己的<code>Broker ID</code>注册到到对应<code>topic</code>节点的分区列表中。</p>
-<p>我们查看一个<code>topic</code>是<code>xxx</code>，分区编号是<code>1</code>的信息，命令如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@master] get /brokers/topics/xxx/partitions/1/state</span><br><span class="line">&#123;&quot;controller_epoch&quot;:15,&quot;leader&quot;:11,&quot;version&quot;:1,&quot;leader_epoch&quot;:2,&quot;isr&quot;:[11,12,13]&#125;</span><br></pre></td></tr></table></figure>
+        <p>今天来看一下<strong>B+树和跳表</strong>这两个数据结构的对比和差异，内容摘抄自微信公众号【苏三说技术】。</p>
+<p>在我们的印象中，mysql数据表里无非就是存储一行行的数据。跟个excel似的。</p>
+<p>直接遍历这一行行数据，性能就是O(n)，比较慢。为了加速查询，使用了<strong>B+树</strong>来做索引，将查询性能优化到了**O(lg(n))**。</p>
+<p>但问题就来了，查询数据性能在 lg(n) 级别的数据结构有很多，比如redis的zset里用到的<strong>跳表</strong>，也是**lg(n)**，并且实现还贼简单。</p>
+<p><strong>那为什么mysql的索引，不使用跳表呢？</strong></p>
+<p>我们今天就来聊聊这个话题。</p>
+<h2 id="B-树的结构"><a href="#B-树的结构" class="headerlink" title="B+树的结构"></a>B+树的结构</h2><p>在这里，<em>为了混点字数</em>，我简单总结下B+树的结构。</p>
+<p><img src="/2022/07/19/B+%E6%A0%91%E5%92%8C%E8%B7%B3%E8%A1%A8/1.png" alt="img"></p>
+<center>B+树查询过程
 
-<blockquote>
-<p>❝</p>
-<p>当<code>broker</code>退出后，<code>Zookeeper</code>会更新其对应<code>topic</code>的分区列表。</p>
-<p>❞</p>
-</blockquote>
+<p>如上图，一般B+树是由多个页组成的<strong>多层级</strong>结构，每个页<code>16Kb</code>，对于主键索引来说，最末级的<strong>叶子结点</strong>放行数据，<strong>非叶子结点</strong>放的则是索引信息（主键id和页号），用于加速查询。</p>
+<p>比方说我们想要查找行数据5。会先从顶层页的record们入手。<strong>record里包含了主键id和页号（页地址）</strong>。关注黄色的箭头，向左最小id是1，向右最小id是7。那id=5的数据如果存在，那必定在左边箭头。于是顺着的record的页地址就到了<code>6号</code>数据页里，再判断id=5&gt;4，所以肯定在右边的数据页里，于是加载<code>105号</code>数据页。</p>
+<p>在<code>105号数据页</code>里，虽然有多行数据，但也<strong>不是挨个遍历的</strong>，数据页内还有个<strong>页目录</strong>的信息，它可以通过<strong>二分查找</strong>的方式加速查询行数据，于是找到id=5的数据行，完成查询。</p>
+<p>从上面可以看出，B+树利用了<strong>空间换时间</strong>的方式（构造了一批非叶子结点用于存放索引信息），**将查询时间复杂度从O(n)优化为O(lg(n))**。</p></center>
         
       
 
@@ -950,7 +404,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">数据库</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
         		</li>
       		
 		</ul>
@@ -960,7 +418,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/08/Kafka%E5%92%8CZookeeper/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/07/19/B+%E6%A0%91%E5%92%8C%E8%B7%B3%E8%A1%A8/">展开全文 >></a>
         </p>
       
 
@@ -990,20 +448,20 @@
 
 
   
-    <article id="post-消息队列常见问题处理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java8判空写法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/07/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/">消息队列常见问题处理</a>
+      <a class="article-title" href="/2022/07/18/Java8%E5%88%A4%E7%A9%BA%E5%86%99%E6%B3%95/">Java8判空写法</a>
     </h1>
   
 
         
-        <a href="/2022/03/07/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/" class="archive-article-date">
-  	<time datetime="2022-03-07T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-07</time>
+        <a href="/2022/07/18/Java8%E5%88%A4%E7%A9%BA%E5%86%99%E6%B3%95/" class="archive-article-date">
+  	<time datetime="2022-07-18T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-18</time>
 </a>
         
       </header>
@@ -1011,75 +469,19 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：5.3k字 | 预计阅读时长：18分钟
+		字数：2k字 | 预计阅读时长：8分钟
 	  </div> 
       
-        <p>今天来看一下消息队列的一些常见问题和处理方法。内容摘抄自微信公众号【IT大咖说】。</p>
-<ul>
-<li><p>消息队列常见问题处理</p>
-</li>
-<li><p>分布式事务</p>
-</li>
-<li><ul>
-<li>本地消息表-最终一致性</li>
-<li>MQ事务-最终一致性</li>
-<li>什么是分布式事务</li>
-<li>常见的分布式事务解决方案</li>
-<li>基于 MQ 实现的分布式事务</li>
-<li>RocketMQ中如何处理事务</li>
-<li>Kafka中如何处理事务</li>
-<li>RabbitMQ中的事务</li>
-</ul>
-</li>
-<li><p>消息防丢失</p>
-</li>
-<li><ul>
-<li>RabbitMQ 中的防丢失措施</li>
-<li>Kafka 中的防丢失措施</li>
-<li>RocketMQ 中的防丢失措施</li>
-<li>RabbitMQ 中的防丢失措施</li>
-<li>Kafka 中的防丢失措施</li>
-<li>RocketMQ 中的防丢失措施</li>
-<li>生产阶段防止消息丢失</li>
-<li>存储阶段</li>
-<li>消费阶段</li>
-</ul>
-</li>
-<li><p>消息重复发送</p>
-</li>
-</ul>
-<h1 id="消息队列常见问题处理"><a href="#消息队列常见问题处理" class="headerlink" title="消息队列常见问题处理"></a>消息队列常见问题处理</h1><h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><h3 id="什么是分布式事务"><a href="#什么是分布式事务" class="headerlink" title="什么是分布式事务"></a>什么是分布式事务</h3><p>我们的服务器从单机发展到拥有多台机器的分布式系统，各个系统之前需要借助于网络进行通信，原有单机中相对可靠的方法调用以及进程间通信方式已经没有办法使用，同时网络环境也是不稳定的，造成了我们多个机器之间的数据同步问题，这就是典型的分布式事务问题。</p>
-<p>在分布式事务中事务的参与者、支持事务的服务器、资源服务器以及事务管理器分别位于不同的分布式系统的不同节点之上。分布式事务就是要保证不同节点之间的数据一致性。</p>
-<h3 id="常见的分布式事务解决方案"><a href="#常见的分布式事务解决方案" class="headerlink" title="常见的分布式事务解决方案"></a>常见的分布式事务解决方案</h3><p>1、2PC(二阶段提交)方案 - 强一致性</p>
-<p>2、3PC(三阶段提交)方案</p>
-<p>3、TCC （Try-Confirm-Cancel）事务 - 最终一致性</p>
-<p>4、Saga事务 - 最终一致性</p>
-<p>5、本地消息表 - 最终一致性</p>
-<p>6、MQ事务 - 最终一致性</p>
-<p>这里重点关注下使用消息队列实现分布式的一致性，上面几种的分布式设计方案的具体细节可参见文章最后的引用链接</p>
-<h3 id="基于-MQ-实现的分布式事务"><a href="#基于-MQ-实现的分布式事务" class="headerlink" title="基于 MQ 实现的分布式事务"></a>基于 MQ 实现的分布式事务</h3><h4 id="本地消息表-最终一致性"><a href="#本地消息表-最终一致性" class="headerlink" title="本地消息表-最终一致性"></a>本地消息表-最终一致性</h4><p>消息的生产方，除了维护自己的业务逻辑之外，同时需要维护一个消息表。这个消息表里面记录的就是需要同步到别的服务的信息，当然这个消息表，每个消息都有一个状态值，来标识这个消息有没有被成功处理。</p>
-<p>发送放的业务逻辑以及消息表中数据的插入将在一个事务中完成，这样避免了<code>业务处理成功 + 事务消息发送失败</code>，或<code>业务处理失败 + 事务消息发送成功</code>，这个问题。</p>
-<p><img src="/2022/03/07/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/1.png" alt="img"></p>
-<p>举个栗子：</p>
-<p>我们假定目前有两个服务，订单服务，购物车服务，用户在购物车中对几个商品进行合并下单，之后需要清空购物车中刚刚已经下单的商品信息。</p>
-<p><strong>1、消息的生产方也就是订单服务，完成了自己的逻辑(对商品进行下单操作)然后把这个消息通过 mq 发送到需要进行数据同步的其他服务中，也就是我们栗子中的购物车服务。</strong></p>
-<p><strong>2、其他服务(购物车服务)会监听这个队列；</strong></p>
-<p>1、如果收到这个消息，并且数据同步执行成功了，当然这也是一个本地事务，就通过 mq 回复消息的生产方(订单服务)消息已经处理了，然后生产方就能标识本次事务已经结束。如果是一个业务上的错误,就回复消息的生产方，需要进行数据回滚了。</p>
-<p>2、很久没收到这个消息，这种情况是不会发生的，消息的发送方会有一个定时的任务，会定时重试发送消息表中还没有处理的消息；</p>
-<p><strong>3、消息的生产方(订单服务)如果收到消息回执；</strong></p>
-<p>1、成功的话就修改本次消息已经处理完，也就是本次分布式事务的同步已经完成；</p>
-<p>2、如果消息的结果是执行失败，同时在本地回滚本次事务，标识消息已经处理完成；</p>
-<p>3、如果消息丢失，也就是回执消息没有收到，这种情况也不太会发生，消息的发送方(订单服务)会有一个定时的任务，定时重试发送消息表中还没有处理的消息，下游的服务需要做幂等，可能会收到多次重复的消息，如果一个回复消息生产方中的某个回执信息丢失了，后面持续收到生产方的 mq 消息，然后再次回复消息的生产方回执信息，这样总能保证发送者能成功收到回执，消息的生产方在接收回执消息的时候也要做到幂等性。</p>
-<p>这里有两个很重要的操作：</p>
-<p>1、服务器处理消息需要是幂等的，消息的生产方和接收方都需要做到幂等性；</p>
-<p>2、发送放需要添加一个定时器来遍历重推未处理的消息，避免消息丢失，造成的事务执行断裂。</p>
-<p>该方案的优缺点</p>
-<p>优点：</p>
-<p>1、在设计层面上实现了消息数据的可靠性，不依赖消息中间件，弱化了对 mq 特性的依赖。</p>
-<p>2、简单，易于实现。</p>
-<p>缺点：</p>
-<p>主要是需要和业务数据绑定到一起，耦合性比较高，使用相同的数据库，会占用业务数据库的一些资源。</p>
-<h4 id="MQ事务-最终一致性"><a href="#MQ事务-最终一致性" class="headerlink" title="MQ事务-最终一致性"></a>MQ事务-最终一致性</h4><p>下面分析下几种消息队列对事务的支持</p>
+        <p>今天来看一下<strong>Java8中有哪些判空写法</strong>，内容摘抄自微信公众号【Java核心技术】。</p>
+<p>在文章的开头，先说下NPE问题，NPE问题就是，我们在开发中经常碰到的NullPointerException.假设我们有两个类，他们的UML类图如下图所示</p>
+<p><img src="/2022/07/18/Java8%E5%88%A4%E7%A9%BA%E5%86%99%E6%B3%95/1.png" alt="img"></p>
+<p>在这种情况下，有如下代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user.getAddress().getProvince();</span><br></pre></td></tr></table></figure>
+
+<p>这种写法，在user为null时，是有可能报NullPointerException异常的。为了解决这个问题，于是采用下面的写法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(user!=<span class="keyword">null</span>)&#123;</span><br><span class="line">    Address address = user.getAddress();</span><br><span class="line">    <span class="keyword">if</span>(address!=<span class="keyword">null</span>)&#123;</span><br><span class="line">        String province = address.getProvince();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种写法是比较丑陋的，为了避免上述丑陋的写法，让丑陋的设计变得优雅。JAVA8提供了Optional类来优化这种写法，接下来的正文部分进行详细说明</p>
         
       
 
@@ -1093,7 +495,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
         		</li>
       		
 		</ul>
@@ -1103,7 +505,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/07/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/07/18/Java8%E5%88%A4%E7%A9%BA%E5%86%99%E6%B3%95/">展开全文 >></a>
         </p>
       
 
@@ -1133,20 +535,20 @@
 
 
   
-    <article id="post-负载均衡策略" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-SpringBoot监控技巧" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/03/06/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5/">负载均衡策略</a>
+      <a class="article-title" href="/2022/07/17/SpringBoot%E7%9B%91%E6%8E%A7%E6%8A%80%E5%B7%A7/">SpringBoot监控技巧</a>
     </h1>
   
 
         
-        <a href="/2022/03/06/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5/" class="archive-article-date">
-  	<time datetime="2022-03-06T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-06</time>
+        <a href="/2022/07/17/SpringBoot%E7%9B%91%E6%8E%A7%E6%8A%80%E5%B7%A7/" class="archive-article-date">
+  	<time datetime="2022-07-17T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-17</time>
 </a>
         
       </header>
@@ -1154,47 +556,23 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：6.4k字 | 预计阅读时长：32分钟
+		字数：2.3k字 | 预计阅读时长：9分钟
 	  </div> 
       
-        <p>今天来看一下分布式中负载均衡的策略，内容摘抄自微信公众号【Java极客技术】。</p>
-<h2 id="1-简述"><a href="#1-简述" class="headerlink" title="1 简述"></a>1 简述</h2><p>负载均衡、集群容错、服务降级这三个概念在DUBBO中非常重要，同理其它分布式框架也都有相同或者相近之概念。</p>
-<p>从调用顺序角度分析，调用顺序依次是负载均衡、集群容错、服务降级。从解决问题角度分析，负载均衡解决了「选哪一个」问题，集群容错解决了「换哪一个」问题，服务降级解决了「全错怎么办」问题。</p>
-<p>假设有1个服务消费者面对10个提供者，这时面临第一个问题就是「选哪一个」进行调用，所以负载均衡最先调用，假设选定了5号服务提供者进行服务调用。</p>
-<p>假设消费者调用5号提供者发生了超时异常，这时面临第二个问题就是「换哪一个」进行调用：5号超时要不要换1号试一试，或者直接返回不进行重试，所以集群容错第二个调用。</p>
-<p>假设已经重试了1号、3号、6号提供者全部超时，这时面临「全错怎么办」这第三个问题，这时可以直接返回一个固定值或者提示文案，所以服务降级第三个调用。</p>
-<p>负载均衡作为整个链路第一个节点非常重要，本文结合DUBBO源码分析以下七种负载均衡策略：</p>
-<ul>
-<li>简单随机</li>
-<li>加权随机</li>
-<li>简单轮询</li>
-<li>简单加权轮询</li>
-<li>平滑加权轮询</li>
-<li>一致性哈希</li>
-<li>最少活跃数</li>
-</ul>
-<h2 id="2-简单随机"><a href="#2-简单随机" class="headerlink" title="2 简单随机"></a>2 简单随机</h2><p>简单随机含义是服务消费者每次会任意访问一个服务提供者，并且从概率角度看每个提供者被访问概率一致，可以通过指定范围随机数实现。第一步编写服务器代码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyServer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String ip;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyServer</span><span class="params">(String ip)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.ip = ip;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getIp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ip;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setIp</span><span class="params">(String ip)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.ip = ip;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p>今天来看一下<strong>SpringBoot监控技巧</strong>，内容摘抄自微信公众号【Java大后端】。</p>
+<p>任何一个服务如果没有监控，那就是两眼一抹黑，无法知道当前服务的运行情况，也就无法对可能出现的异常状况进行很好的处理，所以对任意一个服务来说，监控都是必不可少的。</p>
+<p>就目前而言，大部分微服务应用都是基于 SpringBoot 来构建，所以了解 SpringBoot 的监控特性是非常有必要的，而 SpringBoot 也提供了一些特性来帮助我们监控应用。</p>
+<p>本文基于 SpringBoot 2.3.1.RELEASE 版本演示。</p>
+<h2 id="SpringBoot-监控"><a href="#SpringBoot-监控" class="headerlink" title="SpringBoot 监控"></a><strong>SpringBoot 监控</strong></h2><p>SpringBoot 中的监控可以分为 HTTP 端点和 JMX 两种方式来监控当前应用的运行状况和指标收集。</p>
+<h4 id="HTTP-Endpoints-监控"><a href="#HTTP-Endpoints-监控" class="headerlink" title="| HTTP Endpoints 监控"></a><strong>| HTTP Endpoints 监控</strong></h4><p>执行器端点允许您监视应用程序并与之交互。SpringBoot 包括许多内置的端点，并允许我们添加自己的端点。可以通过 HTTP 或 JMX 启用或禁用每个端点，并公开（使其可以远程访问）。</p>
+<p>每个端点都有一个唯一的 id，访问时可以通过如下地址进行访问：http:ip:port/{id}（SpringBoot 1.x ）。</p>
+<p>而在 SpringBoot 2.x 版本中，默认新增了一个 /actuator 作为基本路，访问地址则对应为：http:ip:port/actuator/{id}。</p>
+<p>使用 HTTP 监控非常简单，在 SpringBoot 项目中，引入如下依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-
-
-<p>第二步编写基础负载均衡策略</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractLoadBalance</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MyServer <span class="title">select</span><span class="params">(List&lt;MyServer&gt; serverList)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> doSelect(serverList);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> MyServer <span class="title">doSelect</span><span class="params">(List&lt;MyServer&gt; serverList)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>第三步编写简单随机策略</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RandomBalance</span> <span class="keyword">extends</span> <span class="title">AbstractLoadBalance</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MyServer <span class="title">doSelect</span><span class="params">(List&lt;MyServer&gt; serverList)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 随机数范围[0,serverListSize)</span></span><br><span class="line">        <span class="keyword">int</span> index = ThreadLocalRandom.current().nextInt(serverList.size());</span><br><span class="line">        <span class="keyword">return</span> serverList.get(index);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>第四步编写测试代码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoadBalanceTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;MyServer&gt; serverList = buildData();</span><br><span class="line">        testRandomBalance(serverList);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testRandomBalance</span><span class="params">(List&lt;MyServer&gt; serverList)</span> </span>&#123;</span><br><span class="line">        AbstractLoadBalance randomBalance = <span class="keyword">new</span> RandomBalance();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            MyServer server = randomBalance.select(serverList);</span><br><span class="line">            System.out.println(<span class="string">&quot;RandomBalance route server=&quot;</span> + server);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;MyServer&gt; <span class="title">buildData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;MyServer&gt; serverList = <span class="keyword">new</span> ArrayList&lt;MyServer&gt;();</span><br><span class="line">        MyServer server1 = <span class="keyword">new</span> MyServer(<span class="string">&quot;192.1.1.1&quot;</span>);</span><br><span class="line">        MyServer server2 = <span class="keyword">new</span> MyServer(<span class="string">&quot;192.1.1.2&quot;</span>);</span><br><span class="line">        MyServer server3 = <span class="keyword">new</span> MyServer(<span class="string">&quot;192.1.1.3&quot;</span>);</span><br><span class="line">        serverList.add(server1);</span><br><span class="line">        serverList.add(server2);</span><br><span class="line">        serverList.add(server3);</span><br><span class="line">        <span class="keyword">return</span> serverList;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>第五步输出结果，循环次数越多结果越准确</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.2</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.1</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.3</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.2</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.1</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.1</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.2</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.2</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.3</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.3</span>)</span><br></pre></td></tr></table></figure>
+<p>默认就可以通过地址 http:localhost:8080/actuator/health，访问之后得到如下结果：</p>
+<p><img src="/2022/07/17/SpringBoot%E7%9B%91%E6%8E%A7%E6%8A%80%E5%B7%A7/1.png" alt="img"></p>
+<p>SpringBoot 中提供了非常多的默认端点监控，但是出于安全考虑，默认情况下有些端点并不是开启状态，如 shutdown 端点就是默认关闭的。</p>
         
       
 
@@ -1208,7 +586,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">设计</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SpringBoot</a>
         		</li>
       		
 		</ul>
@@ -1218,7 +600,500 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2022/03/06/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/07/17/SpringBoot%E7%9B%91%E6%8E%A7%E6%8A%80%E5%B7%A7/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-提高SpringBoot吞吐量的方法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/07/16/%E6%8F%90%E9%AB%98SpringBoot%E5%90%9E%E5%90%90%E9%87%8F%E7%9A%84%E6%96%B9%E6%B3%95/">提高SpringBoot吞吐量的方法</a>
+    </h1>
+  
+
+        
+        <a href="/2022/07/16/%E6%8F%90%E9%AB%98SpringBoot%E5%90%9E%E5%90%90%E9%87%8F%E7%9A%84%E6%96%B9%E6%B3%95/" class="archive-article-date">
+  	<time datetime="2022-07-16T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-16</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：1.8k字 | 预计阅读时长：8分钟
+	  </div> 
+      
+        <p>今天继续看一下七种<strong>提高SpringBoot吞吐量的方法</strong>，内容摘抄自微信公众号【springmeng】。</p>
+<h2 id="一、异步执行"><a href="#一、异步执行" class="headerlink" title="一、异步执行"></a><strong>一、异步执行</strong></h2><p>实现方式二种：</p>
+<ol>
+<li><p>使用异步注解<code>@aysnc</code>、启动类：添加<code>@EnableAsync</code>注解</p>
+</li>
+<li><p>JDK 8本身有一个非常好用的Future类——<code>CompletableFuture</code></p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AskThread</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> CompletableFuture&lt;Integer&gt; re = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> myRe = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            myRe = re.get() * re.get();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(myRe);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> CompletableFuture&lt;Integer&gt; future = <span class="keyword">new</span> CompletableFuture&lt;&gt;();</span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> AskThread(future)).start();</span><br><span class="line">        <span class="comment">//模拟长时间的计算过程</span></span><br><span class="line">        Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        <span class="comment">//告知完成结果</span></span><br><span class="line">        future.complete(<span class="number">60</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在该示例中，启动一个线程，此时<code>AskThread</code>对象还没有拿到它需要的数据，执行到 <code>myRe = re.get() * re.get()</code>会阻塞。我们用休眠1秒来模拟一个长时间的计算过程，并将计算结果告诉<code>future</code>执行结果，<code>AskThread</code>线程将会继续执行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Calc</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Integer <span class="title">calc</span><span class="params">(Integer para)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//模拟一个长时间的执行</span></span><br><span class="line">            Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> para * para;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> ExecutionException, InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> CompletableFuture&lt;Void&gt; future = CompletableFuture.supplyAsync(() -&gt; calc(<span class="number">50</span>))</span><br><span class="line">                .thenApply((i) -&gt; Integer.toString(i))</span><br><span class="line">                .thenApply((str) -&gt; <span class="string">&quot;\&quot;&quot;</span> + str + <span class="string">&quot;\&quot;&quot;</span>)</span><br><span class="line">                .thenAccept(System.out::println);</span><br><span class="line">        future.get();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>CompletableFuture.supplyAsync</code>方法构造一个<code>CompletableFuture</code>实例，在<code>supplyAsync()</code>方法中，它会在一个新线程中，执行传入的参数。在这里它会执行<code>calc()</code>方法，这个方法可能是比较慢的，但这并不影响<code>CompletableFuture</code>实例的构造速度，<code>supplyAsync()</code>会立即返回。</p>
+<p>而返回的<code>CompletableFuture</code>实例就可以作为这次调用的契约，在将来任何场合，用于获得最终的计算结果。</p>
+<p><code>supplyAsync</code>用于提供返回值的情况，<code>CompletableFuture</code>还有一个不需要返回值的异步调用方法<code>runAsync(Runnable runnable)</code>,一般我们在优化<code>Controller</code>时，使用这个方法比较多。这两个方法如果在不指定线程池的情况下，都是在<code>ForkJoinPool.common</code>线程池中执行，而这个线程池中的所有线程都是<code>Daemon</code>（守护）线程，所以，当主线程结束时，这些线程无论执行完毕都会退出系统。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">设计</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SpringBoot</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/07/16/%E6%8F%90%E9%AB%98SpringBoot%E5%90%9E%E5%90%90%E9%87%8F%E7%9A%84%E6%96%B9%E6%B3%95/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Sentinel" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/07/15/Sentinel/">Sentinel</a>
+    </h1>
+  
+
+        
+        <a href="/2022/07/15/Sentinel/" class="archive-article-date">
+  	<time datetime="2022-07-15T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-15</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：11.5k字 | 预计阅读时长：43分钟
+	  </div> 
+      
+        <p>今天来看一下微服务中的<strong>Sentinel</strong>，内容摘抄自微信公众号【苏三说技术】。</p>
+<h2 id="1、前言"><a href="#1、前言" class="headerlink" title="1、前言"></a>1、前言</h2><p>这是《Spring Cloud 进阶》专栏的第五篇文章，这篇文章介绍一下阿里开源的流量防卫兵Sentinel，一款非常优秀的开源项目，经过近10年的双十一的考验，非常成熟的一款产品。</p>
+<p>文章目录如下：</p>
+<p><img src="/2022/07/15/Sentinel/1.png" alt="img"></p>
+<h2 id="2、什么是sentinel？"><a href="#2、什么是sentinel？" class="headerlink" title="2、什么是sentinel？"></a>2、什么是sentinel？</h2><p>sentinel顾名思义：卫兵；在Redis中叫做<strong>哨兵</strong>，用于监控主从切换，但是在微服务中叫做<strong>流量防卫兵</strong>。</p>
+<p>Sentinel 以流量为切入点，从<strong>流量控制</strong>、<strong>熔断降级</strong>、<strong>系统负载</strong>保护等多个维度保护服务的稳定性。</p>
+<p>Sentinel 具有以下特征:</p>
+<ul>
+<li><strong>丰富的应用场景</strong>：Sentinel 承接了阿里巴巴<strong>近 10 年的双十一</strong>大促流量的核心场景，例如秒杀（即突发流量控制在系统容量可以承受的范围）、消息削峰填谷、集群流量控制、实时熔断下游不可用应用等。</li>
+<li><strong>完备的实时监控</strong>：Sentinel 同时提供实时的监控功能。您可以在控制台中看到接入应用的单台机器秒级数据，甚至 500 台以下规模的集群的汇总运行情况。</li>
+<li><strong>广泛的开源生态</strong>：Sentinel 提供开箱即用的与其它开源框架/库的整合模块，例如与 Spring Cloud、Apache Dubbo、gRPC、Quarkus 的整合。您只需要引入相应的依赖并进行简单的配置即可快速地接入 Sentinel。同时 Sentinel 提供 Java/Go/C++ 等多语言的原生实现。</li>
+<li><strong>完善的 SPI 扩展机制</strong>：Sentinel 提供简单易用、完善的 SPI 扩展接口。您可以通过实现扩展接口来快速地定制逻辑。例如定制规则管理、适配动态数据源等。</li>
+</ul>
+<p><strong>Sentinel 的主要特性如下图</strong>：</p>
+<p><img src="/2022/07/15/Sentinel/2.png" alt="img"></p>
+<p><strong>Sentinel 分为两个部分</strong>:</p>
+<ul>
+<li>核心库（Java 客户端）不依赖任何框架/库，能够运行于所有 Java 运行时环境，同时对 Dubbo / Spring Cloud 等框架也有较好的支持。</li>
+<li>控制台（Dashboard）基于 Spring Boot 开发，打包后可以直接运行，不需要额外的 Tomcat 等应用容器。</li>
+</ul>
+<p><strong>总之一句话：sentinel真牛逼，完爆Hystrix………</strong></p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">微服务</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">SpringCloud</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/07/15/Sentinel/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-后端常见层式结构设计" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/07/14/%E5%90%8E%E7%AB%AF%E5%B8%B8%E8%A7%81%E5%B1%82%E5%BC%8F%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1/">后端常见层式结构设计</a>
+    </h1>
+  
+
+        
+        <a href="/2022/07/14/%E5%90%8E%E7%AB%AF%E5%B8%B8%E8%A7%81%E5%B1%82%E5%BC%8F%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1/" class="archive-article-date">
+  	<time datetime="2022-07-14T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-14</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：2.7k字 | 预计阅读时长：9分钟
+	  </div> 
+      
+        <p>今天来看一下<strong>后端常见层式结构设计</strong>，内容摘抄自微信公众号【IT大咖说】。</p>
+<h2 id="绝对时间和相对时间"><a href="#绝对时间和相对时间" class="headerlink" title="绝对时间和相对时间"></a>绝对时间和相对时间</h2><p><strong>定时任务一般有两种：</strong></p>
+<p>约定一段时间后执行。</p>
+<p>约定某个时间点执行。</p>
+<p>聪明的你会很快发现，这两者之间可以相互转换，比如给你个任务，要求12点执行，你看了一眼时间，发现现在是9点钟，那么你可以认为这个任务三个小时候执行。</p>
+<p>同样的，给你个任务让你3个小时后执行，你看了一眼现在是9点钟，那么你当然可以认为这个任务12点钟执行。</p>
+<p>我们先来考虑一个简单的情况，你接到三个任务A、B、C（都转换成绝对时间），分别需要再3点钟，4点钟和9点钟执行，正当百思不得其解时，不经意间你瞅了一眼墙上的钟表，瞬间来了灵感，如醍醐灌顶，茅塞顿开：</p>
+<p><img src="/2022/07/14/%E5%90%8E%E7%AB%AF%E5%B8%B8%E8%A7%81%E5%B1%82%E5%BC%8F%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1/1.png" alt="img"></p>
+<p>​        如上图中所示，<strong>我只需要把任务放到它需要被执行的时刻，然后等着时针转到这个时刻时，取出该时刻放置的任务，执行就可以了</strong>。这就是时间轮算法最核心的思想了。什么？时针怎么转？while-true-sleep 下面让我们一点一点增加复杂度。## 需要重复执行多次的任务 多数定时任务是需要重复执行，比如每天上午9点执行生成报表的任务。对于重复执行的任务，其实我们需要关心的只是下次执行时间，并不关心这个任务需要循环多少次，还是那每天上午9点的这个任务来说。1. 比如现在是下午4点钟，我把这个任务加入到时间轮，并设定当时针转到明天上午九点(该任务下次执行的时间)时执行。2. 时间来到了第二天上午九点，时间轮也转到了9点钟的位置，发现该位置有一个生成报表的任务，拿出来执行。3. 同时时间轮发现这是一个循环执行的任务，于是把该任务重新放回到9点钟的位置。4. 重复步骤2和步骤3。如果哪一天这个任务不需要再执行了，那么直接通知时间轮，找到这个任务的位置删除掉就可以了。由上面的过程我们可以看到，时间轮至少需要提供4个功能：1. 加入任务 2. 执行任务 3. 删除任务 4. 沿着时间刻度前进 ## 同一时刻存在多个任务 上面说的是同一个时刻只有一个任务需要执行的情况，更通用的情况显然是同一时刻可能需要执行多个任务，比如每天上午九点除了生成报表之外，还需要执行发送邮件的任务，需要执行创建文件的任务，还需执行数据分析的任务等等，于是你刚才可能就比较好奇的时间轮的数据结构到现在可能更加好奇了，那我们先来说说时间轮的数据结构吧。### 时间轮的数据结构 首先，时钟可以用数组或者循环链表表示，这个每个时钟的刻度就是一个槽，槽用来存放该刻度需要执行的任务，如果有多个任务需要执行呢？每个槽里面放一个链表就可以了，就像下面图中这样：</p>
+<p><img src="/2022/07/14/%E5%90%8E%E7%AB%AF%E5%B8%B8%E8%A7%81%E5%B1%82%E5%BC%8F%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1/2.png" alt="img"></p>
+<p>同一时刻存在多个任务时，只要把该刻度对应的链表全部遍历一遍，执行（扔到线程池中异步执行）其中的任务即可。</p>
+<p>时间刻度不够用怎么办？</p>
+<p>如果任务不只限定在一天之内呢？比如我有个任务，需要每周一上午九点执行，我还有另一个任务，需要每周三的上午九点执行。一种很容易想到的解决办法是：</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">设计</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/07/14/%E5%90%8E%E7%AB%AF%E5%B8%B8%E8%A7%81%E5%B1%82%E5%BC%8F%E7%BB%93%E6%9E%84%E8%AE%BE%E8%AE%A1/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-TCPIP协议网络攻击" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/07/13/TCPIP%E5%8D%8F%E8%AE%AE%E7%BD%91%E7%BB%9C%E6%94%BB%E5%87%BB/">TCP/IP 协议网络攻击</a>
+    </h1>
+  
+
+        
+        <a href="/2022/07/13/TCPIP%E5%8D%8F%E8%AE%AE%E7%BD%91%E7%BB%9C%E6%94%BB%E5%87%BB/" class="archive-article-date">
+  	<time datetime="2022-07-13T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-13</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：2.2k字 | 预计阅读时长：7分钟
+	  </div> 
+      
+        <p>今天来看一下<strong>TCP/IP 协议可能会受到的网络攻击</strong>，内容摘抄自微信公众号【Java大后端】。</p>
+<p>据2020年上半年中国互联网网络安全监测数据分析报告显示，恶意程序控制服务器、拒绝服务攻击（DDoS）等网络攻击行为有增无减。时至今日，网络攻击已经成为影响网络信息安全、业务信息安全的主要因素之一。</p>
+<p>网络攻击是指利用网络存在的漏洞和安全缺陷对网络系统的软硬件及其系统数据进行攻击的行为。TCP/IP协议作为网络的基础协议，从设计之初并没有考虑到网络将会面临如此多的威胁，导致出现了许多攻击方法。由于网络中的通讯都源于数据包，通过对数据包的自动采集与解码分析，可以快速发现与追溯网络攻击。</p>
+<h2 id="TCP-IP协议"><a href="#TCP-IP协议" class="headerlink" title="TCP/IP协议"></a>TCP/IP协议</h2><p>业界通常将TCP/IP协议栈划为四层：即链路层、网络层、传输层和应用层。</p>
+<ul>
+<li>链路层主要用来处理数据在物理介质（如以太网、令牌环等）的传输，实现网卡接口的网络驱动程序；</li>
+<li>网络层采用IP协议是整个协议栈的核心，其主要功能是进行数据包的选路和转发，实现网际互联与拥塞控制等；</li>
+<li>传输层为主机间的应用程序提供端到端的通信，该层定义了两种协议即TCP与UDP；</li>
+<li>应用层的主要功能是处理应用程序的逻辑，比如文件传输、名称查询和网络管理等，位于该层的协议有基于TCP协议的FTP文件传输协议、HTTP超文本传输协议和基于UDP协议的域名服务DNS等。</li>
+</ul>
+<p><img src="/2022/07/13/TCPIP%E5%8D%8F%E8%AE%AE%E7%BD%91%E7%BB%9C%E6%94%BB%E5%87%BB/1.png" alt="img"></p>
+<center>TCP/IP协议模型层次结构图
+
+<p>由于 TCP/IP 协议有四层且每一层功能、协议各不相同，因此针对不同协议层攻击方法也各不相同：</p>
+<p>针对链路层的攻击，主要是对网络硬件和基础设施进行物理破坏或强行改变路由器路由；IP协议与ARP协议是网络层最重要的两个协议，针对网络层的攻击，主要有IP碎片攻击、ARP 欺骗等；</p>
+<p>由于TCP协议与UDP协议是传输层最主要的两个协议，因此针对传输层的攻击非常多，包括DOS攻击等；而应用层的协议是整个协议栈最多的，因此针对该层的攻击数量极为庞大，常见的如 DNS 欺骗等。</p>
+<h2 id="ARP攻击"><a href="#ARP攻击" class="headerlink" title="ARP攻击"></a>ARP攻击</h2><p>ARP（Address Resolution Protocol，地址解析协议），将网络主机的 IP 地址解析成 MAC 地址，每台主机设备上都拥有一个 ARP 缓存（ARP Cache），通过检查自己的 ARP 缓存，然后进行判断（如果有，可以直接映射；如果无，可以广播 ARP 请求包）；</p>
+<p>之后检查数据包中的目标 IP 地址是否与自己的IP地址一致，如果一致，可以发送 ARP 响应，告知 MAC 地址；当源节点在收到 ARP 响应数据包后，可以将得到的目标主机 IP 地址和 MAC 地址对映射表项添加至自己的 ARP 缓存中。</p>
+<p><img src="/2022/07/13/TCPIP%E5%8D%8F%E8%AE%AE%E7%BD%91%E7%BB%9C%E6%94%BB%E5%87%BB/2.png" alt="img"></p>
+<center>ARP协议工作原理
+
+<p>ARP 攻击就是通过伪造 IP 地址和 MAC 地址来实现 ARP 欺骗，通过在网络中制造大量的 ARP 通信量使网络阻塞，攻击者只要持续不断的发出伪造的 ARP 响应包就能更改目标主机 ARP 缓存中的 IP-MAC 条目，造成网络中断或中间人攻击，因此 ARP 攻击通常也被称作ARP欺骗。</p>
+<p>尽管ARP攻击仅能在以太网进行且门槛很低，造成的影响却很大，比如会出现断网攻击、流量被限、账号被盗等情况。网络运维可以采取ARP防御机制，比如通过在交换机部署网络镜像，抓取可疑数据包分析，也可以结合DHCP侦听、IP源防护等技术，维护网络安全。</p>
+<h2 id="DoS攻击"><a href="#DoS攻击" class="headerlink" title="DoS攻击"></a>DoS攻击</h2><p>TCP 协议是基于流的方式，面向连接的可靠通信方式，可以在网络不佳的情况下降低系统由于重传带来的带宽开销。</p>
+<p>具体来说，TCP连接的建立过程需要经历三个步骤，每一步同时连接发送端与接收端，俗称“三次握手”：发送端发出SYN包，进入SYN_SENT状态，表明计划连接的服务器端口以及初始序号，等待接收端确认；接收端收到SYN包，发送SYN_ACK，对发送端进行确认，进入SYN_RECV状态；发送端收到SYN_ACK包，向接收端发送ACK，双方连接建立完成。</p>
+<p><img src="/2022/07/13/TCPIP%E5%8D%8F%E8%AE%AE%E7%BD%91%E7%BB%9C%E6%94%BB%E5%87%BB/3.png" alt="img"></p>
+<center>TCP的三次握手
+
+<p>由于TCP协议是面向连接的传输控制协议，因此DoS攻击的主要目的就是使用户主机或网络无法接收或处理外界请求。比如通过制造大流量的无用数据，造成网络拥塞，使被攻击的主机无法和外界正常通信；利用重复连接缺陷，反复发送重复服务请求，使其无法正常处理其它请求；又或利用协议缺陷，反复发送攻击数据，占用主机或系统资源，导致死机等。</p>
+<p>简单来说，DoS（Denial of Service）拒绝服务攻击通常使用数据包淹没本地系统，以打扰或严重阻碍肯帮本地的服务响应外来合法的请求，使本地系统奔溃。SYN flood 攻击是最常见的 DoS 攻击类型。</p>
+<p>攻击者将自身 IP 源地址进行伪装，向本地系统发送 TCP连接请求；本地系统回复SYN-ACK至伪装地址，导致本地系统收不到RST消息，无法接收ACK回应，将一直处于半连接状态，直至资源耗尽。攻击者发送连接请求速度比 TCP超时释放资源速度更快，利用反复连接请求，导致本地服务无法接收其它连接。</p>
+<p>解决SYN flood 的最好方法就是做好防范策略，通过网络性能管理工具，自动筛选可疑数据包，缩短 SYN Timeout 时间，设置 SYN Cookie，为每一个请求设置Cookie，如果短时间内收到某个IP的重复SYN报文，就认定为攻击，抛弃该IP地址。</p>
+<h2 id="DNS攻击"><a href="#DNS攻击" class="headerlink" title="DNS攻击"></a>DNS攻击</h2><p>IP协议为了将数据信息包从原设备传送到目的设备，需要依赖IP地址与IP路由器。IP地址是机器语言，通常较长，所以尽管IP地址具有唯一性，但是不方便记忆与使用，人们便在此基础上发明了DNS。DNS（Domain Name System）即域名系统，域名通常较短，兼具可读性与实用性。由于域名与IP地址呈一一对应关系，因此，上网时只需在地址栏输入域名，系统会直接进行域名解析，将域名翻译成IP地址。</p>
+<p>在执行完域名搜索后，域名服务器会保存域名记录，每条记录都会包含域名与IP地址。如果域名服务器的某条地址被人为修改，那么就可以人为操作用户的访问地址，这种行为被称为“域名劫持”。“域名劫持”的始作俑者是域名服务器提供商，因此目前解决该问题的有效方法是弃用或换用域名服务器。</p>
+<p>除“域名劫持”外，还有另外一种常见的DNS攻击叫做“域名污染”或“域名欺骗”。当电脑发送“域名查询”至域名服务器后，域名服务器会将回应发送回电脑，发送请求与接收信息是一个过程，中间会出现时间差，网络攻击会在接收信息前，伪造错误应答至电脑，那么该信息即为错误IP。</p>
+<p>面对网络攻击，我们除了需要提高安全意识，积极尽责地维护系统，加强防火墙设置外，还可以通过对数据包进行分析进而追溯网络攻击。通过对网络数据进行采集与解码分析，掌握网络中最细微的变化，针对网络攻击的特征值或者行为进行有效的告警信息配置，可以快速定位网络中的攻击。也可以通过使用具有安全防护功能的网络性能管理工具，譬如天旦网络性能管理NPM，支持TCP端口扫描、ARP攻击与DOS攻击等可疑数据包自动分析，实现自动告警，保障数据信息的正常传输与使用。</p>
+</center></center></center>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/07/13/TCPIP%E5%8D%8F%E8%AE%AE%E7%BD%91%E7%BB%9C%E6%94%BB%E5%87%BB/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-服务器扩容策略" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/07/12/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%AE%B9%E7%AD%96%E7%95%A5/">服务器扩容策略</a>
+    </h1>
+  
+
+        
+        <a href="/2022/07/12/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%AE%B9%E7%AD%96%E7%95%A5/" class="archive-article-date">
+  	<time datetime="2022-07-12T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-07-12</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：3.4k字 | 预计阅读时长：12分钟
+	  </div> 
+      
+        <p>今天来看一下<strong>服务器扩容策略</strong>，内容摘抄自微信公众号【Java技术栈】。</p>
+<h2 id="为什么要扩容"><a href="#为什么要扩容" class="headerlink" title="为什么要扩容"></a>为什么要扩容</h2><p>说人话就是, 无论如何优化性能,能达到的最大值是一定的,对于一个用户量大的应用,可以对服务器进行各种优化,诸如限流、资源隔离,但是上限还是在那里,这时候就应该改变我们的硬件,例如使用更强的CPU、更大的内存,在前文中举了一个学生食堂打饭的例子,如果学生多了,可以通过令牌桶算法优先给高三学生令牌打饭,但是如果高三的学生还是很多呢?那就只有增加窗口或者食堂的数量,也就是硬件上的扩容。</p>
+<h2 id="扩容策略"><a href="#扩容策略" class="headerlink" title="扩容策略"></a>扩容策略</h2><p>扩容策略可以分为两种, 一种是对单机整体扩容,也就是机器内部包含CPU、内存、存储设备等,另一种是扩容对应的组件,例如扩内存、扩磁盘、扩CPU。</p>
+<h3 id="整机硬件"><a href="#整机硬件" class="headerlink" title="整机硬件"></a>整机硬件</h3><p>整机扩容的好处是,有很多专业的服务器硬件供应商,例如IBM、浪潮、DELL、HP等,专业的硬件供应商,他们组装以及搭配方面可能经验更加丰富,另外有些公司会对组件进行一些优化,从而服务器更加稳定,可以类比为买电脑,有的人可能选择买淘宝卖家已经组装好的台式,有的人可能自己买各种硬件自己回家组装,对于一般人而言,选择前者是较为靠谱的选择,因为你即使懂硬件的一些参数,也难保自己搭配的机器是否能发挥各个部件最大性能。</p>
+<h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><p>对于一些技术能力强悍的公司,更多的是自己买各种组件组装,这样成本更低,因为节省了组装等费用,并且可以根据业务个性化定制,例如有的公司是计算密集型的,那么主要是更换更强的CPU,有的IO密集型,那么扩容的应该是内存等,有的公司需要存储大量的数据,那么可能扩容的是硬盘等存储设备。</p>
+<p>组件包含:</p>
+<p><strong>cpu</strong></p>
+<p>Intel、Amd ,参考频率、线程数等</p>
+<p><strong>网卡</strong></p>
+<p>百兆-&gt;千兆 -&gt; 万兆</p>
+<p><strong>内存</strong></p>
+<p>ECC校验</p>
+<p><strong>磁盘</strong></p>
+<p>SCSI HDD（机械）、HHD（混合）、SATA SSD、PCI-e SSD、 MVMe SSD。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/07/12/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%AE%B9%E7%AD%96%E7%95%A5/">展开全文 >></a>
         </p>
       
 
@@ -1250,7 +1125,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/3/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/3/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1352,15 +1227,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">前端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1400,15 +1295,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常处理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多线程</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">中间件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1456,11 +1351,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">前端</a>
+                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1484,15 +1379,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1500,11 +1391,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+                <a href="javascript:void(0)" class="js-tag color5">并发编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库，缓存</a>
               </li>
             
             <div class="clearfix"></div>

@@ -79,8 +79,8 @@
 			</ul>
 		</nav>
 		<nav>
-			<a>总文章数 286</a>
-			<a>总字数 <span class="post-count">826k</span></a>
+			<a>总文章数 413</a>
+			<a>总字数 <span class="post-count">1279k</span></a>
 		</nav>
 		<nav class="header-smart-menu">
     		
@@ -165,20 +165,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-剑指offer16" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JavaNIO网络编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/28/%E5%89%91%E6%8C%87offer16/">剑指offer16</a>
+      <a class="article-title" href="/2022/01/01/JavaNIO%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">JavaNIO网络编程</a>
     </h1>
   
 
         
-        <a href="/2021/08/28/%E5%89%91%E6%8C%87offer16/" class="archive-article-date">
-  	<time datetime="2021-08-28T00:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-28</time>
+        <a href="/2022/01/01/JavaNIO%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" class="archive-article-date">
+  	<time datetime="2022-01-01T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-01-01</time>
 </a>
         
       </header>
@@ -186,25 +186,28 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：203字 | 预计阅读时长：1分钟
+		字数：3.9k字 | 预计阅读时长：14分钟
 	  </div> 
       
-        <h2 id="第十六天：排序（简单）"><a href="#第十六天：排序（简单）" class="headerlink" title="第十六天：排序（简单）"></a>第十六天：排序（简单）</h2><p>今天是刷题的第16天了，今天的题目做完，一个月的刷题之旅就过去一半了，真的收益匪浅，继续努力，把剩下的题目都做好。</p>
-<h3 id="1、把数组排成最小的数"><a href="#1、把数组排成最小的数" class="headerlink" title="1、把数组排成最小的数"></a>1、把数组排成最小的数</h3><p>输入一个非负整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。</p>
-<p><strong>示例 1:</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: [10,2]</span><br><span class="line">输出: &quot;102&quot;</span><br></pre></td></tr></table></figure>
-
-<p><strong>示例 2:</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: [3,30,34,5,9]</span><br><span class="line">输出: &quot;3033459&quot;</span><br></pre></td></tr></table></figure>
-
-<p><strong>提示:</strong></p>
-<ul>
-<li><code>0 &lt; nums.length &lt;= 100</code></li>
+        <p>今天是元旦，是2022年的第一天。不知不觉一年就过去了。今天看一下Java的NIO网络编程，内容摘抄自微信公众号【IT大咖说】。</p>
+<p>本系列为 Netty 学习笔记，本篇介绍总结<strong>Java NIO 网络编程</strong>。Netty 作为一个异步的、事件驱动的网络应用程序框架，也是基于NIO的客户、服务器端的编程框架。其对 Java NIO 底层 API 进行了封装，因此有必要对 Java 网络编程做个大概了解。本篇将重点放在 NIO 网络编程模型上，对 BIO 及 AIO 仅做简要说明；</p>
+<hr>
+<h2 id="1-Java-网络编程"><a href="#1-Java-网络编程" class="headerlink" title="1. Java 网络编程"></a>1. Java 网络编程</h2><ul>
+<li>最早期的 Java API（java.net）只支持由本地系统套接字库提供的阻塞函数，其<strong>弊端</strong>有：一个线程只能处理一条连接；在任何时候都可能有大量线程处于休眠状态，可能造成资源浪费；需要为每个线程的调用栈分配内存；上下文切换带来的开销会很麻烦；</li>
+<li>2002年，JDK 1.4 在 java.nio 包中引入非阻塞 IO（NIO）。使用事件通知 API 以确定在一组非阻塞套接字中有哪些已经就绪能够进行 IO 相关的操作；</li>
+<li>非阻塞 IO 的<strong>优势</strong>有：使用较少线程便可处理许多连接，减少了内存管理和上下文切换带来的开销；没有 IO 操作需要处理时，线程可以被用于其他任务；</li>
+<li>Java 支持3中网络编程模式 ：<strong>BIO</strong>(同步阻塞型)、<strong>NIO</strong>(同步非阻塞型)、<strong>AIO</strong>(异步非阻塞型)；<strong>BIO</strong>：适用于连接数目较小且固定的架构；<strong>NIO</strong>：适用于链接数量多且连接比较短的架构；<strong>AIO</strong>：适用于连接数目多且连接比较长的架构；</li>
+<li>BIO 以流的方式处理书局，NIO 以块的方式处理书局，块 IO 的效率比流 IO 高很多；</li>
 </ul>
-<p><strong>说明:</strong></p>
+<h3 id="1-1-Javs-NIO-基本介绍"><a href="#1-1-Javs-NIO-基本介绍" class="headerlink" title="1.1 Javs NIO 基本介绍"></a>1.1 Javs NIO 基本介绍</h3><ul>
+<li><p><strong>NIO</strong> 的三大核心部分部分：<strong>Channel(通道)<strong>、</strong>Buffer(缓冲区)<strong>、</strong>Selector(选择器)<strong>；每个 <strong>Channel</strong> 都会对应一个 <strong>Buffer</strong>；</strong>Selector</strong> 对应一个线程，一个线程对应多个 <strong>Channel</strong>；多个 <strong>Channel</strong> 可以注册到一个 <strong>Selector</strong>；程序切换到哪个 <strong>Channel</strong> 由事件 <strong>Event</strong> 决定；<strong>Selector</strong> 会根据不同的事件，在各个通道上切换；<strong>Buffer</strong> 就是一个内存块，底层是一个数组；数据的读取和写入通过<strong>Buffer</strong>，与 BIO 不同。BIO 要么是输入流，要么是输出流，不能双向，而 NIO 的 <strong>Buffer</strong> 是双向的；<strong>Channel</strong> 也是双向的，可以反映底层操作系统的情况；底层的操作系统通道就是双向的；</p>
+<p><img src="/2022/01/01/JavaNIO%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/1.png" alt="img"></p>
+</li>
+</ul>
 <ul>
-<li>输出结果可能非常大，所以你需要返回一个字符串而不是整数</li>
-<li>拼接起来的数字可能会有前导 0，最后结果不需要去掉前导 0</li>
+<li>NIO 是面向缓冲区，或者面向块编程的；</li>
+<li>NIO 可以做到用一个线程来处理多个操作；</li>
+<li>HTTP 2.0 使用了多路复用技术，做到同一个连接并发处理多个请求；</li>
 </ul>
         
       
@@ -219,7 +222,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">leetcode</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NIO</a>
         		</li>
       		
 		</ul>
@@ -229,7 +236,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/28/%E5%89%91%E6%8C%87offer16/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/01/01/JavaNIO%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">展开全文 >></a>
         </p>
       
 
@@ -259,20 +266,20 @@
 
 
   
-    <article id="post-剑指offer15" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-动态代理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/27/%E5%89%91%E6%8C%87offer15/">剑指offer15</a>
+      <a class="article-title" href="/2021/12/31/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/">动态代理</a>
     </h1>
   
 
         
-        <a href="/2021/08/27/%E5%89%91%E6%8C%87offer15/" class="archive-article-date">
-  	<time datetime="2021-08-27T00:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-27</time>
+        <a href="/2021/12/31/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" class="archive-article-date">
+  	<time datetime="2021-12-31T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-31</time>
 </a>
         
       </header>
@@ -280,28 +287,45 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.5k字 | 预计阅读时长：6分钟
+		字数：3.2k字 | 预计阅读时长：13分钟
 	  </div> 
       
-        <h2 id="第十五天：搜索与回溯算法（中等）"><a href="#第十五天：搜索与回溯算法（中等）" class="headerlink" title="第十五天：搜索与回溯算法（中等）"></a>第十五天：搜索与回溯算法（中等）</h2><p>今天是刷题的第15天，要做的还是搜索与回溯算法，要好好学习这一算法的思路。</p>
-<h3 id="1、二叉树中和为某一个值的路径"><a href="#1、二叉树中和为某一个值的路径" class="headerlink" title="1、二叉树中和为某一个值的路径"></a>1、二叉树中和为某一个值的路径</h3><p>输入一棵二叉树和一个整数，打印出二叉树中节点值的和为输入整数的所有路径。从树的根节点开始往下一直到叶节点所经过的节点形成一条路径。</p>
-<p>示例:<br>给定如下二叉树，以及目标和 target = 22，</p>
-<pre><code>          5
-         / \
-        4   8
-       /   / \
-      11  13  4
-     /  \    / \
-    7    2  5   1
-</code></pre>
-<p>返回:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">   [5,4,11,2],</span><br><span class="line">   [5,8,4,5]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+        <p>今天来看一下静态代理和动态代理。内容摘抄自微信公众号【Java极客技术】。</p>
+<h2 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h2><p><strong>何谓代理？</strong></p>
+<p><strong>代理</strong>这个词最早出现在<strong>代理商</strong>这个行业，所谓<strong>代理商</strong>，简而言之，其实就是<strong>帮助企业或者老板打理生意，自己本身不做生产任何商品</strong>。</p>
+<p>举个例子，我们去火车站买票的时候，人少老板一个人还忙的过来，但是人一多的话，就会非常拥挤，于是就有了各种代售点，我们可以从代售点买车票，从而加快老板的卖票速度。</p>
+<p><strong>代售点的出现，可以说，很直观的帮助老板提升了用户购票体验</strong>。</p>
+<p>站在软件设计的角度，其实效果也是一样的，采用代理模式的编程，能显著的增强原有的功能和简化方法调用方式。</p>
+<p><img src="/2021/12/31/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/1.png" alt="img"></p>
+<p>在介绍动态代理之前，我们先来聊解静态代理。</p>
+<h2 id="二、静态代理"><a href="#二、静态代理" class="headerlink" title="二、静态代理"></a>二、静态代理</h2><p>下面，我们以<code>两数相加</code>为例，实现过程如下！</p>
+<ul>
+<li>接口类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Calculator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 计算两个数之和</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> num1</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> num2</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">Integer <span class="title">add</span><span class="params">(Integer num1, Integer num2)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<ul>
+<li>目标对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CalculatorImpl</span> <span class="keyword">implements</span> <span class="title">Calculator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">add</span><span class="params">(Integer num1, Integer num2)</span> </span>&#123;</span><br><span class="line">        Integer result = num1 + num2;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>提示：</p>
-<p>节点总数 &lt;= 10000</p>
-<p>*<strong>思路：</strong></p>
-<p>这道题很熟悉，我做过蛮多类似的题目，一年多以前，用回溯法，试一下能不能写出来吧。</p>
+<ul>
+<li>代理对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CalculatorProxyImpl</span> <span class="keyword">implements</span> <span class="title">Calculator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Calculator calculator;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">add</span><span class="params">(Integer num1, Integer num2)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//方法调用前，可以添加其他功能....</span></span><br><span class="line">        Integer result = calculator.add(num1, num2);</span><br><span class="line">        <span class="comment">//方法调用后，可以添加其他功能....</span></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CalculatorProxyImpl</span><span class="params">(Calculator calculator)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.calculator = calculator;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CalculatorProxyClient</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//目标对象</span></span><br><span class="line">        Calculator target = <span class="keyword">new</span> CalculatorImpl();</span><br><span class="line">        <span class="comment">//代理对象</span></span><br><span class="line">        Calculator proxy = <span class="keyword">new</span> CalculatorProxyImpl(target);</span><br><span class="line">        Integer result = proxy.add(<span class="number">1</span>,<span class="number">2</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;相加结果：&quot;</span> + result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>输出结果</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">相加结果：3</span><br></pre></td></tr></table></figure>
+
+<p>通过这种代理方式，最大的优点就是：<strong>可以在不修改目标对象的前提下，扩展目标对象的功能</strong>。</p>
+<p>但也有缺点：需要<strong>代理对象和目标对象实现一样的接口</strong>，因此，当目标对象扩展新的功能时，代理对象也要跟着一起扩展，不易维护！</p>
         
       
 
@@ -315,7 +339,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">leetcode</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
         		</li>
       		
 		</ul>
@@ -325,7 +349,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/27/%E5%89%91%E6%8C%87offer15/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/31/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/">展开全文 >></a>
         </p>
       
 
@@ -355,20 +379,20 @@
 
 
   
-    <article id="post-剑指offer14" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-RocketMQ性能优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/26/%E5%89%91%E6%8C%87offer14/">剑指offer14</a>
+      <a class="article-title" href="/2021/12/30/RocketMQ%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">RocketMQ性能优化</a>
     </h1>
   
 
         
-        <a href="/2021/08/26/%E5%89%91%E6%8C%87offer14/" class="archive-article-date">
-  	<time datetime="2021-08-26T00:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-26</time>
+        <a href="/2021/12/30/RocketMQ%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="archive-article-date">
+  	<time datetime="2021-12-30T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-30</time>
 </a>
         
       </header>
@@ -376,23 +400,42 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.6k字 | 预计阅读时长：7分钟
+		字数：1.9k字 | 预计阅读时长：6分钟
 	  </div> 
       
-        <h2 id="第十四天：搜索与回溯算法（中等）"><a href="#第十四天：搜索与回溯算法（中等）" class="headerlink" title="第十四天：搜索与回溯算法（中等）"></a>第十四天：搜索与回溯算法（中等）</h2><p>今天是刷题的第14天，要做的是搜索与回溯算法，这是相当重要的一个算法了，不知道我还记不记得。</p>
-<h3 id="1、矩阵中的路径"><a href="#1、矩阵中的路径" class="headerlink" title="1、矩阵中的路径"></a>1、矩阵中的路径</h3><p>给定一个 m x n 二维字符网格 board 和一个字符串单词 word 。如果 word 存在于网格中，返回 true ；否则，返回 false 。</p>
-<p>单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。同一个单元格内的字母不允许被重复使用。</p>
-<p>例如，在下面的 3×4 的矩阵中包含单词 “ABCCED”（单词中的字母已标出）。</p>
-<p><img src="/2021/08/26/%E5%89%91%E6%8C%87offer14/1.png" alt="img"></p>
-<p>示例 1：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：board = [[&quot;A&quot;,&quot;B&quot;,&quot;C&quot;,&quot;E&quot;],[&quot;S&quot;,&quot;F&quot;,&quot;C&quot;,&quot;S&quot;],[&quot;A&quot;,&quot;D&quot;,&quot;E&quot;,&quot;E&quot;]], word = &quot;ABCCED&quot;</span><br><span class="line">输出：true</span><br></pre></td></tr></table></figure>
-
-<p>示例 2：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：board = [[&quot;a&quot;,&quot;b&quot;],[&quot;c&quot;,&quot;d&quot;]], word = &quot;abcd&quot;</span><br><span class="line">输出：false</span><br></pre></td></tr></table></figure>
-
-
-<p>提示：</p>
-<p>1 &lt;= board.length &lt;= 200<br>1 &lt;= board[i].length &lt;= 200<br>board 和 word 仅由大小写英文字母组成</p>
+        <p>今天来看下<strong>RocketMQ的性能优化</strong>，内容摘抄自微信公众号【苏三说技术】。</p>
+<p>从官方这边获悉，RocketMQ在4.9.1版本中对消息发送进行了大量的优化，性能提升十分显著，接下来请跟着我一起来欣赏大神们的杰作。</p>
+<p>根据RocketMQ4.9.1的更新日志，我们从中提取到关于消息发送性能优化的【Issues:2883】,详细链接如下：具体优化点如截图所示：</p>
+<p><img src="/2021/12/30/RocketMQ%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/1.png" alt="img"></p>
+<p>首先先尝试对上述优化点做一个简单的介绍：</p>
+<ul>
+<li><p>对WaitNotifyObject的锁进行优化(item2)</p>
+</li>
+<li><p>移除HAService中的锁(item3)</p>
+</li>
+<li><p>移除GroupCommitService中的锁(item4)</p>
+</li>
+<li><p>消除HA中不必要的数组拷贝(item5)</p>
+</li>
+<li><p>调整消息发送几个参数的默认值(item7)</p>
+</li>
+<li><ul>
+<li>sendMessageThreadPoolNums</li>
+<li>useReentrantLockWhenPutMessage</li>
+<li>flushCommitLogTimed</li>
+<li>endTransactionThreadPoolNums</li>
+</ul>
+</li>
+<li><p>减少琐的作用范围(item8-12)</p>
+</li>
+</ul>
+<p>通过阅读上述的变更，总结出优化手段主要包括如下三点：</p>
+<ul>
+<li>移除不必要的锁</li>
+<li>降低锁粒度(范围)</li>
+<li>修改消息发送相关参数</li>
+</ul>
+<p>接下来结合源码，从中挑选具有代表性功能进行详细剖析，一起领悟Java高并发编程的魅力。</p>
         
       
 
@@ -406,7 +449,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">leetcode</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">性能优化</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
         		</li>
       		
 		</ul>
@@ -416,7 +463,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/26/%E5%89%91%E6%8C%87offer14/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/30/RocketMQ%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">展开全文 >></a>
         </p>
       
 
@@ -446,20 +493,20 @@
 
 
   
-    <article id="post-Serveless云原生" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-三级缓存" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/25/Serveless%E4%BA%91%E5%8E%9F%E7%94%9F/">Serveless云原生</a>
+      <a class="article-title" href="/2021/12/29/%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/">三级缓存</a>
     </h1>
   
 
         
-        <a href="/2021/08/25/Serveless%E4%BA%91%E5%8E%9F%E7%94%9F/" class="archive-article-date">
-  	<time datetime="2021-08-25T08:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-25</time>
+        <a href="/2021/12/29/%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/" class="archive-article-date">
+  	<time datetime="2021-12-29T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-29</time>
 </a>
         
       </header>
@@ -467,13 +514,31 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2k字 | 预计阅读时长：6分钟
+		字数：4.1k字 | 预计阅读时长：15分钟
 	  </div> 
       
-        <p>老是听到云原生，这也确实是现在的一个很重要的趋势，那么到底云原生是什么，Serveless又是什么呢，今天来看一下。（摘抄自java极客技术微信公众号）</p>
-<h2 id="一、物理机"><a href="#一、物理机" class="headerlink" title="一、物理机"></a>一、物理机</h2><p>最初的时候每个公司如果想发布自己的应用，则需要建设自己的机房，然后购买服务器主机，组装路由器交换机和网络，网络通了过后还要安装 <code>Linux</code> 系统以及安装各种软件，最后将开发完成的 <code>Java</code> 项目打包放到 <code>Tomact</code> 容器里面或者以 Jar 包的形式运行起来对外服务。这个过程好一点的公司是通过 <code>Jenkins</code> 等 <code>CICD</code> 的方式来完成的，但是更有很多公司是通过人工手动拷贝的方式来进行的。这种方式很容易出错，而且也不方便回滚，更无法应对高峰期的缩扩容。每次升级部署的时候都是一个很艰巨的任务，如果说业务初期这种方式还是可以的，不需要多大的成本，但是当我们的业务发展到一定程度的时候，需要开发的部署的服务越来越多的时候就不行了。</p>
-<p><img src="/2021/08/25/Serveless%E4%BA%91%E5%8E%9F%E7%94%9F/image1.png" alt="image1"></p>
-<p>简单的形式如上图所示，在自建机房的时候还是要考虑很多细节问题的，比如机房温度往往都较高所以要安装空调；然后如何保证机房长期不断电，毕竟机房如果断电服务将不可用。</p>
+        <p>今天来看下Spring中的三级缓存。内容摘抄自微信公众号【IT大咖说】。</p>
+<ul>
+<li>Java开发，总会遇到问三级缓存的。</li>
+<li>看了很多文章，感觉不是很透彻。打算自己写一个自以为很详细的对三级缓存的理解。有图文。也有文字概括。受不了动图的可以看文字概括哦</li>
+</ul>
+<h3 id="进入正题："><a href="#进入正题：" class="headerlink" title="进入正题："></a>进入正题：</h3><ul>
+<li>在开发过程中会遇到循环依赖的问题。就跟下图一样</li>
+</ul>
+<p><img src="/2021/12/29/%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/1.png" alt="img"></p>
+<ul>
+<li>Spring在为此设计了三级缓存来解决以上依赖的问题</li>
+</ul>
+<h3 id="首先我们得知道-三级缓存里面分别存的什么"><a href="#首先我们得知道-三级缓存里面分别存的什么" class="headerlink" title="首先我们得知道 三级缓存里面分别存的什么"></a>首先我们得知道 三级缓存里面分别存的什么</h3><p>   一级缓存里存的是成品对象，实例化和初始化都完成了，我们的应用中使用的对象就是一级缓存中的</p>
+<p>   二级缓存中存的是半成品，用来解决对象创建过程中的循环依赖问题</p>
+<p>   三级缓存中存的是 ObjectFactory&lt;?&gt; 类型的 lambda 表达式，用于处理存在 AOP 时的循环依赖问题</p>
+<p><img src="/2021/12/29/%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/2.png" alt="img"></p>
+<h3 id="Spring-三级缓存的顺序"><a href="#Spring-三级缓存的顺序" class="headerlink" title="Spring 三级缓存的顺序"></a><strong>Spring 三级缓存的顺序</strong></h3><p>三级缓存的顺序是由查询循序而来，与在类中的定义顺序无关</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/RQueXibgo0KMIGYVB8mazAlocjNoicRbEexDnPwibCRscN6ib6oNeErC5RRRr0hLSxndNN0ryNJr5ceqTfmEiasprNQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片"></p>
+<p>所以第一级缓存：singletonObjects ，第二级缓存：earlySingletonObjects ，第三级缓存：singletonFactories</p>
+<h3 id="Spring-的的注入方式有三种：构造方法注入、setter-方法注入、接口注入"><a href="#Spring-的的注入方式有三种：构造方法注入、setter-方法注入、接口注入" class="headerlink" title="Spring 的的注入方式有三种：构造方法注入、setter 方法注入、接口注入"></a>Spring 的的注入方式有三种：构造方法注入、setter 方法注入、接口注入</h3><p>接口注入的方式太灵活，易用性比较差，所以并未广泛应用起来，大家知道有这么一说就好，不要去细扣了</p>
+<p>构造方法注入的方式，将实例化与初始化并在一起完成，能够快速创建一个可直接使用的对象，但它没法处理循环依赖的问题，了解就好</p>
+<p>setter 方法注入的方式，是在对象实例化完成之后，再通过反射调用对象的 setter 方法完成属性的赋值，能够处理循环依赖的问题，是后文的基石，必须要熟悉</p>
         
       
 
@@ -487,7 +552,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">云原生</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
         		</li>
       		
 		</ul>
@@ -497,7 +562,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/25/Serveless%E4%BA%91%E5%8E%9F%E7%94%9F/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/29/%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98/">展开全文 >></a>
         </p>
       
 
@@ -527,20 +592,20 @@
 
 
   
-    <article id="post-剑指offer13" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-kafka架构与工作原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/25/%E5%89%91%E6%8C%87offer13/">剑指offer13</a>
+      <a class="article-title" href="/2021/12/28/kafka%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">kafka架构与工作原理</a>
     </h1>
   
 
         
-        <a href="/2021/08/25/%E5%89%91%E6%8C%87offer13/" class="archive-article-date">
-  	<time datetime="2021-08-25T05:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-25</time>
+        <a href="/2021/12/28/kafka%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/" class="archive-article-date">
+  	<time datetime="2021-12-28T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-28</time>
 </a>
         
       </header>
@@ -548,21 +613,34 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.5k字 | 预计阅读时长：6分钟
+		字数：3k字 | 预计阅读时长：11分钟
 	  </div> 
       
-        <h2 id="第十三天：双指针（简单）"><a href="#第十三天：双指针（简单）" class="headerlink" title="第十三天：双指针（简单）"></a>第十三天：双指针（简单）</h2><p>今天是刷题的第13天，还是看双指针的应用，这已经是第三天关注双指针的算法的应用了，训练完之后要有所收获。</p>
-<h3 id="1、调整数组顺序使基数位于偶数前面"><a href="#1、调整数组顺序使基数位于偶数前面" class="headerlink" title="1、调整数组顺序使基数位于偶数前面"></a>1、调整数组顺序使基数位于偶数前面</h3><p>输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有奇数位于数组的前半部分，所有偶数位于数组的后半部分。</p>
-<p>示例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：nums = [1,2,3,4]</span><br><span class="line">输出：[1,3,2,4] </span><br><span class="line">注：[3,1,2,4] 也是正确的答案之一。</span><br></pre></td></tr></table></figure>
-
-
-<p>提示：</p>
-<p>0 &lt;= nums.length &lt;= 50000<br>1 &lt;= nums[i] &lt;= 10000</p>
-<p>*<strong>思路：</strong></p>
-<p>这个双指针的应用不再是针对链表了，而是针对数组。对于数组来说，双指针一般指向数组的两端，从两端往中间去遍历直到指针相遇。左边的指针找到左边的偶数，右边的指针找到右边的基数，然后做交换。</p>
-<p>*<strong>实现：</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">exchange</span>(<span class="params">self, nums: <span class="type">List</span>[<span class="built_in">int</span>]</span>) -&gt; <span class="type">List</span>[<span class="built_in">int</span>]:</span></span><br><span class="line">        i,j = <span class="number">0</span>,<span class="built_in">len</span>(nums)-<span class="number">1</span></span><br><span class="line">        <span class="keyword">while</span> i&lt;j:</span><br><span class="line">            <span class="keyword">while</span> i&lt;j <span class="keyword">and</span> nums[i]%<span class="number">2</span>==<span class="number">1</span>:</span><br><span class="line">                <span class="comment">#找到左边数组的偶数</span></span><br><span class="line">                i+=<span class="number">1</span></span><br><span class="line">            <span class="keyword">while</span> i&lt;j <span class="keyword">and</span> nums[j]%<span class="number">2</span>==<span class="number">0</span>:</span><br><span class="line">                <span class="comment">#找到右边数组的基数</span></span><br><span class="line">                j-=<span class="number">1</span></span><br><span class="line">            <span class="comment">#左右的数进行交换</span></span><br><span class="line">            nums[i],nums[j] = nums[j],nums[i]</span><br><span class="line">        <span class="keyword">return</span> nums</span><br></pre></td></tr></table></figure>
+        <p>今天来看一下kafka的架构以及工作原理。内容摘抄自微信公众号【Java极客技术】。</p>
+<h2 id="一、认识kafka"><a href="#一、认识kafka" class="headerlink" title="一、认识kafka"></a>一、认识kafka</h2><p>面试官提问：什么是 Kafka ？用来干嘛的？</p>
+<p>官方定义如下：</p>
+<blockquote>
+<p>Kafka is used for building real-time data pipelines and streaming apps. It is horizontally scalable, fault-tolerant, wicked fast, and runs in production in thousands of companies.</p>
+</blockquote>
+<p>翻译过来，大致的意思就是，这是一个实时数据处理系统，可以横向扩展，并高可靠！</p>
+<p><strong>实时数据处理</strong>，从名字上看，很好理解，就是将数据进行实时处理，在现在流行的微服务开发中，最常用实时数据处理平台有 RabbitMQ、RocketMQ 等消息中间件。</p>
+<p>这些中间件，最大的特点主要有两个：</p>
+<ul>
+<li><strong>服务解耦</strong></li>
+<li><strong>流量削峰</strong></li>
+</ul>
+<p>在早期的 web 应用程序开发中，当请求量突然上来了时候，我们会将要处理的数据推送到一个队列通道中，然后另起一个线程来不断轮训拉取队列中的数据，从而加快程序的运行效率。</p>
+<p><img src="/2021/12/28/kafka%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/1.png" alt="img"></p>
+<p>但是随着请求量不断的增大，并且队列通道的数据一致处于高负载，在这种情况下，应用程序的内存占用率会非常高，稍有不慎，会出现内存不足，造成程序内存溢出，从而导致服务不可用。</p>
+<p>随着业务量的不断扩张，在一个应用程序内，使用这种模式已然无法满足需求，因此之后，就诞生了各种消息中间件，例如 <strong>ActiveMQ</strong>、<strong>RabbitMQ</strong>、<strong>RocketMQ</strong> 等中间件。</p>
+<p>采用这种模型，本质就是将要推送的数据，不在存放在当前应用程序的内存中，而是将数据存放到另一个专门负责数据处理的应用程序中，从而实现服务解耦。</p>
+<p><img src="/2021/12/28/kafka%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/2.png" alt="img"></p>
+<p><strong>消息中间件</strong>：主要的职责就是保证能接受到消息，并将消息存储到磁盘，即使其他服务都挂了，数据也不会丢失，同时还可以对数据消费情况做好监控工作。</p>
+<p><strong>应用程序</strong>：只需要将消息推送到消息中间件，然后启用一个线程来不断从消息中间件中拉取数据，进行消费确认即可！</p>
+<p>引入消息中间件之后，整个服务开发会变得更加简单，各负其责。</p>
+<p>Kafka 本质其实也是消息中间件的一种，Kafka 出自于 LinkedIn 公司，与 2010 年开源到 github。</p>
+<p>LinkedIn 的开发团队，为了解决数据管道问题，起初采用了 ActiveMQ 来进行数据交换，大约是在 2010 年前后，那时的 ActiveMQ 还远远无法满足 LinkedIn 对数据传递系统的要求，经常由于各种缺陷而导致消息阻塞或者服务无法正常访问，为了能够解决这个问题，LinkedIn 决定研发自己的消息传递系统，<strong>Kafka 由此诞生</strong>。</p>
+<p>在 LinkedIn 公司，Kafka 可以有效地处理每天数十亿条消息的指标和用户活动跟踪，其强大的处理能力，已经被业界所认可，并成为大数据流水线的首选技术。</p>
         
       
 
@@ -576,7 +654,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">leetcode</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
         		</li>
       		
 		</ul>
@@ -586,7 +664,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/25/%E5%89%91%E6%8C%87offer13/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/28/kafka%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86/">展开全文 >></a>
         </p>
       
 
@@ -616,20 +694,20 @@
 
 
   
-    <article id="post-剑指offer12" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Redis分布式锁的坑" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/24/%E5%89%91%E6%8C%87offer12/">剑指offer12</a>
+      <a class="article-title" href="/2021/12/27/Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E5%9D%91/">Redis分布式锁的坑</a>
     </h1>
   
 
         
-        <a href="/2021/08/24/%E5%89%91%E6%8C%87offer12/" class="archive-article-date">
-  	<time datetime="2021-08-24T02:19:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-24</time>
+        <a href="/2021/12/27/Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E5%9D%91/" class="archive-article-date">
+  	<time datetime="2021-12-27T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-27</time>
 </a>
         
       </header>
@@ -637,20 +715,23 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1k字 | 预计阅读时长：4分钟
+		字数：6.3k字 | 预计阅读时长：23分钟
 	  </div> 
       
-        <h2 id="第十二天：双指针（简单）"><a href="#第十二天：双指针（简单）" class="headerlink" title="第十二天：双指针（简单）"></a>第十二天：双指针（简单）</h2><p>今天继续看下双指针的应用</p>
-<h3 id="1、合并两个排序的链表"><a href="#1、合并两个排序的链表" class="headerlink" title="1、合并两个排序的链表"></a>1、合并两个排序的链表</h3><p>输入两个递增排序的链表，合并这两个链表并使新链表中的节点仍然是递增排序的。</p>
-<p>示例1：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：1-&gt;2-&gt;4, 1-&gt;3-&gt;4</span><br><span class="line">输出：1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4</span><br></pre></td></tr></table></figure>
+        <p>今天来看一下Redis分布式锁的坑。内容摘抄自微信公众号【Java极客技术】。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在分布式系统中，由于redis分布式锁相对于更简单和高效，成为了分布式锁的首先，被我们用到了很多实际业务场景当中。</p>
+<p>但不是说用了redis分布式锁，就可以高枕无忧了，如果没有用好或者用对，也会引来一些意想不到的问题。</p>
+<p>今天我们就一起聊聊redis分布式锁的一些坑，给有需要的朋友一个参考。</p>
+<p><img src="/2021/12/27/Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E5%9D%91/1.png" alt="img"></p>
+<h2 id="1-、非原子操作"><a href="#1-、非原子操作" class="headerlink" title="1 、非原子操作"></a>1 、非原子操作</h2><p>使用redis的分布式锁，我们首先想到的可能是<code>setNx</code>命令。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (jedis.setnx(lockKey, val) == <span class="number">1</span>) &#123;</span><br><span class="line">   jedis.expire(lockKey, timeout);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>限制：</p>
-<p>0 &lt;= 链表长度 &lt;= 1000</p>
-<p>*<strong>思路：</strong></p>
-<p>两个链表的双指针要比昨天单个链表的双指针的难度要高一些，用双指针对应两个链表，分别进行链表数值的对比，还要引入一个伪头结点来进行链表的合并。</p>
-<p>*<strong>实现：</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"># class ListNode:</span></span><br><span class="line"><span class="comment">#     def __init__(self, x):</span></span><br><span class="line"><span class="comment">#         self.val = x</span></span><br><span class="line"><span class="comment">#         self.next = None</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">mergeTwoLists</span>(<span class="params">self, l1: ListNode, l2: ListNode</span>) -&gt; ListNode:</span></span><br><span class="line">        cur = res = ListNode(<span class="number">0</span>)</span><br><span class="line">        <span class="keyword">while</span> l1 <span class="keyword">and</span> l2:</span><br><span class="line">            <span class="keyword">if</span> l1.val&lt;=l2.val:</span><br><span class="line">                <span class="comment">#如果链表1的值小于等于链表2的值，则当前链表指向链表1</span></span><br><span class="line">                cur.<span class="built_in">next</span> = l1</span><br><span class="line">                l1 = l1.<span class="built_in">next</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment">#链表2的值小于链表1，指向链表2</span></span><br><span class="line">                cur.<span class="built_in">next</span> = l2</span><br><span class="line">                l2=l2.<span class="built_in">next</span></span><br><span class="line">            cur = cur.<span class="built_in">next</span></span><br><span class="line">        <span class="comment">#循环结束后再指向剩余的列表</span></span><br><span class="line">        cur.<span class="built_in">next</span> = l1 <span class="keyword">if</span> l1 <span class="keyword">else</span> l2</span><br><span class="line">        <span class="keyword">return</span> res.<span class="built_in">next</span></span><br></pre></td></tr></table></figure>
+<p>容易，三下五除二，我们就可以把代码写好。</p>
+<p>这段代码确实可以加锁成功，但你有没有发现什么问题？</p>
+<p><code>加锁操作</code>和后面的<code>设置超时时间</code>是分开的，并<code>非原子操作</code>。</p>
+<p>假如加锁成功，但是设置超时时间失败了，该lockKey就变成永不失效。假如在高并发场景中，有大量的lockKey加锁成功了，但不会失效，有可能直接导致redis内存空间不足。</p>
+<p>那么，有没有保证原子性的加锁命令呢？</p>
+<p>答案是：有，请看下面。</p>
         
       
 
@@ -664,7 +745,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">leetcode</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
         		</li>
       		
 		</ul>
@@ -674,7 +759,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/24/%E5%89%91%E6%8C%87offer12/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/27/Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%9A%84%E5%9D%91/">展开全文 >></a>
         </p>
       
 
@@ -704,20 +789,20 @@
 
 
   
-    <article id="post-Mybatis原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Java并发异步编程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/23/Mybatis%E5%8E%9F%E7%90%86/">Mybatis原理</a>
+      <a class="article-title" href="/2021/12/26/Java%E5%B9%B6%E5%8F%91%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/">Java并发异步编程</a>
     </h1>
   
 
         
-        <a href="/2021/08/23/Mybatis%E5%8E%9F%E7%90%86/" class="archive-article-date">
-  	<time datetime="2021-08-23T02:53:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-23</time>
+        <a href="/2021/12/26/Java%E5%B9%B6%E5%8F%91%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/" class="archive-article-date">
+  	<time datetime="2021-12-26T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-26</time>
 </a>
         
       </header>
@@ -725,16 +810,15 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：711字 | 预计阅读时长：2分钟
+		字数：5.7k字 | 预计阅读时长：23分钟
 	  </div> 
       
-        <p>一直不知道Mybatis只有接口没有实现类是如何完成xml文件中的数据操作的，今天就来看一下。</p>
-<p><strong>在MyBatis中，mapper接口是没有实现类的，取而代之的是一个xml文件。也就是说我们调用mapper接口，其实是使用了mapper.xml中定义SQL完成数据操作。</strong></p>
-<h3 id="一、为什么mapper接口没有实现类，它是如何执行的？"><a href="#一、为什么mapper接口没有实现类，它是如何执行的？" class="headerlink" title="一、为什么mapper接口没有实现类，它是如何执行的？"></a><strong>一、为什么mapper接口没有实现类，它是如何执行的？</strong></h3><p>因为MyBatis利用动态代理（Dynamic Proxy）帮我们生成了接口的实现类，这个类就是<br>org.apache.ibatis.binding.MapperProxy。</p>
-<p><strong>动态代理接口的所有方法，每次接口被调用，就会进入动态代理对象的invoke方法，然后加载xml中的SQL完成操作数据库，再返回结果。</strong></p>
-<p>MyBatis的接口映射（mapper）方法的执行就是通过动态代理实现的，通过<br>org.apache.ibatis.binding.MapperProxy实现的InvocationHandler接口的invoke方法，将dao方法委托为org.apache.ibatis.binding.MapperMethod执行（execute），如图所示：</p>
-<p><img src="/2021/08/23/Mybatis%E5%8E%9F%E7%90%86/image1.png" alt="image1"></p>
-<p>在我们利用Mapper接口进行数据库的相关操作时，会调用MapperProxy的invoke()方法，该方法先判断接口方法是否有实现类，如果有，调用实现类的方法，如果没有(MyBatis的Mapper接口没有实现类)就调用MapperMethod的execute方法。</p>
+        <p>今天来看一下多线程并发执行任务取结果归集。内容摘抄自微信公众号【Java核心技术】。</p>
+<h2 id="1、引言"><a href="#1、引言" class="headerlink" title="1、引言"></a>1、引言</h2><p>先来看一些APP的获取数据,诸如此类,一个页面获取N多个,多达10个左右的一个用户行为数据,比如:点赞数,发布文章数,点赞数,消息数,关注数,收藏数,粉丝数,卡券数,红包数……….. 真的是多~ 我们看些图:</p>
+<p><img src="/2021/12/26/Java%E5%B9%B6%E5%8F%91%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/1.png" alt="img"></p>
+<p><img src="/2021/12/26/Java%E5%B9%B6%E5%8F%91%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/2.png" alt="img"></p>
+<p>平时要10+接口的去获取数据(因为当你10+个查询写一起,那估计到半分钟才能响应了),一个页面上N多接口,真是累死前端的宝宝了,前端开启多线程也累啊,我们做后端的要体量一下前端的宝宝们,毕竟有句话叫”程序员何苦为难程序员~”</p>
+<p>今天我们也可以一个接口将这些数据返回~ 还贼TM快,解决串行编程,阻塞编程带来的苦恼~</p>
         
       
 
@@ -748,7 +832,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Mybatis</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">多线程</a>
         		</li>
       		
 		</ul>
@@ -758,7 +846,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/23/Mybatis%E5%8E%9F%E7%90%86/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/26/Java%E5%B9%B6%E5%8F%91%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/">展开全文 >></a>
         </p>
       
 
@@ -788,20 +876,20 @@
 
 
   
-    <article id="post-剑指offer11" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Python调用函数的方法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/23/%E5%89%91%E6%8C%87offer11/">剑指offer11</a>
+      <a class="article-title" href="/2021/12/25/Python%E8%B0%83%E7%94%A8%E5%87%BD%E6%95%B0%E7%9A%84%E6%96%B9%E6%B3%95/">Python调用函数的方法</a>
     </h1>
   
 
         
-        <a href="/2021/08/23/%E5%89%91%E6%8C%87offer11/" class="archive-article-date">
-  	<time datetime="2021-08-23T02:19:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-23</time>
+        <a href="/2021/12/25/Python%E8%B0%83%E7%94%A8%E5%87%BD%E6%95%B0%E7%9A%84%E6%96%B9%E6%B3%95/" class="archive-article-date">
+  	<time datetime="2021-12-25T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-25</time>
 </a>
         
       </header>
@@ -809,22 +897,18 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1k字 | 预计阅读时长：4分钟
+		字数：610字 | 预计阅读时长：3分钟
 	  </div> 
       
-        <h2 id="第十一天：双指针（简单）"><a href="#第十一天：双指针（简单）" class="headerlink" title="第十一天：双指针（简单）"></a>第十一天：双指针（简单）</h2><p>今天是刷题的第11天，来看下简单的双指针的应用。</p>
-<h3 id="1、删除链表的节点"><a href="#1、删除链表的节点" class="headerlink" title="1、删除链表的节点"></a>1、删除链表的节点</h3><p>给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点。</p>
-<p>返回删除后的链表的头节点。</p>
-<p>注意：此题对比原题有改动</p>
-<p>示例 1:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: head = [4,5,1,9], val = 5</span><br><span class="line">输出: [4,1,9]</span><br></pre></td></tr></table></figure>
+        <p>今天来看一下Python调用函数的九种方法。内容摘抄自微信公众号【IT大咖说】。</p>
+<h1 id="1-直接函数调用"><a href="#1-直接函数调用" class="headerlink" title="1.直接函数调用"></a>1.直接函数调用</h1><p>这是最简单、最直观的方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test</span>():</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;This is a test&quot;</span>)</span><br><span class="line">test()</span><br></pre></td></tr></table></figure>
 
-<p>解释: 给定你链表中值为 5 的第二个节点，那么在调用了你的函数之后，该链表应变为 4 -&gt; 1 -&gt; 9.<br>示例 2:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: head = [4,5,1,9], val = 1</span><br><span class="line">输出: [4,5,9]</span><br></pre></td></tr></table></figure>
 
-<p>解释: 给定你链表中值为 1 的第三个节点，那么在调用了你的函数之后，该链表应变为 4 -&gt; 5 -&gt; 9.</p>
-<p>说明：</p>
-<p>题目保证链表中节点的值互不相同<br>若使用 C 或 C++ 语言，你不需要 free 或 delete 被删除的节点</p>
+
+<p><img src="/2021/12/25/Python%E8%B0%83%E7%94%A8%E5%87%BD%E6%95%B0%E7%9A%84%E6%96%B9%E6%B3%95/1.png" alt="img"></p>
+<h1 id="2-使用partial-函数"><a href="#2-使用partial-函数" class="headerlink" title="2.使用partial()函数"></a>2.使用partial()函数</h1><p>在 的内置库中functools，有一个专用于生成偏函数的偏函数partial。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">power</span>(<span class="params">x, n</span>):</span></span><br><span class="line">    s = <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> n &gt; <span class="number">0</span>:</span><br><span class="line">        n = n - <span class="number">1</span></span><br><span class="line">        s = s * x</span><br><span class="line">    <span class="keyword">return</span> s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> partial</span><br><span class="line"></span><br><span class="line">power_2 = partial(power, n=<span class="number">2</span>)</span><br><span class="line">power_2(<span class="number">3</span>)  <span class="comment"># output: 9</span></span><br><span class="line">power_2(<span class="number">4</span>)  <span class="comment"># output: 16</span></span><br></pre></td></tr></table></figure>
         
       
 
@@ -838,7 +922,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">leetcode</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
         		</li>
       		
 		</ul>
@@ -848,7 +932,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/23/%E5%89%91%E6%8C%87offer11/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/25/Python%E8%B0%83%E7%94%A8%E5%87%BD%E6%95%B0%E7%9A%84%E6%96%B9%E6%B3%95/">展开全文 >></a>
         </p>
       
 
@@ -878,20 +962,20 @@
 
 
   
-    <article id="post-剑指offer10" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-线程池回收原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/22/%E5%89%91%E6%8C%87offer10/">剑指offer10</a>
+      <a class="article-title" href="/2021/12/24/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%9B%9E%E6%94%B6%E5%8E%9F%E7%90%86/">线程池回收原理</a>
     </h1>
   
 
         
-        <a href="/2021/08/22/%E5%89%91%E6%8C%87offer10/" class="archive-article-date">
-  	<time datetime="2021-08-22T00:56:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-22</time>
+        <a href="/2021/12/24/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%9B%9E%E6%94%B6%E5%8E%9F%E7%90%86/" class="archive-article-date">
+  	<time datetime="2021-12-24T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-24</time>
 </a>
         
       </header>
@@ -899,17 +983,24 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.1k字 | 预计阅读时长：5分钟
+		字数：3.1k字 | 预计阅读时长：10分钟
 	  </div> 
       
-        <h2 id="第十天：动态规划（中等）"><a href="#第十天：动态规划（中等）" class="headerlink" title="第十天：动态规划（中等）"></a>第十天：动态规划（中等）</h2><p>今天是刷题的第10天，还是做关于动态规划的内容，循序渐进</p>
-<h3 id="1、把数字翻译成字符串"><a href="#1、把数字翻译成字符串" class="headerlink" title="1、把数字翻译成字符串"></a>1、把数字翻译成字符串</h3><p>给定一个数字，我们按照如下规则把它翻译为字符串：0 翻译成 “a” ，1 翻译成 “b”，……，11 翻译成 “l”，……，25 翻译成 “z”。一个数字可能有多个翻译。请编程实现一个函数，用来计算一个数字有多少种不同的翻译方法。</p>
-<p>示例 1:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入: 12258</span><br><span class="line">输出: 5</span><br><span class="line">解释: 12258有5种不同的翻译，分别是&quot;bccfi&quot;, &quot;bwfi&quot;, &quot;bczi&quot;, &quot;mcfi&quot;和&quot;mzi&quot;</span><br></pre></td></tr></table></figure>
-
-
-<p>提示：</p>
-<p>0 &lt;= num &lt; 231</p>
+        <p>说了这么多的线程池，今天还是跟线程池有关的内容。今天来看一下线程池的回收原理，内容摘抄自微信公众号【Java技术栈】。</p>
+<p>最近阅读了JDK线程池ThreadPoolExecutor的源码，对线程池执行任务的流程有了大体了解，实际上这个流程也十分通俗易懂，就不再赘述了，别人写的比我好多了。</p>
+<p>不过，我倒是对线程池是如何回收工作线程比较感兴趣，所以简单分析了一下，加深对线程池的理解吧。</p>
+<p>下面以JDK1.8为例进行分析。</p>
+<h2 id="1-runWorker-Worker-w"><a href="#1-runWorker-Worker-w" class="headerlink" title="1. runWorker(Worker w)"></a>1. runWorker(Worker w)</h2><p>工作线程启动后，就进入runWorker(Worker w)方法。</p>
+<p>里面是一个while循环，循环判断任务是否为空，若不为空，执行任务；若取不到任务，或发生异常，退出循环，执行processWorkerExit(w, completedAbruptly); 在这个方法里把工作线程移除掉。</p>
+<p>取任务的来源有两个，一个是firstTask，这个是工作线程第一次跑的时候执行的任务，最多只能执行一次，后面得从getTask()方法里取任务。看来，getTask()是关键，在不考虑异常的场景下，返回null，就表示退出循环，结束线程。下一步，就得看看，什么情况下getTask()会返回null。</p>
+<p>篇幅有限，分段截取，省略中间执行任务的步骤</p>
+<p><img src="/2021/12/24/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%9B%9E%E6%94%B6%E5%8E%9F%E7%90%86/1.png" alt="img"></p>
+<p><img src="/2021/12/24/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%9B%9E%E6%94%B6%E5%8E%9F%E7%90%86/2.png" alt="img"></p>
+<h2 id="2、getTask-返回null"><a href="#2、getTask-返回null" class="headerlink" title="2、getTask() 返回null"></a>2、getTask() 返回null</h2><p>一共有两种情况会返回null，见红框处 。</p>
+<p>第一种情况，线程池的状态已经是STOP，TIDYING, TERMINATED，或者是SHUTDOWN且工作队列为空；</p>
+<p>第二种情况，工作线程数已经大于最大线程数或当前工作线程已超时，且，还有其他工作线程或任务队列为空。这点比较难理解，总之先记住，后面会用。</p>
+<p>下面以条件1和条件2分别指代这两种情况的判断条件。</p>
+<p><img src="/2021/12/24/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%9B%9E%E6%94%B6%E5%8E%9F%E7%90%86/3.png" alt="img"></p>
         
       
 
@@ -923,7 +1014,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">leetcode</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">多线程</a>
         		</li>
       		
 		</ul>
@@ -933,7 +1024,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/22/%E5%89%91%E6%8C%87offer10/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/24/%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%9B%9E%E6%94%B6%E5%8E%9F%E7%90%86/">展开全文 >></a>
         </p>
       
 
@@ -963,20 +1054,20 @@
 
 
   
-    <article id="post-剑指offer09" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-服务器扩容思路及问题分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/08/21/%E5%89%91%E6%8C%87offer09/">剑指offer09</a>
+      <a class="article-title" href="/2021/12/23/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%AE%B9%E6%80%9D%E8%B7%AF%E5%8F%8A%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/">服务器扩容思路及问题分析</a>
     </h1>
   
 
         
-        <a href="/2021/08/21/%E5%89%91%E6%8C%87offer09/" class="archive-article-date">
-  	<time datetime="2021-08-21T00:56:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-08-21</time>
+        <a href="/2021/12/23/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%AE%B9%E6%80%9D%E8%B7%AF%E5%8F%8A%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/" class="archive-article-date">
+  	<time datetime="2021-12-23T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-12-23</time>
 </a>
         
       </header>
@@ -984,18 +1075,19 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：944字 | 预计阅读时长：4分钟
+		字数：3.5k字 | 预计阅读时长：12分钟
 	  </div> 
       
-        <h2 id="第九天：动态规划（中等）"><a href="#第九天：动态规划（中等）" class="headerlink" title="第九天：动态规划（中等）"></a>第九天：动态规划（中等）</h2><p>今天是刷题的第9天，继续来看下动态规划，比昨天的难度要高一些。</p>
-<h3 id="1、连续子数组的最大和"><a href="#1、连续子数组的最大和" class="headerlink" title="1、连续子数组的最大和"></a>1、连续子数组的最大和</h3><p>输入一个整型数组，数组中的一个或连续多个整数组成一个子数组。求所有子数组的和的最大值。</p>
-<p>要求时间复杂度为O(n)。</p>
-<p>示例1:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入: nums = [-2,1,-3,4,-1,2,1,-5,4]</span><br><span class="line">输出: 6</span><br><span class="line">解释: 连续子数组 [4,-1,2,1] 的和最大，为 6。</span><br></pre></td></tr></table></figure>
-
-
-<p>提示：</p>
-<p>1 &lt;= arr.length &lt;= 10^5<br>-100 &lt;= arr[i] &lt;= 100</p>
+        <p>今天来看一下分布式下面的服务器扩容思路以及问题分析。内容摘抄自微信公众号【IT大咖说】。</p>
+<h2 id="为什么要扩容"><a href="#为什么要扩容" class="headerlink" title="为什么要扩容"></a>为什么要扩容</h2><p>说人话就是, 无论如何优化性能,能达到的最大值是一定的,对于一个用户量大的应用,可以对服务器进行各种优化,诸如限流、资源隔离,但是上限还是在那里,这时候就应该改变我们的硬件,例如使用更强的CPU、更大的内存,在前文中举了一个学生食堂打饭的例子,如果学生多了,可以通过令牌桶算法优先给高三学生令牌打饭,但是如果高三的学生还是很多呢?那就只有增加窗口或者食堂的数量,也就是硬件上的扩容。</p>
+<h2 id="扩容策略"><a href="#扩容策略" class="headerlink" title="扩容策略"></a>扩容策略</h2><p>扩容策略可以分为两种, 一种是对单机整体扩容,也就是机器内部包含CPU、内存、存储设备等,另一种是扩容对应的组件,例如扩内存、扩磁盘、扩CPU。</p>
+<h2 id="整机硬件"><a href="#整机硬件" class="headerlink" title="整机硬件"></a>整机硬件</h2><p>整机扩容的好处是,有很多专业的服务器硬件供应商,例如IBM、浪潮、DELL、HP等,专业的硬件供应商,他们组装以及搭配方面可能经验更加丰富,另外有些公司会对组件进行一些优化,从而服务器更加稳定,可以类比为买电脑,有的人可能选择买淘宝卖家已经组装好的台式,有的人可能自己买各种硬件自己回家组装,对于一般人而言,选择前者是较为靠谱的选择,因为你即使懂硬件的一些参数,也难保自己搭配的机器是否能发挥各个部件最大性能。</p>
+<h2 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h2><p>对于一些技术能力强悍的公司,更多的是自己买各种组件组装,这样成本更低,因为节省了组装等费用,并且可以根据业务个性化定制,例如有的公司是计算密集型的,那么主要是更换更强的CPU,有的IO密集型,那么扩容的应该是内存等,有的公司需要存储大量的数据,那么可能扩容的是硬盘等存储设备。</p>
+<p>组件包含:</p>
+<h3 id="cpu"><a href="#cpu" class="headerlink" title="cpu"></a><strong>cpu</strong></h3><p>Intel、Amd ,参考频率、线程数等</p>
+<h3 id="网卡"><a href="#网卡" class="headerlink" title="网卡"></a><strong>网卡</strong></h3><p>百兆-&gt;千兆 -&gt; 万兆</p>
+<h3 id="内存"><a href="#内存" class="headerlink" title="内存"></a><strong>内存</strong></h3><p>ECC校验</p>
+<h3 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a><strong>磁盘</strong></h3><p>SCSI HDD（机械）、HHD（混合）、SATA SSD、PCI-e SSD、 MVMe SSD</p>
         
       
 
@@ -1009,7 +1101,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">leetcode</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
         		</li>
       		
 		</ul>
@@ -1019,7 +1111,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/08/21/%E5%89%91%E6%8C%87offer09/">展开全文 >></a>
+          <a class="article-more-a" href="/2021/12/23/%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%89%A9%E5%AE%B9%E6%80%9D%E8%B7%AF%E5%8F%8A%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/">展开全文 >></a>
         </p>
       
 
@@ -1051,7 +1143,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/21/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/23/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/21/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/20/">20</a><a class="page-number" href="/page/21/">21</a><span class="page-number current">22</span><a class="page-number" href="/page/23/">23</a><a class="page-number" href="/page/24/">24</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/23/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1153,15 +1245,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">前端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1201,15 +1313,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常处理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多线程</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">中间件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1257,11 +1369,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">前端</a>
+                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1285,15 +1397,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1301,11 +1409,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+                <a href="javascript:void(0)" class="js-tag color5">并发编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库，缓存</a>
               </li>
             
             <div class="clearfix"></div>

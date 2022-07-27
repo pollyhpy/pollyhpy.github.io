@@ -79,8 +79,8 @@
 			</ul>
 		</nav>
 		<nav>
-			<a>总文章数 286</a>
-			<a>总字数 <span class="post-count">826k</span></a>
+			<a>总文章数 413</a>
+			<a>总字数 <span class="post-count">1279k</span></a>
 		</nav>
 		<nav class="header-smart-menu">
     		
@@ -165,20 +165,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-hashcode生成逻辑" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-数据库和缓存双写数据一致性" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/05/hashcode%E7%94%9F%E6%88%90%E9%80%BB%E8%BE%91/">hashcode生成逻辑</a>
+      <a class="article-title" href="/2022/03/13/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%BC%93%E5%AD%98%E5%8F%8C%E5%86%99%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/">数据库和缓存双写数据一致性</a>
     </h1>
   
 
         
-        <a href="/2021/11/05/hashcode%E7%94%9F%E6%88%90%E9%80%BB%E8%BE%91/" class="archive-article-date">
-  	<time datetime="2021-11-05T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-05</time>
+        <a href="/2022/03/13/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%BC%93%E5%AD%98%E5%8F%8C%E5%86%99%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/" class="archive-article-date">
+  	<time datetime="2022-03-13T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-13</time>
 </a>
         
       </header>
@@ -186,409 +186,27 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：1.4k字 | 预计阅读时长：6分钟
+		字数：1.7k字 | 预计阅读时长：5分钟
 	  </div> 
       
-        <p>今天来看一下java中hashcode的生成算法是怎么样的，跟内存的关系是什么。内容摘抄自微信公众号【Java核心技术】。</p>
-<p>先看一个最简单的打印</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="keyword">new</span> Object());</span><br></pre></td></tr></table></figure>
-
-<p>会输出该类的全限定类名和一串字符串：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java.lang.Object@6659c656</span><br></pre></td></tr></table></figure>
-
-<p><strong><code>@</code>符号后面的是什么？是 hashcode 还是对象的内存地址？还是其他的什么值？</strong></p>
-<p><strong>其实<code>@</code>后面的只是对象的 hashcode 值，16进制展示的 hashcode 而已，来验证一下：</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Object o = <span class="keyword">new</span> Object();</span><br><span class="line"><span class="keyword">int</span> hashcode = o.hashCode();</span><br><span class="line"><span class="comment">// toString</span></span><br><span class="line">System.out.println(o);</span><br><span class="line"><span class="comment">// hashcode 十六进制</span></span><br><span class="line">System.out.println(Integer.toHexString(hashcode));</span><br><span class="line"><span class="comment">// hashcode</span></span><br><span class="line">System.out.println(hashcode);</span><br><span class="line"><span class="comment">// 这个方法，也是获取对象的 hashcode；不过和 Object.hashcode 不同的是，该方法会无视重写的hashcode</span></span><br><span class="line">System.out.println(System.identityHashCode(o));</span><br></pre></td></tr></table></figure>
-
-<p>输出结果：</p>
-<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">java.lang.Object@<span class="number">6659</span>c656</span><br><span class="line"><span class="number">6659</span>c656</span><br><span class="line"><span class="number">1717159510</span></span><br><span class="line"><span class="number">1717159510</span></span><br></pre></td></tr></table></figure>
-
-<p>那对象的 hashcode 到底是怎么生成的呢？真的就是内存地址吗？</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/11/05/hashcode%E7%94%9F%E6%88%90%E9%80%BB%E8%BE%91/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java常用代码汇总" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/04/Java%E5%B8%B8%E7%94%A8%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB/">Java常用代码汇总</a>
-    </h1>
-  
-
-        
-        <a href="/2021/11/04/Java%E5%B8%B8%E7%94%A8%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB/" class="archive-article-date">
-  	<time datetime="2021-11-04T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-04</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：900字 | 预计阅读时长：5分钟
-	  </div> 
-      
-        <p>今天来汇总一些Java的常用代码，经常会用到的。内容摘抄自微信公众号【springmeng】。</p>
-<h2 id="1-字符串有整型的相互转换"><a href="#1-字符串有整型的相互转换" class="headerlink" title="1. 字符串有整型的相互转换"></a><strong>1. 字符串有整型的相互转换</strong></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String a = String.valueOf(<span class="number">2</span>); <span class="comment">//integer to numeric string</span></span><br><span class="line"><span class="keyword">int</span> i = Integer.parseInt(a); <span class="comment">//numeric string to an int</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="2-向文件末尾添加内容"><a href="#2-向文件末尾添加内容" class="headerlink" title="2. 向文件末尾添加内容"></a><strong>2. 向文件末尾添加内容</strong></h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">BufferedWriter out = <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  out = <span class="keyword">new</span> BufferedWriter(<span class="keyword">new</span> FileWriter(”filename”, <span class="keyword">true</span>));</span><br><span class="line">  out.write(”aString”);</span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">  <span class="comment">// error processing code</span></span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (out != <span class="keyword">null</span>) &#123;</span><br><span class="line">    out.close();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/11/04/Java%E5%B8%B8%E7%94%A8%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-对数据进行脱敏处理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/03/%E5%AF%B9%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/">对数据进行脱敏处理</a>
-    </h1>
-  
-
-        
-        <a href="/2021/11/03/%E5%AF%B9%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/" class="archive-article-date">
-  	<time datetime="2021-11-03T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-03</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：4.6k字 | 预计阅读时长：21分钟
-	  </div> 
-      
-        <p>今天来看一下如何对数据进行脱敏处理，内容摘抄自微信公众号【Java极客技术】。</p>
-<h1 id="一、在代码层面进行数据脱敏"><a href="#一、在代码层面进行数据脱敏" class="headerlink" title="一、在代码层面进行数据脱敏"></a>一、在代码层面进行数据脱敏</h1><h2 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h2><p>实际的业务开发过程中，我们经常需要<strong>对用户的隐私数据进行脱敏处理，所谓脱敏处理其实就是将数据进行混淆隐藏</strong>，例如下图，将用户的手机号、地址等数据信息，采用<code>*</code>进行隐藏，以免泄露个人隐私信息。</p>
-<p><img src="/2021/11/03/%E5%AF%B9%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/1.png" alt="image1"></p>
-<p>如果需要脱敏的数据范围很小很小，甚至就是指定的字段，一般的处理方式也很简单，就是写一个隐藏方法即可实现数据脱敏。</p>
-<p><img src="/2021/11/03/%E5%AF%B9%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/image2.png" alt="image2"></p>
-<p>如果是需求很少的情况下，采用这种方式实现没太大问题，好维护！</p>
-<p>但如果是类似上面那种很多位置的数据，需要分门别类的进行脱敏处理，通过这种简单粗暴的处理，代码似乎就显得不太优雅了。</p>
-<p>思考一下，我们可不可以在数据输出的阶段，进行统一数据脱敏处理，这样就可以省下不少体力活。</p>
-<p>说到数据输出，很多同学可能会想到 JSON 序列化。是的没错，我们所熟悉的 web 系统，就是将数据通过 json 序列化之后展示给前端。</p>
-<p>那么问题来了，如何在序列化的时候，进行数据脱敏处理呢？</p>
-<p>废话不多说，代码直接撸上！</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/11/03/%E5%AF%B9%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%84%B1%E6%95%8F%E5%A4%84%E7%90%86/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-垃圾回收器一" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/02/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%B8%80/">垃圾回收器(一)</a>
-    </h1>
-  
-
-        
-        <a href="/2021/11/02/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%B8%80/" class="archive-article-date">
-  	<time datetime="2021-11-02T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-02</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：3.9k字 | 预计阅读时长：13分钟
-	  </div> 
-      
-        <p>今天来详细了解下JVM的垃圾回收器。</p>
-<h1 id="一、GC的分类和性能指标"><a href="#一、GC的分类和性能指标" class="headerlink" title="一、GC的分类和性能指标"></a>一、GC的分类和性能指标</h1><h3 id="垃圾回收器概述"><a href="#垃圾回收器概述" class="headerlink" title="垃圾回收器概述"></a>垃圾回收器概述</h3><p>我们说垃圾收集器没有在规范中进行过多的规定，可以由不同的厂商、不同版本的JVM来实现</p>
-<p>由于JDK的版本处于高速迭代过程中，因此Java发展至今已经衍生了众多的GC版本</p>
-<p>我们从不同角度分析垃圾收集器，可以将GC分为不同的类型</p>
-<p>Java不同版本新特性<br>语法层面：Lambda表达式、switch、自动拆箱装箱、enum、泛型</p>
-<p>API层面：Stream API、新的日期时间、Optional、String、集合框架</p>
-<p>底层优化：JVM优化、GC的变化、元空间、静态域、字符串常量池等</p>
-<h3 id="垃圾回收器分类"><a href="#垃圾回收器分类" class="headerlink" title="垃圾回收器分类"></a>垃圾回收器分类</h3><p>按线程数分（垃圾回收线程数），可以分为串行垃圾回收器和并行垃圾回收器</p>
-<p><img src="/2021/11/02/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%B8%80/1.png" alt="img"></p>
-<p>串行回收指的是在同一时间段内只允许有一个CPU用于执行垃圾回收操作，将此时工作线程被暂停直至垃圾收集工作结束</p>
-<p>在诸如单CPU处理器或者较小的应用内存等硬件平台不是特别优越的场合，串行回收器的性能表现可以超过并行回收器和并发回收器。所以串行回收默认被应用在客户端的Client模式下的JVM中</p>
-<p>在并发能力比较强的CPU上，并行回收器产生的停顿时间要短于串行回收器</p>
-<p>和串行回收相反，并行收集可以运用多个CPU同时执行垃圾回收，因此提升了应用的吞吐量不过并行回收仍然与串行回收一样，采用独占式使用了“Stop-the-World”机制</p>
-<p>按照工作模式分，可以分为并发式垃圾回收器和独占式垃圾回收器</p>
-<p>并发式垃圾回收器与应用程序线程交替工作，以尽可能减少应用程序的停顿时间</p>
-<p>独占式垃圾回收器（Stop the World）一旦运行，就停止应用程序中的所有用户线程，直到垃圾回收过程完全结束</p>
-<p><img src="/2021/11/02/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%B8%80/2.png" alt="img"></p>
-<p>按碎片处理方式分，可分为压缩式垃圾回收器和非压缩式垃圾回收器</p>
+        <p>今天来看一下如何保证数据库和缓存双写数据的一致性，内容摘抄自微信公众号【springmeng】。</p>
+<h2 id="如何保证缓存与数据库双写时的数据一致性？"><a href="#如何保证缓存与数据库双写时的数据一致性？" class="headerlink" title="如何保证缓存与数据库双写时的数据一致性？"></a>如何保证缓存与数据库双写时的数据一致性？</h2><p>在做系统优化时，想到了将数据进行分级存储的思路。因为在系统中会存在一些数据，有些数据的实时性要求不高，比如一些配置信息。基本上配置了很久才会变一次。而有一些数据实时性要求非常高，比如订单和流水的数据。所以这里根据数据要求实时性不同将数据分为三级。</p>
 <ul>
-<li><p>压缩式垃圾回收器会在回收完成后，对存活对象进行压缩整理消除回收后的碎片</p>
-<p>再分配对象空间：<code>使用指针碰撞</code></p>
-</li>
-<li><p>非压缩式的垃圾回收器不进行这步操作</p>
-<p>分配对象空间：<code>使用空闲列表</code></p>
-<p>按工作的内存区间分，又可分为年轻代垃圾回收器和老年代垃圾回收器</p>
-</li>
+<li>第1级：订单数据和支付流水数据；这两块数据对实时性和精确性要求很高，所以不添加任何缓存，读写操作将直接操作数据库。</li>
+<li>第2级：用户相关数据；这些数据和用户相关，具有读多写少的特征，所以我们使用redis进行缓存。</li>
+<li>第3级：支付配置信息；这些数据和用户无关，具有数据量小，频繁读，几乎不修改的特征，所以我们使用本地内存进行缓存。</li>
 </ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/11/02/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%B8%80/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-数据库锁定机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/11/01/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E5%AE%9A%E6%9C%BA%E5%88%B6/">数据库锁定机制</a>
-    </h1>
-  
-
-        
-        <a href="/2021/11/01/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E5%AE%9A%E6%9C%BA%E5%88%B6/" class="archive-article-date">
-  	<time datetime="2021-11-01T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-11-01</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：1.6k字 | 预计阅读时长：5分钟
-	  </div> 
-      
-        <p>一眨眼就到11月了，时间过的真的好快。今天来看一下数据库的锁定机制，内容摘抄自微信公众号【Java极客技术】。</p>
-<h2 id="数据库锁定机制"><a href="#数据库锁定机制" class="headerlink" title="数据库锁定机制"></a>数据库锁定机制</h2><p>话说如果你只是单纯的说 “锁表”,总是让人感觉有点 Low ，而我们就直接换个比较高大上一点的名词，锁定机制！</p>
-<p>为了保证数据的完整，也就是他的一致性和有效性，所以才会让数据库出现了锁定机制，相对其他数据库而言，MySQL的锁机制比较简单，其最显著的特点是不同的存储引擎支持不同的锁机制。</p>
-<ul>
-<li>MyISAM和MEMORY存储引擎采用的是表级锁（table-level locking）</li>
-<li>BDB存储引擎采用的是页面锁（page-level locking），也支持表级锁</li>
-<li>InnoDB存储引擎既支持行级锁（row-level locking），也支持表级锁</li>
-</ul>
-<p>我们先来瞅瞅看一下这些锁都是个什么鬼东西！</p>
-<h3 id="行级锁-row-level-locking"><a href="#行级锁-row-level-locking" class="headerlink" title="行级锁(row-level locking)"></a><strong>行级锁(row-level locking)</strong></h3><ul>
-<li>锁的对象颗粒度很小</li>
-<li>各大数据库中锁粒度最小的</li>
-<li>锁定资源占用概率最小</li>
-</ul>
-<p>虽然说行级锁的优点是很明显，但是相对的弊端也因为他的优点出现了，</p>
-<ul>
-<li>因为锁定的粒度比较小，所以每次获取锁和释放锁需要做更多的内容，带来的消耗必然也就更大了，</li>
-<li>行级锁也是最容易发生死锁的。</li>
-<li>并发度也最高</li>
-</ul>
-<h3 id="表级锁-table-level-locking"><a href="#表级锁-table-level-locking" class="headerlink" title="表级锁(table-level locking)"></a><strong>表级锁(table-level locking)</strong></h3><ul>
-<li>和行锁相反，粒度是最大的</li>
-<li>逻辑简单，对系统的负面影响比较小</li>
-<li>获取锁和释放锁速度快</li>
-<li>并发度最低。</li>
-</ul>
-<p>弊端也有，因为粒度比较大，锁定资源占用概率也会很大，</p>
-<h3 id="页级锁-page-level-locking"><a href="#页级锁-page-level-locking" class="headerlink" title="页级锁(page-level locking)"></a><strong>页级锁(page-level locking)</strong></h3><ul>
-<li>比较特殊，介于行锁和表锁之间，所以他的能力都是介于两者之间的，就是</li>
-</ul>
-<p>粒度比较 表级锁 &gt; 页锁 &gt; 行锁</p>
-<p>而他的并发度也就是一般般了。但是他会出现死锁，这三个当中，看来也就只有表锁不会出现死锁了。</p>
-<p>我们在这里已经算是对锁机制大致有了个了解，我们再细致的看一下</p>
+<p>但是只要使用到缓存，无论是本地内存做缓存还是使用 redis 做缓存，那么就会存在数据同步的问题，因为配置信息缓存在内存中，而内存时无法感知到数据在数据库的修改。这样就会造成数据库中的数据与缓存中数据不一致的问题。接下来就讨论一下关于保证缓存和数据库双写时的数据一致性。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>那么我们这里列出来所有策略，并且讨论他们优劣性。</p>
+<ol>
+<li>先更新数据库，后更新缓存</li>
+<li>先更新数据库，后删除缓存</li>
+<li>先更新缓存，后更新数据库</li>
+<li>先删除缓存，后更新数据库</li>
+</ol>
+<h3 id="先更新数据库，后更新缓存"><a href="#先更新数据库，后更新缓存" class="headerlink" title="先更新数据库，后更新缓存"></a>先更新数据库，后更新缓存</h3><p>这种场景一般是没有人使用的，主要原因是在更新缓存那一步，为什么呢？因为有的业务需求缓存中存在的值并不是直接从数据库中查出来的，有的是需要经过一系列计算来的缓存值，那么这时候后你要更新缓存的话其实代价是很高的。如果此时有大量的对数据库进行写数据的请求，但是读请求并不多，那么此时如果每次写请求都更新一下缓存，那么性能损耗是非常大的。</p>
+<p>举个例子比如在数据库中有一个值为 1 的值，此时我们有 10 个请求对其每次加一的操作，但是这期间并没有读操作进来，如果用了先更新数据库的办法，那么此时就会有十个请求对缓存进行更新，会有大量的冷数据产生，如果我们不更新缓存而是删除缓存，那么在有读请求来的时候那么就会只更新缓存一次。</p>
+<h3 id="先更新缓存，后更新数据库"><a href="#先更新缓存，后更新数据库" class="headerlink" title="先更新缓存，后更新数据库"></a>先更新缓存，后更新数据库</h3><p>这一种情况应该不需要我们考虑了吧，和第一种情况是一样的。</p>
         
       
 
@@ -604,6 +222,10 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">数据库</a>
         		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
+        		</li>
       		
 		</ul>
 	</div>
@@ -612,7 +234,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/11/01/%E6%95%B0%E6%8D%AE%E5%BA%93%E9%94%81%E5%AE%9A%E6%9C%BA%E5%88%B6/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/03/13/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E7%BC%93%E5%AD%98%E5%8F%8C%E5%86%99%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/">展开全文 >></a>
         </p>
       
 
@@ -642,20 +264,20 @@
 
 
   
-    <article id="post-Java泛型通配符" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-参数校验" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/31/Java%E6%B3%9B%E5%9E%8B%E9%80%9A%E9%85%8D%E7%AC%A6/">Java泛型通配符</a>
+      <a class="article-title" href="/2022/03/11/%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/">参数校验</a>
     </h1>
   
 
         
-        <a href="/2021/10/31/Java%E6%B3%9B%E5%9E%8B%E9%80%9A%E9%85%8D%E7%AC%A6/" class="archive-article-date">
-  	<time datetime="2021-10-31T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-31</time>
+        <a href="/2022/03/11/%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/" class="archive-article-date">
+  	<time datetime="2022-03-11T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-11</time>
 </a>
         
       </header>
@@ -663,28 +285,24 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：3.7k字 | 预计阅读时长：14分钟
+		字数：2.4k字 | 预计阅读时长：11分钟
 	  </div> 
       
-        <p>今天是10月的最后一天，也是10月的最后一篇博客了。今天来看一下Java的各种泛型通配符之间的联系和区别。</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="| 前言"></a><strong>| 前言</strong></h2><p>Java 泛型（generics）是 JDK 5 中引入的一个新特性, 泛型提供了编译时类型安全检测机制，该机制允许开发者在编译时检测到非法的类型。</p>
-<p>泛型的本质是参数化类型，也就是说所操作的数据类型被指定为一个参数。</p>
-<h2 id="什么是泛型"><a href="#什么是泛型" class="headerlink" title="什么是泛型"></a>什么是泛型</h2><p>首先我们说下什么是泛型。</p>
-<p>泛型，就是泛化类型也就是泛化参数类型。平时我们在编写代码的时候，方法的参数在定义的时候都是指定特定的类型，比如 <code>Integer</code>，<code>Double</code> 或者其他自己编写的类。那么泛化类型就是，我们在编写一个方法的时候对于参数的类型不具体指定，而是定义一个通用类型，在使用的时候根据类型自动转化。</p>
-<p>上面的描述可能比较抽象，我们再看一下，如果没有泛型的话，会出现什么情况以及为什么说这个泛型大家天天都在使用。</p>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>我们都知道 <code>ArrayList</code> 作为 <code>Java</code> 中一个很频繁被使用的集合，它是一个可变长的数组，底层是基于 <code>Object[]</code> 来实现的。</p>
-<p><img src="/2021/10/31/Java%E6%B3%9B%E5%9E%8B%E9%80%9A%E9%85%8D%E7%AC%A6/8.png" alt="image8"></p>
-<p>可以简单理解为下面的内容</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">publicclass ArrayList &#123;</span><br><span class="line">    <span class="keyword">private</span> Object[] array;</span><br><span class="line">    privateint size;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(Object e)</span> </span>&#123;...&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;...&#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;...&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <p>今天来看一下如何对参数进行校验，内容摘抄自微信公众号【Java大后端】。</p>
+<p>很痛苦遇到大量的参数进行校验，在业务中还要抛出异常或者不断的返回异常时的校验信息，在代码中相当冗长，充满了if-else这种校验代码，今天我们就来学习spring的javax.validation 注解式参数校验。</p>
+<h2 id="1-为什么要用validator"><a href="#1-为什么要用validator" class="headerlink" title="1.为什么要用validator"></a>1.为什么要用validator</h2><p>javax.validation的一系列注解可以帮我们完成参数校验,免去繁琐的串行校验</p>
+<p>不然我们的代码就像下面这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  http://localhost:8080/api/user/save/serial</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 走串行校验</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> userVO</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/save/serial&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">save</span><span class="params">(<span class="meta">@RequestBody</span> UserVO userVO)</span> </span>&#123;</span><br><span class="line">    String mobile = userVO.getMobile();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//手动逐个 参数校验~ 写法</span></span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isBlank(mobile)) &#123;</span><br><span class="line">        <span class="keyword">return</span> RspDTO.paramFail(<span class="string">&quot;mobile:手机号码不能为空&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!Pattern.matches(<span class="string">&quot;^[1][3,4,5,6,7,8,9][0-9]&#123;9&#125;$&quot;</span>, mobile)) &#123;</span><br><span class="line">        <span class="keyword">return</span> RspDTO.paramFail(<span class="string">&quot;mobile:手机号码格式不对&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//抛出自定义异常等~写法</span></span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isBlank(userVO.getUsername())) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> BizException(Constant.PARAM_FAIL_CODE, <span class="string">&quot;用户名不能为空&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 比如写一个map返回</span></span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isBlank(userVO.getSex())) &#123;</span><br><span class="line">        Map&lt;String, Object&gt; result = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">5</span>);</span><br><span class="line">        result.put(<span class="string">&quot;code&quot;</span>, Constant.PARAM_FAIL_CODE);</span><br><span class="line">        result.put(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;性别不能为空&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//.........各种写法 ...</span></span><br><span class="line">    userService.save(userVO);</span><br><span class="line">    <span class="keyword">return</span> RspDTO.success();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>如果说这个时候我们使用上面的 <code>ArrayList</code> 去存储 <code>String</code> 类型的话，需要如下操作，在使用的时候必须进行手动强转。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ArrayList list = <span class="keyword">new</span> ArrayList();</span><br><span class="line">list.add(<span class="string">&quot;Java&quot;</span>);</span><br><span class="line">list.add(<span class="string">&quot;C++&quot;</span>);</span><br><span class="line">String first = (String) list.get(<span class="number">0</span>);</span><br><span class="line">String first = (String) list.get(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
 
-<p>首先看到上面的代码，大家一定会诧异，要是每次使用的时候都这样显示强转的话，那不是要命了么，而且这还是使用者知道是什么类型的情况才能进行手动强转，如果说根本不知道是什么类型的时候，根据没办法进行强转，这种方式简直不能忍，还特别容易出错。</p>
-<p>那怎么解决这个问题呢？有朋友说我们可以对于不同的类型实现一个自己的 <code>ArrayList</code> 类，这样在使用的时候就可以不用强转了啊。对此阿粉只能说，对于 <code>JDK</code> 提供的类可以这样做，但是对于用户自己编写的类怎么实现呢？</p>
-<p>这个时候大家可能会说到，<code>ArrayList</code> 我天天使用，也没手动强转过啊，不还是用的好好的。</p>
-<p>这就要归功于我们今天所说的主角，泛型了。</p>
-<p>我们给 <code>ArrayList</code> 增加的泛型，通过定义一个泛化的类型，当我们在使用的时候如果传递的类型不是指定的类型，那么在编译的阶段就会报错，从而也就不会有需要强转的操作了。</p>
+
+
+
+<h2 id="2-什么是javax-validation"><a href="#2-什么是javax-validation" class="headerlink" title="2.什么是javax.validation"></a>2.什么是javax.validation</h2><p>JSR303 是一套JavaBean参数校验的标准，它定义了很多常用的校验注解，我们可以直接将这些注解加在我们JavaBean的属性上面(面向注解编程的时代)，就可以在需要校验的时候进行校验了。</p>
+<p>在SpringBoot中已经包含在starter-web中,再其他项目中可以引用依赖，并自行调整版本：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--jsr 303--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.validation<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>validation-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.1.0.Final<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- hibernate validator--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.hibernate<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hibernate-validator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.2.0.Final<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2022/03/11/%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/1.png" alt="img"></p>
         
       
 
@@ -708,7 +326,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/31/Java%E6%B3%9B%E5%9E%8B%E9%80%9A%E9%85%8D%E7%AC%A6/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/03/11/%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/">展开全文 >></a>
         </p>
       
 
@@ -738,20 +356,20 @@
 
 
   
-    <article id="post-MapStruct" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-中断线程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/30/MapStruct/">MapStruct</a>
+      <a class="article-title" href="/2022/03/10/%E4%B8%AD%E6%96%AD%E7%BA%BF%E7%A8%8B/">中断线程</a>
     </h1>
   
 
         
-        <a href="/2021/10/30/MapStruct/" class="archive-article-date">
-  	<time datetime="2021-10-30T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-30</time>
+        <a href="/2022/03/10/%E4%B8%AD%E6%96%AD%E7%BA%BF%E7%A8%8B/" class="archive-article-date">
+  	<time datetime="2022-03-10T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-10</time>
 </a>
         
       </header>
@@ -759,25 +377,226 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：5.4k字 | 预计阅读时长：26分钟
+		字数：4.4k字 | 预计阅读时长：18分钟
 	  </div> 
       
-        <p>今天来介绍一款Bean映射工具MapStruct以及他的基本用法和高级用法。内容摘抄自微信公众号【Java技术栈】。</p>
-<h2 id="开发背景"><a href="#开发背景" class="headerlink" title="开发背景"></a>开发背景</h2><h4 id="你有没有遇到过这样的开发场景？"><a href="#你有没有遇到过这样的开发场景？" class="headerlink" title="你有没有遇到过这样的开发场景？"></a>你有没有遇到过这样的开发场景？</h4><p>服务通过接口对外提供数据，或者服务之间进行数据交互，首先查询数据库并映射成数据对象（XxxDO）。</p>
-<p>正常情况下，接口是不允许直接以数据库数据对象 XxxDO 形式对外提供数据的，而是要再封装成数据传输对象（XxxDTO）提供出去。</p>
-<h4 id="为什么不能直接提供-DO？"><a href="#为什么不能直接提供-DO？" class="headerlink" title="为什么不能直接提供 DO？"></a>为什么不能直接提供 DO？</h4><p>1）根据单一设计原则，DO 只能对应数据实体对象，不能承担其他职责；</p>
-<p>2）DO 可能包含表所有字段数据，不符合接口的参数定义，数据如果过大会影响传输速度，也不符合数据安全原则；</p>
-<p>3）根据《<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzI3ODcxMzQzMw==&mid=2247504154&idx=3&sn=d62a9ac4da9f3f94e19d257ab0944392&scene=21#wechat_redirect">阿里 Java 开发手册</a>》分层领域模型规约，不能一个对象走天下，需要定义成 POJO/DO/BO/DTO/VO/Query 等数据对象，完整的定义可以参考阿里开发手册，关注公众号：Java技术栈，在后台回复：手册，可以获取最新高清完整版。</p>
-<h4 id="传统-DO-gt-DTO-做法"><a href="#传统-DO-gt-DTO-做法" class="headerlink" title="传统 DO -&gt; DTO 做法"></a>传统 DO -&gt; DTO 做法</h4><p>XxxDTO 可能包含 XxxDO 大部分数据，或者组合其他 DO 的部分数据，传统的做法有以下几种：</p>
+        <p>今天看一下线程相关的内容，如何中断线程。内容摘抄自微信公众号【Java核心技术】。</p>
+<h2 id="中断线程"><a href="#中断线程" class="headerlink" title="中断线程"></a>中断线程</h2><p>线程的<code>thread.interrupt()</code>方法是中断线程，将会设置该线程的中断状态位，即设置为true，中断的结果线程是死亡、还是等待新的任务或是继续运行至下一步，就取决于这个程序本身。线程会不时地检测这个中断标示位，以判断线程是否应该被中断（中断标示值是否为true）。它并不像stop方法那样会中断一个正在运行的线程。</p>
+<h2 id="判断线程是否被中断"><a href="#判断线程是否被中断" class="headerlink" title="判断线程是否被中断"></a>判断线程是否被中断</h2><p>判断某个线程是否已被发送过中断请求，请使用<code>Thread.currentThread().isInterrupted()</code>方法（因为它将线程中断标示位设置为true后，不会立刻清除中断标示位，即不会将中断标设置为false），而不要使用<code>thread.interrupted()</code>（该方法调用后会将中断标示位清除，即重新设置为false）方法来判断，下面是线程在循环中时的中断方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(!Thread.currentThread().isInterrupted() &amp;&amp; more work to <span class="keyword">do</span>)&#123;</span><br><span class="line">    <span class="keyword">do</span> more work</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="如何中断线程"><a href="#如何中断线程" class="headerlink" title="如何中断线程"></a>如何中断线程</h2><p>如果一个线程处于了阻塞状态（如线程调用了<code>thread.sleep</code>、<code>thread.join</code>、<code>thread.wait</code>、1.5中的<code>condition.awai</code>t、以及可中断的通道上的 I/O 操作方法后可进入阻塞状态），则在线程在检查中断标示时如果发现中断标示为true，则会在这些阻塞方法（sleep、join、wait、1.5中的<code>condition.await</code>及可中断的通道上的 I/O 操作方法）调用处抛出InterruptedException异常，并且在抛出异常后立即将线程的中断标示位清除，即重新设置为false。抛出异常是为了线程从阻塞状态醒过来，并在结束线程前让程序员有足够的时间来处理中断请求。</p>
+<p><strong>注，synchronized在获锁的过程中是不能被中断的</strong>，意思是说如果产生了死锁，则不可能被中断（请参考后面的测试例子）。与synchronized功能相似的<code>reentrantLock.lock()</code>方法也是一样，它也不可中断的，即如果发生死锁，那么<code>reentrantLock.lock()</code>方法无法终止，如果调用时被阻塞，则它一直阻塞到它获取到锁为止。但是如果调用带超时的tryLock方法reentrantLock.tryLock(long timeout, TimeUnit unit)，那么如果线程在等待时被中断，将抛出一个InterruptedException异常，这是一个非常有用的特性，因为它允许程序打破死锁。你也可以调用<code>reentrantLock.lockInterruptibly()</code>方法，它就相当于一个超时设为无限的tryLock方法。</p>
+<p>没有任何语言方面的需求一个被中断的线程应该终止。中断一个线程只是为了引起该线程的注意，被中断线程可以决定如何应对中断。某些线程非常重要，以至于它们应该不理会中断，而是在处理完抛出的异常之后继续执行，但是更普遍的情况是，一个线程将把中断看作一个终止请求，这种线程的run方法遵循如下形式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * 不管循环里是否调用过线程阻塞的方法如sleep、join、wait，这里还是需要加上</span></span><br><span class="line"><span class="comment">         * !Thread.currentThread().isInterrupted()条件，虽然抛出异常后退出了循环，显</span></span><br><span class="line"><span class="comment">         * 得用阻塞的情况下是多余的，但如果调用了阻塞方法但没有阻塞时，这样会更安全、更及时。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">while</span> (!Thread.currentThread().isInterrupted()&amp;&amp; more work to <span class="keyword">do</span>) &#123;</span><br><span class="line">            <span class="keyword">do</span> more work</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">        <span class="comment">//线程在wait或sleep期间被中断了</span></span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">//线程结束前做一些清理工作</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面是while循环在try块里，如果try在while循环里时，因该在catch块里重新设置一下中断标示，因为抛出InterruptedException异常后，中断标示位会自动清除，此时应该这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (!Thread.currentThread().isInterrupted()&amp;&amp; more work to <span class="keyword">do</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">            sleep(delay);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            Thread.currentThread().interrupt();<span class="comment">//重新设置中断标示</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">多线程</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/03/10/%E4%B8%AD%E6%96%AD%E7%BA%BF%E7%A8%8B/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Mysql面试相关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/03/09/Mysql%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">Mysql面试相关</a>
+    </h1>
+  
+
+        
+        <a href="/2022/03/09/Mysql%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/" class="archive-article-date">
+  	<time datetime="2022-03-09T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-09</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：3k字 | 预计阅读时长：10分钟
+	  </div> 
+      
+        <p>今天来看一下mysql面试相关的一些问题。内容摘抄自微信公众号【苏三说技术】。</p>
+<p><img src="/2022/03/09/Mysql%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/1.png" alt="img"></p>
+<h2 id="MyISAM-和-InnoDB-的区别？"><a href="#MyISAM-和-InnoDB-的区别？" class="headerlink" title="MyISAM 和 InnoDB 的区别？"></a><strong>MyISAM 和 InnoDB 的区别？</strong></h2><p>答案：InnoDB 支持 事务、外键、聚集索引，通过MVCC来支持高并发，索引和数据存储在一起。InnoDB 不保存表的具体行数，执行 <code>select count(*) from table</code> 时需要全表扫描。而MyISAM 用一个变量保存了整个表的行数。</p>
+<p>InnoDB 最小的锁粒度是行锁，MyISAM 最小的锁粒度是表锁，并发能力低。MySQL 将默认存储引擎是 InnoDB</p>
+<h2 id="mysql-锁有哪些类型？"><a href="#mysql-锁有哪些类型？" class="headerlink" title="mysql 锁有哪些类型？"></a><strong>mysql 锁有哪些类型？</strong></h2><p>答案：mysql锁分为共享锁( S lock ) 、排他锁 ( X lock )，也叫做读锁和写锁。根据粒度，可以分为表锁、页锁、行锁。</p>
+<h2 id="什么是间隙锁？"><a href="#什么是间隙锁？" class="headerlink" title="什么是间隙锁？"></a><strong>什么是间隙锁？</strong></h2><p>答案：间隙锁是可重复读级别下才会有的锁，mysql会帮我们生成了若干<code>左开右闭</code>的区间，结合MVCC和间隙锁可以解决幻读问题。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/03/09/Mysql%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Kafka和Zookeeper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/03/08/Kafka%E5%92%8CZookeeper/">Kafka和Zookeeper</a>
+    </h1>
+  
+
+        
+        <a href="/2022/03/08/Kafka%E5%92%8CZookeeper/" class="archive-article-date">
+  	<time datetime="2022-03-08T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-08</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：2k字 | 预计阅读时长：7分钟
+	  </div> 
+      
+        <p>今天来看一下<strong>Kafka和Zookeeper</strong>的关系，内容摘抄自微信公众号【苏三说技术】。</p>
+<p>最近，<code>confluent</code>社区发表了一篇文章，主要讲述了<code>Kafka</code>未来的<code>2.8</code>版本将要放弃<code>Zookeeper</code>，这对于<code>Kafka</code>用户来说，是一个重要的改进。之前部署<code>Kafka</code>就必须得部署<code>Zookeeper</code>，而之后就只要单独部署<code>Kafka</code>就行了。</p>
+<h2 id="1-Kafka简介"><a href="#1-Kafka简介" class="headerlink" title="1.Kafka简介"></a>1.Kafka简介</h2><p><code>Apache Kafka</code>最早是由<code>Linkedin</code>公司开发，后来捐献给了<code>Apack</code>基金会。</p>
+<p><code>Kafka</code>被官方定义为分布式流式处理平台，因为具备高吞吐、可持久化、可水平扩展等特性而被广泛使用。目前<code>Kafka</code>具体如下功能：</p>
 <ul>
-<li>get/ set</li>
-<li>构造器</li>
-<li>BeanUtils 工具类</li>
-<li>Builder 模式</li>
+<li>消息队列,<code>Kafka</code>具有系统解耦、流量削峰、缓冲、异步通信等消息队列的功能。</li>
+<li>分布式存储系统，<code>Kafka</code>可以把消息持久化，同时用多副本来实现故障转移，可以作为数据存储系统来使用。</li>
+<li>实时数据处理，<code>Kafka</code>提供了一些和数据处理相关的组件，比如<code>Kafka Streams</code>、<code>Kafka Connect</code>，具备了实时数据的处理功能。</li>
 </ul>
-<p>我相信大部分人的做法都是这样的，虽然很直接，但是普遍真的很 Low，耦合性又强，还经常丢参数，或者搞错参数值，在这个开发场景，我个人觉得这些都不是最佳的方式。</p>
-<p>这种开发场景又实在是太常见了，那有没有一种 Java bean 自动映射工具？</p>
-<p>没错——正是 <strong>MapStruct</strong>！！</p>
+<p>下面这张图是<code>Kafka</code>的消息模型：</p>
+<p><img src="/2022/03/08/Kafka%E5%92%8CZookeeper/1.png" alt="img"></p>
+<p>通过上面这张图，介绍一下<code>Kafka</code>中的几个主要概念：</p>
+<ul>
+<li><code>producer</code>和<code>consumer</code>: 消息队列中的生产者和消费者，生产者将消息推送到队列，消费者从队列中拉取消息。</li>
+<li><code>consumer group</code>:消费者集合，这些消费者可以并行消费同一个<code>topic</code>下不同<code>partition</code>中的消息。</li>
+<li><code>broker</code>：<code>Kafka</code>集群中的服务器。</li>
+<li><code>topic</code>：消息的分类。</li>
+<li><code>partition</code>：<code>topic</code>物理上的分组，一个<code>topic</code>可以有<code>partition</code>，每个<code>partition</code>中的消息会被分配一个有序的<code>id</code>作为<code>offset</code>。每个<code>consumer group</code>只能有一个消费者来消费一个<code>partition</code>。</li>
+</ul>
+<h2 id="2-Kafka和Zookeeper关系"><a href="#2-Kafka和Zookeeper关系" class="headerlink" title="2.Kafka和Zookeeper关系"></a>2.Kafka和Zookeeper关系</h2><p>Kafka架构如下图：</p>
+<p><img src="/2022/03/08/Kafka%E5%92%8CZookeeper/2.png" alt="img"></p>
+<p>从图中可以看到，<code>Kafka</code>的工作需要<code>Zookeeper</code>的配合。那他们到底是怎么配合工作呢？</p>
+<p>看下面这张图：</p>
+<p><img src="/2022/03/08/Kafka%E5%92%8CZookeeper/3.png" alt="img"></p>
+<h3 id="2-1-注册中心"><a href="#2-1-注册中心" class="headerlink" title="2.1 注册中心"></a>2.1 注册中心</h3><h4 id="2-1-1-broker注册"><a href="#2-1-1-broker注册" class="headerlink" title="2.1.1 broker注册"></a>2.1.1 broker注册</h4><p>从上面的图中可以看到，<code>broker</code>分布式部署，就需要一个注册中心来进行统一管理。<code>Zookeeper</code>用一个专门节点保存<code>Broker</code>服务列表，也就是 <code>/brokers/ids</code>。</p>
+<p><code>broker</code>在启动时，向<code>Zookeeper</code>发送注册请求，<code>Zookeeper</code>会在<code>/brokers/ids</code>下创建这个<code>broker</code>节点，如<code>/brokers/ids/[0...N]</code>，并保存<code>broker</code>的<code>IP</code>地址和端口。</p>
+<blockquote>
+<p>❝</p>
+<p>这个节点临时节点，一旦<code>broker</code>宕机，这个临时节点会被自动删除。</p>
+<p>❞</p>
+</blockquote>
+<h4 id="2-1-2-topic注册"><a href="#2-1-2-topic注册" class="headerlink" title="2.1.2 topic注册"></a>2.1.2 topic注册</h4><p><code>Zookeeper</code>也会为<code>topic</code>分配一个单独节点，每个<code>topic</code>都会以<code>/brokers/topics/[topic_name]</code>的形式记录在<code>Zookeeper</code>。</p>
+<p>一个<code>topic</code>的消息会被保存到多个<code>partition</code>，这些<code>partition</code>跟<code>broker</code>的对应关系也需要保存到<code>Zookeeper</code>。</p>
+<p><code>partition</code>是多副本保存的，上图中红色<code>partition</code>是<code>leader</code>副本。当<code>leader</code>副本所在的broker发生故障时，<code>partition</code>需要重新选举<code>leader</code>，这个需要由<code>Zookeeper</code>主导完成。</p>
+<p><code>broker</code>启动后，会把自己的<code>Broker ID</code>注册到到对应<code>topic</code>节点的分区列表中。</p>
+<p>我们查看一个<code>topic</code>是<code>xxx</code>，分区编号是<code>1</code>的信息，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@master] get /brokers/topics/xxx/partitions/1/state</span><br><span class="line">&#123;&quot;controller_epoch&quot;:15,&quot;leader&quot;:11,&quot;version&quot;:1,&quot;leader_epoch&quot;:2,&quot;isr&quot;:[11,12,13]&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>❝</p>
+<p>当<code>broker</code>退出后，<code>Zookeeper</code>会更新其对应<code>topic</code>的分区列表。</p>
+<p>❞</p>
+</blockquote>
         
       
 
@@ -791,7 +610,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
         		</li>
       		
 		</ul>
@@ -801,7 +620,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/30/MapStruct/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/03/08/Kafka%E5%92%8CZookeeper/">展开全文 >></a>
         </p>
       
 
@@ -831,20 +650,20 @@
 
 
   
-    <article id="post-服务注册中心" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-消息队列常见问题处理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/29/%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/">服务注册中心</a>
+      <a class="article-title" href="/2022/03/07/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/">消息队列常见问题处理</a>
     </h1>
   
 
         
-        <a href="/2021/10/29/%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/" class="archive-article-date">
-  	<time datetime="2021-10-29T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-29</time>
+        <a href="/2022/03/07/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/" class="archive-article-date">
+  	<time datetime="2022-03-07T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-07</time>
 </a>
         
       </header>
@@ -852,18 +671,75 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：6.2k字 | 预计阅读时长：21分钟
+		字数：5.3k字 | 预计阅读时长：18分钟
 	  </div> 
       
-        <p>在微服务中，经常听到或者用到服务注册中心，那么具体的含义到底是怎么样的，今天来具体了解下。内容摘抄自微信公众号【IT大咖说】。</p>
-<h1 id="◆-前言"><a href="#◆-前言" class="headerlink" title="◆ 前言"></a>◆ 前言</h1><p>在微服务架构中，帮助开发者快速构建应用的脚手架技术无疑是非常重要的。以Spring Boot为代表的基底技术在继承了Spring框架思想的同时将简洁便利、约定优于配置、开箱即用等特性进一步发扬光大。然而仅仅依靠Spring Boot还不足以支撑微服务架构应对服务高可用、服务动态配置、服务高可扩展、服务负载均衡、服务容错与隔离等非功能需求，我们还需要相关基础设施提供服务治理及管控能力。</p>
-<p>Pivotal公司的Spring Cloud可以说是JVM平台上微服务治理框架的集大成者。本章我们将详细讲解服务注册中心、服务配置中心、微服务网关三个微服务运行时的关键支撑系统。另外，将介绍SpringCloud组件依赖Ribbon及Hystrix模块如何实现负载均衡和熔断管理等。</p>
-<h1 id="◆-服务注册与发现"><a href="#◆-服务注册与发现" class="headerlink" title="◆ 服务注册与发现"></a>◆ 服务注册与发现</h1><p>在云原生架构下，微服务需要具备极强的动态性及可扩展性，而服务注册与发现机制正是微服务可扩展性的基础。在微服务体系中，服务注册中心是微服务的核心模块，它是微服务架构中对服务的位置信息、心跳信息、元数据信息进行管理的重要基础设施。服务注册中心通过中心化、动态化的方式管理众多微服务实例。</p>
-<h1 id="◆-服务注册与发现原理"><a href="#◆-服务注册与发现原理" class="headerlink" title="◆ 服务注册与发现原理"></a>◆ 服务注册与发现原理</h1><p>在传统的应用系统中，基于硬编码方式对外提供服务地址的方式存在诸多问题，在服务扩展、服务高可用、服务升级方面，如果使用硬编码方式将使服务调用方与服务提供方产生紧耦合问题。</p>
-<p>在早期的分布式系统架构中，使用DNS（Domain Name Server，域名服务器）协议作为服务发现机制，它是实现服务调用方与服务提供方解耦的一种简单有效的方式。DNS协议是一个“古老”的协议，也是最基本、最通用的协议之一。几乎所有操作系统底层都支持DNS协议，基于DNS协议的服务发现具备非常好的通用性，几乎使用所有编程语言都可以无缝接入。DNS可以让我们的一个服务名称与一组IP地址关联，或者与一个负载均衡器关联，实现多实例的分发。但是基于DNS协议的服务发现机制还是存在灵活性差、无法定制、端口及语言框架等问题。</p>
-<p>在云原生范式的微服务架构中，服务的地址信息、服务的描述信息、服务的健康状态、服务的心跳信息、服务的版本、服务的元数据都是服务注册中心关心的初始数据。所以越来越多的基于“私有”协议的服务注册中心涌现出来。后面我们会详细介绍一些目前比较流行的微服务架构的服务注册中心。</p>
-<p>下面我们首先来了解一下服务注册与服务发现两者之间的关系。</p>
-<p>服务注册是生产者将自己的服务元信息上传到服务注册表中的过程，而服务发现是一个消费者通过服务注册表实时获取可用生产者服务信息的过程。</p>
+        <p>今天来看一下消息队列的一些常见问题和处理方法。内容摘抄自微信公众号【IT大咖说】。</p>
+<ul>
+<li><p>消息队列常见问题处理</p>
+</li>
+<li><p>分布式事务</p>
+</li>
+<li><ul>
+<li>本地消息表-最终一致性</li>
+<li>MQ事务-最终一致性</li>
+<li>什么是分布式事务</li>
+<li>常见的分布式事务解决方案</li>
+<li>基于 MQ 实现的分布式事务</li>
+<li>RocketMQ中如何处理事务</li>
+<li>Kafka中如何处理事务</li>
+<li>RabbitMQ中的事务</li>
+</ul>
+</li>
+<li><p>消息防丢失</p>
+</li>
+<li><ul>
+<li>RabbitMQ 中的防丢失措施</li>
+<li>Kafka 中的防丢失措施</li>
+<li>RocketMQ 中的防丢失措施</li>
+<li>RabbitMQ 中的防丢失措施</li>
+<li>Kafka 中的防丢失措施</li>
+<li>RocketMQ 中的防丢失措施</li>
+<li>生产阶段防止消息丢失</li>
+<li>存储阶段</li>
+<li>消费阶段</li>
+</ul>
+</li>
+<li><p>消息重复发送</p>
+</li>
+</ul>
+<h1 id="消息队列常见问题处理"><a href="#消息队列常见问题处理" class="headerlink" title="消息队列常见问题处理"></a>消息队列常见问题处理</h1><h2 id="分布式事务"><a href="#分布式事务" class="headerlink" title="分布式事务"></a>分布式事务</h2><h3 id="什么是分布式事务"><a href="#什么是分布式事务" class="headerlink" title="什么是分布式事务"></a>什么是分布式事务</h3><p>我们的服务器从单机发展到拥有多台机器的分布式系统，各个系统之前需要借助于网络进行通信，原有单机中相对可靠的方法调用以及进程间通信方式已经没有办法使用，同时网络环境也是不稳定的，造成了我们多个机器之间的数据同步问题，这就是典型的分布式事务问题。</p>
+<p>在分布式事务中事务的参与者、支持事务的服务器、资源服务器以及事务管理器分别位于不同的分布式系统的不同节点之上。分布式事务就是要保证不同节点之间的数据一致性。</p>
+<h3 id="常见的分布式事务解决方案"><a href="#常见的分布式事务解决方案" class="headerlink" title="常见的分布式事务解决方案"></a>常见的分布式事务解决方案</h3><p>1、2PC(二阶段提交)方案 - 强一致性</p>
+<p>2、3PC(三阶段提交)方案</p>
+<p>3、TCC （Try-Confirm-Cancel）事务 - 最终一致性</p>
+<p>4、Saga事务 - 最终一致性</p>
+<p>5、本地消息表 - 最终一致性</p>
+<p>6、MQ事务 - 最终一致性</p>
+<p>这里重点关注下使用消息队列实现分布式的一致性，上面几种的分布式设计方案的具体细节可参见文章最后的引用链接</p>
+<h3 id="基于-MQ-实现的分布式事务"><a href="#基于-MQ-实现的分布式事务" class="headerlink" title="基于 MQ 实现的分布式事务"></a>基于 MQ 实现的分布式事务</h3><h4 id="本地消息表-最终一致性"><a href="#本地消息表-最终一致性" class="headerlink" title="本地消息表-最终一致性"></a>本地消息表-最终一致性</h4><p>消息的生产方，除了维护自己的业务逻辑之外，同时需要维护一个消息表。这个消息表里面记录的就是需要同步到别的服务的信息，当然这个消息表，每个消息都有一个状态值，来标识这个消息有没有被成功处理。</p>
+<p>发送放的业务逻辑以及消息表中数据的插入将在一个事务中完成，这样避免了<code>业务处理成功 + 事务消息发送失败</code>，或<code>业务处理失败 + 事务消息发送成功</code>，这个问题。</p>
+<p><img src="/2022/03/07/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/1.png" alt="img"></p>
+<p>举个栗子：</p>
+<p>我们假定目前有两个服务，订单服务，购物车服务，用户在购物车中对几个商品进行合并下单，之后需要清空购物车中刚刚已经下单的商品信息。</p>
+<p><strong>1、消息的生产方也就是订单服务，完成了自己的逻辑(对商品进行下单操作)然后把这个消息通过 mq 发送到需要进行数据同步的其他服务中，也就是我们栗子中的购物车服务。</strong></p>
+<p><strong>2、其他服务(购物车服务)会监听这个队列；</strong></p>
+<p>1、如果收到这个消息，并且数据同步执行成功了，当然这也是一个本地事务，就通过 mq 回复消息的生产方(订单服务)消息已经处理了，然后生产方就能标识本次事务已经结束。如果是一个业务上的错误,就回复消息的生产方，需要进行数据回滚了。</p>
+<p>2、很久没收到这个消息，这种情况是不会发生的，消息的发送方会有一个定时的任务，会定时重试发送消息表中还没有处理的消息；</p>
+<p><strong>3、消息的生产方(订单服务)如果收到消息回执；</strong></p>
+<p>1、成功的话就修改本次消息已经处理完，也就是本次分布式事务的同步已经完成；</p>
+<p>2、如果消息的结果是执行失败，同时在本地回滚本次事务，标识消息已经处理完成；</p>
+<p>3、如果消息丢失，也就是回执消息没有收到，这种情况也不太会发生，消息的发送方(订单服务)会有一个定时的任务，定时重试发送消息表中还没有处理的消息，下游的服务需要做幂等，可能会收到多次重复的消息，如果一个回复消息生产方中的某个回执信息丢失了，后面持续收到生产方的 mq 消息，然后再次回复消息的生产方回执信息，这样总能保证发送者能成功收到回执，消息的生产方在接收回执消息的时候也要做到幂等性。</p>
+<p>这里有两个很重要的操作：</p>
+<p>1、服务器处理消息需要是幂等的，消息的生产方和接收方都需要做到幂等性；</p>
+<p>2、发送放需要添加一个定时器来遍历重推未处理的消息，避免消息丢失，造成的事务执行断裂。</p>
+<p>该方案的优缺点</p>
+<p>优点：</p>
+<p>1、在设计层面上实现了消息数据的可靠性，不依赖消息中间件，弱化了对 mq 特性的依赖。</p>
+<p>2、简单，易于实现。</p>
+<p>缺点：</p>
+<p>主要是需要和业务数据绑定到一起，耦合性比较高，使用相同的数据库，会占用业务数据库的一些资源。</p>
+<h4 id="MQ事务-最终一致性"><a href="#MQ事务-最终一致性" class="headerlink" title="MQ事务-最终一致性"></a>MQ事务-最终一致性</h4><p>下面分析下几种消息队列对事务的支持</p>
         
       
 
@@ -877,7 +753,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">微服务</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
         		</li>
       		
 		</ul>
@@ -887,7 +763,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/29/%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/03/07/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86/">展开全文 >></a>
         </p>
       
 
@@ -917,20 +793,20 @@
 
 
   
-    <article id="post-MySQL性能优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-负载均衡策略" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/28/MySQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">MySQL性能优化</a>
+      <a class="article-title" href="/2022/03/06/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5/">负载均衡策略</a>
     </h1>
   
 
         
-        <a href="/2021/10/28/MySQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="archive-article-date">
-  	<time datetime="2021-10-28T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-28</time>
+        <a href="/2022/03/06/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5/" class="archive-article-date">
+  	<time datetime="2022-03-06T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-06</time>
 </a>
         
       </header>
@@ -938,16 +814,47 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：4.7k字 | 预计阅读时长：17分钟
+		字数：6.4k字 | 预计阅读时长：32分钟
 	  </div> 
       
-        <p>今天继续详细了解一下mysql的性能优化的几种方式，内容摘抄自微信公众号【Java技术栈】。</p>
-<h2 id="MySQL性能优化方式"><a href="#MySQL性能优化方式" class="headerlink" title="MySQL性能优化方式"></a>MySQL性能优化方式</h2><h3 id="1、选择最合适的字段属性"><a href="#1、选择最合适的字段属性" class="headerlink" title="1、选择最合适的字段属性"></a><strong>1、选择最合适的字段属性</strong></h3><p>Mysql是一种关系型数据库，可以很好地支持大数据量的存储，但是一般来说，数据库中的表越小，在它上面执行的查询也就越快。因此，在创建表的时候，为了获得更好的性能，我们可以将表中字段的宽度舍得尽可能小。</p>
-<p>例如：在定义邮政编码这个字段时，如果将其设置为char(255)，显然给数据库增加了不必要的空间，甚至使用varchar这种类型也是多余的，因为char(6)就可以很好地完成了任务。同样的如果可以的话，我们应该是用MEDIUMINT而不是BIGINT来定义整形字段。</p>
-<h3 id="2、尽量把字段设置为NOT-NULL"><a href="#2、尽量把字段设置为NOT-NULL" class="headerlink" title="2、尽量把字段设置为NOT NULL"></a><strong>2、尽量把字段设置为NOT NULL</strong></h3><p>在可能的情况下，尽量把字段设置为NOT NULL,这样在将来执行查询的时候，数据库不用去比较NULL值。</p>
-<p>对于某些文本字段来说，例如“省份”或者“性别”，我们可以将他们定义为ENUM(枚举)类型。因为在MySQL中，ENUM类型被当做数值型数据来处理，而数值型数据被处理起来的速度要比文本类型要快得多。这样我们又可以提高数据库的性能。</p>
-<h3 id="3、使用连接-JOIN-来代替子查询-Sub-Queries"><a href="#3、使用连接-JOIN-来代替子查询-Sub-Queries" class="headerlink" title="3、使用连接(JOIN)来代替子查询(Sub-Queries)"></a><strong>3、使用连接(JOIN)来代替子查询(Sub-Queries)</strong></h3><p>MySQL从4.1开始支持SQL的子查询。这个技术可以使用select语句来创建一个单例的查询结果，然后把这个结果作为过滤条件用在另一个查询中。</p>
-<p>例如：我们要将客户基本信息表中没有任何订单的客户删除掉，就可以利用子查询先从销售信息表中将所有发出订单的客户id取出来，然后将结果传递给主查询，如下图所示：</p>
+        <p>今天来看一下分布式中负载均衡的策略，内容摘抄自微信公众号【Java极客技术】。</p>
+<h2 id="1-简述"><a href="#1-简述" class="headerlink" title="1 简述"></a>1 简述</h2><p>负载均衡、集群容错、服务降级这三个概念在DUBBO中非常重要，同理其它分布式框架也都有相同或者相近之概念。</p>
+<p>从调用顺序角度分析，调用顺序依次是负载均衡、集群容错、服务降级。从解决问题角度分析，负载均衡解决了「选哪一个」问题，集群容错解决了「换哪一个」问题，服务降级解决了「全错怎么办」问题。</p>
+<p>假设有1个服务消费者面对10个提供者，这时面临第一个问题就是「选哪一个」进行调用，所以负载均衡最先调用，假设选定了5号服务提供者进行服务调用。</p>
+<p>假设消费者调用5号提供者发生了超时异常，这时面临第二个问题就是「换哪一个」进行调用：5号超时要不要换1号试一试，或者直接返回不进行重试，所以集群容错第二个调用。</p>
+<p>假设已经重试了1号、3号、6号提供者全部超时，这时面临「全错怎么办」这第三个问题，这时可以直接返回一个固定值或者提示文案，所以服务降级第三个调用。</p>
+<p>负载均衡作为整个链路第一个节点非常重要，本文结合DUBBO源码分析以下七种负载均衡策略：</p>
+<ul>
+<li>简单随机</li>
+<li>加权随机</li>
+<li>简单轮询</li>
+<li>简单加权轮询</li>
+<li>平滑加权轮询</li>
+<li>一致性哈希</li>
+<li>最少活跃数</li>
+</ul>
+<h2 id="2-简单随机"><a href="#2-简单随机" class="headerlink" title="2 简单随机"></a>2 简单随机</h2><p>简单随机含义是服务消费者每次会任意访问一个服务提供者，并且从概率角度看每个提供者被访问概率一致，可以通过指定范围随机数实现。第一步编写服务器代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyServer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String ip;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyServer</span><span class="params">(String ip)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.ip = ip;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getIp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ip;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setIp</span><span class="params">(String ip)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.ip = ip;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>第二步编写基础负载均衡策略</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractLoadBalance</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MyServer <span class="title">select</span><span class="params">(List&lt;MyServer&gt; serverList)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> doSelect(serverList);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> MyServer <span class="title">doSelect</span><span class="params">(List&lt;MyServer&gt; serverList)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>第三步编写简单随机策略</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RandomBalance</span> <span class="keyword">extends</span> <span class="title">AbstractLoadBalance</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MyServer <span class="title">doSelect</span><span class="params">(List&lt;MyServer&gt; serverList)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 随机数范围[0,serverListSize)</span></span><br><span class="line">        <span class="keyword">int</span> index = ThreadLocalRandom.current().nextInt(serverList.size());</span><br><span class="line">        <span class="keyword">return</span> serverList.get(index);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>第四步编写测试代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoadBalanceTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;MyServer&gt; serverList = buildData();</span><br><span class="line">        testRandomBalance(serverList);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">testRandomBalance</span><span class="params">(List&lt;MyServer&gt; serverList)</span> </span>&#123;</span><br><span class="line">        AbstractLoadBalance randomBalance = <span class="keyword">new</span> RandomBalance();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            MyServer server = randomBalance.select(serverList);</span><br><span class="line">            System.out.println(<span class="string">&quot;RandomBalance route server=&quot;</span> + server);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;MyServer&gt; <span class="title">buildData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;MyServer&gt; serverList = <span class="keyword">new</span> ArrayList&lt;MyServer&gt;();</span><br><span class="line">        MyServer server1 = <span class="keyword">new</span> MyServer(<span class="string">&quot;192.1.1.1&quot;</span>);</span><br><span class="line">        MyServer server2 = <span class="keyword">new</span> MyServer(<span class="string">&quot;192.1.1.2&quot;</span>);</span><br><span class="line">        MyServer server3 = <span class="keyword">new</span> MyServer(<span class="string">&quot;192.1.1.3&quot;</span>);</span><br><span class="line">        serverList.add(server1);</span><br><span class="line">        serverList.add(server2);</span><br><span class="line">        serverList.add(server3);</span><br><span class="line">        <span class="keyword">return</span> serverList;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>第五步输出结果，循环次数越多结果越准确</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.2</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.1</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.3</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.2</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.1</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.1</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.2</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.2</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.3</span>)</span><br><span class="line">RandomBalance route server=MyServer(ip=<span class="number">192.1</span><span class="number">.1</span><span class="number">.3</span>)</span><br></pre></td></tr></table></figure>
         
       
 
@@ -961,11 +868,192 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">性能优化</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/03/06/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AD%96%E7%95%A5/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Redis保证查询的高效" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/03/05/Redis%E4%BF%9D%E8%AF%81%E6%9F%A5%E8%AF%A2%E7%9A%84%E9%AB%98%E6%95%88/">Redis保证查询的高效</a>
+    </h1>
+  
+
+        
+        <a href="/2022/03/05/Redis%E4%BF%9D%E8%AF%81%E6%9F%A5%E8%AF%A2%E7%9A%84%E9%AB%98%E6%95%88/" class="archive-article-date">
+  	<time datetime="2022-03-05T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-05</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：5.1k字 | 预计阅读时长：18分钟
+	  </div> 
+      
+        <p>今天来看一下Redis是如何保证高效查询的。内容摘抄自微信公众号【IT大咖说】。</p>
+<h1 id="Redis-如何保证高效的查询效率"><a href="#Redis-如何保证高效的查询效率" class="headerlink" title="Redis 如何保证高效的查询效率"></a>Redis 如何保证高效的查询效率</h1><h2 id="为什么-Redis-比较快"><a href="#为什么-Redis-比较快" class="headerlink" title="为什么 Redis 比较快"></a>为什么 Redis 比较快</h2><p>Redis 中的查询速度为什么那么快呢？</p>
+<p>1、因为它是内存数据库；</p>
+<p>2、归功于它的数据结构；</p>
+<p>3、Redis 中是单线程；</p>
+<p>4、Redis 中使用了多路复用。</p>
+<h2 id="Redis-中的数据结构"><a href="#Redis-中的数据结构" class="headerlink" title="Redis 中的数据结构"></a>Redis 中的数据结构</h2><p>这里借用一张来自[Redis核心技术与实战] Redis 中数据结构和底层结构的对应图片</p>
+<p><img src="/2022/03/05/Redis%E4%BF%9D%E8%AF%81%E6%9F%A5%E8%AF%A2%E7%9A%84%E9%AB%98%E6%95%88/1.png" alt="img"></p>
+<h3 id="1、简单动态字符串"><a href="#1、简单动态字符串" class="headerlink" title="1、简单动态字符串"></a>1、简单动态字符串</h3><p>Redis 中并没有使用 C 中 char 来表示字符串，而是引入了 简单动态字符串（Simple Dynamic Strings，SDS）来存储字符串和整型数据。那么 SDS 对比传统的字符串有什么优点呢？</p>
+<p>先来看下 SDS 的结构</p>
+<p><img src="/2022/03/05/Redis%E4%BF%9D%E8%AF%81%E6%9F%A5%E8%AF%A2%E7%9A%84%E9%AB%98%E6%95%88/2.png" alt="img"></p>
+<p>举个栗子：</p>
+<p>使用 SDS 存储了一个字符串 hello,对应的 len 就是5，同时也申请了5个为未使用的空间，所以 free 就是5。</p>
+<p><img src="/2022/03/05/Redis%E4%BF%9D%E8%AF%81%E6%9F%A5%E8%AF%A2%E7%9A%84%E9%AB%98%E6%95%88/3.png" alt="img"></p>
+<p>在 3.2 版本后，sds 会根据字符串实际的长度，选择不同的数据结构，以更好的提升内存效率。当前 sdshdr 结构分为 5 种子类型，分别为 sdshdr5、sdshdr8、sdshdr16、sdshdr32、sdshdr64。其中 sdshdr5 只有 flags 和 buf 字段，其他几种类型的 len 和 alloc 采用从 uint8_t 到 uint64_t 的不同类型，以节省内存空间。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/03/05/Redis%E4%BF%9D%E8%AF%81%E6%9F%A5%E8%AF%A2%E7%9A%84%E9%AB%98%E6%95%88/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-netty面试相关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/03/04/netty%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">netty面试相关</a>
+    </h1>
+  
+
+        
+        <a href="/2022/03/04/netty%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/" class="archive-article-date">
+  	<time datetime="2022-03-04T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-04</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：7.5k字 | 预计阅读时长：27分钟
+	  </div> 
+      
+        <p>今天来看一下netty的一些问题以及面试相关的内容。</p>
+<h2 id="1-Netty-是什么？"><a href="#1-Netty-是什么？" class="headerlink" title="1.Netty 是什么？"></a>1.Netty 是什么？</h2><p>Netty是 一个异步事件驱动的网络应用程序框架，用于快速开发可维护的高性能协议服务器和客户端。Netty是基于nio的，它封装了jdk的nio，让我们使用起来更加方法灵活。</p>
+<h2 id="2-Netty-的特点是什么？"><a href="#2-Netty-的特点是什么？" class="headerlink" title="2.Netty 的特点是什么？"></a>2.Netty 的特点是什么？</h2><p>高并发：Netty 是一款基于 NIO（Nonblocking IO，非阻塞IO）开发的网络通信框架，对比于 BIO（Blocking I/O，阻塞IO），他的并发性能得到了很大提高。<br>传输快：Netty 的传输依赖于零拷贝特性，尽量减少不必要的内存拷贝，实现了更高效率的传输。<br>封装好：Netty 封装了 NIO 操作的很多细节，提供了易于使用调用接口。</p>
+<h2 id="3-Netty-的优势有哪些？"><a href="#3-Netty-的优势有哪些？" class="headerlink" title="3.Netty 的优势有哪些？"></a>3.Netty 的优势有哪些？</h2><p>使用简单：封装了 NIO 的很多细节，使用更简单。<br>功能强大：预置了多种编解码功能，支持多种主流协议。<br>定制能力强：可以通过 ChannelHandler 对通信框架进行灵活地扩展。<br>性能高：通过与其他业界主流的 NIO 框架对比，Netty 的综合性能最优。<br>稳定：Netty 修复了已经发现的所有 NIO 的 bug，让开发人员可以专注于业务本身。<br>社区活跃：Netty 是活跃的开源项目，版本迭代周期短，bug 修复速度快。</p>
+<h2 id="4-Netty-的应用场景有哪些？"><a href="#4-Netty-的应用场景有哪些？" class="headerlink" title="4.Netty 的应用场景有哪些？"></a>4.Netty 的应用场景有哪些？</h2><p>典型的应用有：阿里分布式服务框架 Dubbo，默认使用 Netty 作为基础通信组件，还有 RocketMQ 也是使用 Netty 作为通讯的基础。</p>
+<h2 id="5-Netty-高性能表现在哪些方面？"><a href="#5-Netty-高性能表现在哪些方面？" class="headerlink" title="5.Netty 高性能表现在哪些方面？"></a>5.Netty 高性能表现在哪些方面？</h2><p>IO 线程模型：同步非阻塞，用最少的资源做更多的事。<br>内存零拷贝：尽量减少不必要的内存拷贝，实现了更高效率的传输。<br>内存池设计：申请的内存可以重用，主要指直接内存。内部实现是用一颗二叉查找树管理内存分配情况。<br>串形化处理读写：避免使用锁带来的性能开销。<br>高性能序列化协议：支持 protobuf 等高性能序列化协议。</p>
+<h2 id="6-BIO、NIO和AIO的区别？"><a href="#6-BIO、NIO和AIO的区别？" class="headerlink" title="6.BIO、NIO和AIO的区别？"></a>6.BIO、NIO和AIO的区别？</h2><p>BIO：一个连接一个线程，客户端有连接请求时服务器端就需要启动一个线程进行处理。线程开销大。<br>伪异步IO：将请求连接放入线程池，一对多，但线程还是很宝贵的资源。</p>
+<p>NIO：一个请求一个线程，但客户端发送的连接请求都会注册到多路复用器上，多路复用器轮询到连接有I/O请求时才启动一个线程进行处理。</p>
+<p>AIO：一个有效请求一个线程，客户端的I/O请求都是由OS先完成了再通知服务器应用去启动线程进行处理，</p>
+<p>BIO是面向流的，NIO是面向缓冲区的；BIO的各种流是阻塞的。而NIO是非阻塞的；BIO的Stream是单向的，而NIO的channel是双向的。</p>
+<p>NIO的特点：事件驱动模型、单线程处理多任务、非阻塞I/O，I/O读写不再阻塞，而是返回0、基于block的传输比基于流的传输更高效、更高级的IO函数zero-copy、IO多路复用大大提高了Java网络应用的可伸缩性和实用性。基于Reactor线程模型。</p>
+<p>在Reactor模式中，事件分发器等待某个事件或者可应用或个操作的状态发生，事件分发器就把这个事件传给事先注册的事件处理函数或者回调函数，由后者来做实际的读写操作。如在Reactor中实现读：注册读就绪事件和相应的事件处理器、事件分发器等待事件、事件到来，激活分发器，分发器调用事件对应的处理器、事件处理器完成实际的读操作，处理读到的数据，注册新的事件，然后返还控制权。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Mysql</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">netty</a>
         		</li>
       		
 		</ul>
@@ -975,7 +1063,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/28/MySQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/03/04/netty%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">展开全文 >></a>
         </p>
       
 
@@ -1005,20 +1093,20 @@
 
 
   
-    <article id="post-SpringBoot注解详解" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-Linux基础命令" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/27/SpringBoot%E6%B3%A8%E8%A7%A3%E8%AF%A6%E8%A7%A3/">SpringBoot注解详解</a>
+      <a class="article-title" href="/2022/03/03/Linux%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/">Linux基础命令</a>
     </h1>
   
 
         
-        <a href="/2021/10/27/SpringBoot%E6%B3%A8%E8%A7%A3%E8%AF%A6%E8%A7%A3/" class="archive-article-date">
-  	<time datetime="2021-10-27T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-27</time>
+        <a href="/2022/03/03/Linux%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/" class="archive-article-date">
+  	<time datetime="2022-03-03T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-03-03</time>
 </a>
         
       </header>
@@ -1026,38 +1114,21 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：3.5k字 | 预计阅读时长：12分钟
+		字数：4.9k字 | 预计阅读时长：19分钟
 	  </div> 
       
-        <p>今天来详细了解下SpringBoot的注解详解。内容摘抄自微信公众号【springmeng】。</p>
-<p><strong>使用注解的优势：</strong></p>
-<ol>
-<li><strong>采用纯java代码，不在需要配置繁杂的xml文件</strong></li>
-<li><strong>在配置中也可享受面向对象带来的好处</strong></li>
-<li><strong>类型安全对重构可以提供良好的支持</strong></li>
-<li><strong>减少复杂配置文件的同时亦能享受到springIoC容器提供的功能</strong></li>
-</ol>
-<h2 id="一、注解详解（配备了完善的释义）"><a href="#一、注解详解（配备了完善的释义）" class="headerlink" title="一、注解详解（配备了完善的释义）"></a>一、注解详解（配备了完善的释义）</h2><p>@SpringBootApplication：申明让spring boot自动给程序进行必要的配置，这个配置等同于：@Configuration ，@EnableAutoConfiguration 和 @ComponentScan 三个配置。</p>
-<p>@ResponseBody：表示该方法的返回结果直接写入HTTP response body中，一般在异步获取数据时使用，用于构建RESTful的api。在使用@RequestMapping后，返回值通常解析为跳转路径，加上@esponsebody后返回结果不会被解析为跳转路径，而是直接写入HTTP response body中。比如异步获取json数据，加上@Responsebody后，会直接返回json数据。该注解一般会配合@RequestMapping一起使用。</p>
-<p>@Controller：用于定义控制器类，在spring项目中由控制器负责将用户发来的URL请求转发到对应的服务接口（service层），一般这个注解在类中，通常方法需要配合注解@RequestMapping。</p>
-<p>@RestController：用于标注控制层组件(如struts中的action)，@ResponseBody和@Controller的合集。</p>
-<p>@RequestMapping：提供路由信息，负责URL到Controller中的具体函数的映射。</p>
-<p>@EnableAutoConfiguration：SpringBoot自动配置（auto-configuration）：尝试根据你添加的jar依赖自动配置你的Spring应用。例如，如果你的classpath下存在HSQLDB，并且你没有手动配置任何数据库连接beans，那么我们将自动配置一个内存型（in-memory）数据库”。你可以将@EnableAutoConfiguration或者@SpringBootApplication注解添加到一个@Configuration类上来选择自动配置。如果发现应用了你不想要的特定自动配置类，你可以使用@EnableAutoConfiguration注解的排除属性来禁用它们。</p>
-<p>@ComponentScan：表示将该类自动发现扫描组件。个人理解相当于，如果扫描到有@Component、@Controller、@Service等这些注解的类，并注册为Bean，可以自动收集所有的Spring组件，包括@Configuration类。我们经常使用@ComponentScan注解搜索beans，并结合@Autowired注解导入。可以自动收集所有的Spring组件，包括@Configuration类。我们经常使用@ComponentScan注解搜索beans，并结合@Autowired注解导入。如果没有配置的话，Spring Boot会扫描启动类所在包下以及子包下的使用了@Service,@Repository等注解的类。</p>
-<p>@Configuration：相当于传统的xml配置文件，如果有些第三方库需要用到xml文件，建议仍然通过@Configuration类作为项目的配置主类——可以使用@ImportResource注解加载xml配置文件。</p>
-<p>@Import：用来导入其他配置类。</p>
-<p>@ImportResource：用来加载xml配置文件。</p>
-<p>@Autowired：自动导入依赖的bean</p>
-<p>@Service：一般用于修饰service层的组件</p>
-<p>@Repository：使用@Repository注解可以确保DAO或者repositories提供异常转译，这个注解修饰的DAO或者repositories类会被ComponetScan发现并配置，同时也不需要为它们提供XML配置项。</p>
-<p>@Bean：用@Bean标注方法等价于XML中配置的bean。</p>
-<p>@Value：注入Spring boot application.properties配置的属性的值。示例代码：</p>
-<p>@Inject：等价于默认的@Autowired，只是没有required属性；</p>
-<p>@Component：泛指组件，当组件不好归类的时候，我们可以使用这个注解进行标注。</p>
-<p>@Bean:相当于XML中的,放在方法的上面，而不是类，意思是产生一个bean,并交给spring管理。</p>
-<p>@AutoWired：自动导入依赖的bean。byType方式。把配置好的Bean拿来用，完成属性、方法的组装，它可以对类成员变量、方法及构造函数进行标注，完成自动装配的工作。当加上（required=false）时，就算找不到bean也不报错。</p>
-<p>@Qualifier：当有多个同一类型的Bean时，可以用@Qualifier(“name”)来指定。与@Autowired配合使用。@Qualifier限定描述符除了能根据名字进行注入，但能进行更细粒度的控制如何选择候选者，具体使用方式如下：</p>
-<p>@Resource(name=”name”,type=”type”)：没有括号内内容的话，默认byName。与@Autowired干类似的事。</p>
+        <p>今天来看一下Linux一些常用的基础的命令。内容摘抄自微信公众号【spingmeng’】。</p>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><h3 id="Linux-关机-重启"><a href="#Linux-关机-重启" class="headerlink" title="Linux 关机,重启"></a>Linux 关机,重启</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 关机</span></span><br><span class="line">shutdown -h now</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启</span></span><br><span class="line">shutdown -r now</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看系统-CPU信息"><a href="#查看系统-CPU信息" class="headerlink" title="查看系统,CPU信息"></a>查看系统,CPU信息</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看系统内核信息</span></span><br><span class="line">uname -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看系统内核版本</span></span><br><span class="line">cat /proc/version</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看当前用户环境变量</span></span><br><span class="line">env</span><br><span class="line"></span><br><span class="line">cat /proc/cpuinfo</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看有几个逻辑cpu, 包括cpu型号</span></span><br><span class="line">cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看有几颗cpu,每颗分别是几核</span></span><br><span class="line">cat /proc/cpuinfo | grep physical | uniq -c</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看当前CPU运行在32bit还是64bit模式下, 如果是运行在32bit下也不代表CPU不支持64bit</span></span><br><span class="line">getconf LONG_BIT</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果大于0, 说明支持64bit计算. lm指long mode, 支持lm则是64bit</span></span><br><span class="line">cat /proc/cpuinfo | grep flags | grep <span class="string">&#x27; lm &#x27;</span> | wc -l</span><br></pre></td></tr></table></figure>
+
+<h3 id="建立软连接"><a href="#建立软连接" class="headerlink" title="建立软连接"></a>建立软连接</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ln -s /usr/<span class="built_in">local</span>/jdk1.8/ jdk</span><br></pre></td></tr></table></figure>
+
+<h3 id="rpm相关"><a href="#rpm相关" class="headerlink" title="rpm相关"></a>rpm相关</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看是否通过rpm安装了该软件</span></span><br><span class="line">rpm -qa | grep 软件名</span><br></pre></td></tr></table></figure>
+
+<h3 id="sshkey"><a href="#sshkey" class="headerlink" title="sshkey"></a>sshkey</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建sshkey</span></span><br><span class="line">ssh-keygen -t rsa -C your_email@example.com</span><br><span class="line"></span><br><span class="line"><span class="comment">#id_rsa.pub 的内容拷贝到要控制的服务器的 home/username/.ssh/authorized_keys 中,如果没有则新建(.ssh权限为700, authorized_keys权限为600)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="命令重命名"><a href="#命令重命名" class="headerlink" title="命令重命名"></a>命令重命名</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在各个用户的.bash_profile中添加重命名配置</span></span><br><span class="line"><span class="built_in">alias</span> ll=<span class="string">&#x27;ls -alF&#x27;</span></span><br></pre></td></tr></table></figure>
         
       
 
@@ -1071,7 +1142,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SpringBoot</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
         		</li>
       		
 		</ul>
@@ -1081,7 +1152,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/27/SpringBoot%E6%B3%A8%E8%A7%A3%E8%AF%A6%E8%A7%A3/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/03/03/Linux%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/">展开全文 >></a>
         </p>
       
 
@@ -1113,7 +1184,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/14/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/16/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/14/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="page-number" href="/page/14/">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/">16</a><a class="page-number" href="/page/17/">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/16/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1215,15 +1286,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">前端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1263,15 +1354,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常处理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多线程</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">中间件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1319,11 +1410,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">前端</a>
+                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1347,15 +1438,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1363,11 +1450,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+                <a href="javascript:void(0)" class="js-tag color5">并发编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库，缓存</a>
               </li>
             
             <div class="clearfix"></div>

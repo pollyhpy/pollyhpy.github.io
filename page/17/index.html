@@ -79,8 +79,8 @@
 			</ul>
 		</nav>
 		<nav>
-			<a>总文章数 286</a>
-			<a>总字数 <span class="post-count">826k</span></a>
+			<a>总文章数 413</a>
+			<a>总字数 <span class="post-count">1279k</span></a>
 		</nav>
 		<nav class="header-smart-menu">
     		
@@ -165,20 +165,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-Springboot+Netty+Websocket实现消息推送" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-构建基于DDD领域驱动的微服务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/15/Springboot+Netty+Websocket%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81/">Springboot+Netty+Websocket实现消息推送</a>
+      <a class="article-title" href="/2022/02/20/%E6%9E%84%E5%BB%BA%E5%9F%BA%E4%BA%8EDDD%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BE%AE%E6%9C%8D%E5%8A%A1/">构建基于DDD领域驱动的微服务</a>
     </h1>
   
 
         
-        <a href="/2021/10/15/Springboot+Netty+Websocket%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81/" class="archive-article-date">
-  	<time datetime="2021-10-15T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-15</time>
+        <a href="/2022/02/20/%E6%9E%84%E5%BB%BA%E5%9F%BA%E4%BA%8EDDD%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="archive-article-date">
+  	<time datetime="2022-02-20T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-20</time>
 </a>
         
       </header>
@@ -186,18 +186,31 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：5.1k字 | 预计阅读时长：25分钟
+		字数：6.3k字 | 预计阅读时长：21分钟
 	  </div> 
       
-        <p>这篇博客可以说是我近段时间以来最重要的一篇博客了，因为这一块的内容涉及到客户端与服务器的通信，还有实现消息推送等，真的相当重要。</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>WebSocket 使得客户端和服务器之间的数据交换变得更加简单，允许服务端主动向客户端推送数据。在WebSocket API 中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输。</p>
-<p>Netty框架的优势</p>
-<p>1.API使用简单，开发门槛低；</p>
-<p>2.功能强大，预置了多种编解码功能，支持多种主流协议；</p>
-<p>3.定制能力强，可以通过ChannelHandler对通信框架进行灵活地扩展；</p>
-<p>4.性能高，通过与其他业界主流的NIO框架对比，Netty的综合性能最优；</p>
-<p>5.成熟、稳定，Netty修复了已经发现的所有JDK NIO BUG，业务开发人员不需要再为NIO的BUG而烦恼</p>
-<p>以下会用两个案例来分析netty的用法，只是有一些用法上的不同，具体是大同小异的。</p>
+        <p>今天来看一下微服务的架构问题，如何<strong>构建基于DDD领域驱动的微服务</strong>。内容摘抄自微信公众号【Java技术栈】。</p>
+<p>尽管<strong>微服务</strong>中的“微”一词表示服务的规模，但它并不是使用微服务的唯一标准。当团队转向基于微服务的<strong>架构</strong>时，他们旨在提高敏捷性以及自主且频繁地部署功能。很难确定这种架构风格的简单定义。我喜欢Adrian Cockcroft的关于微服务的简短定义：“ 面向服务的体系结构，它由松散耦合的、具有上下文边界的元素组成。”</p>
+<p>尽管这定义了高级设计启发式技术，但微服务架构具有一些独特的特性，使其有别于以往的面向服务的架构。以下是其中一些特征。这些以及其他一些文档都有据可查-Martin Fowler的文章和Sam Newman的Building Microservices，仅举几例。</p>
+<ol>
+<li>服务具有围绕业务上下文而不是任意技术上抽象的明确定义的边界</li>
+<li>通过意图公开界面隐藏实现细节并公开功能</li>
+<li>服务不会共享超出其边界的内部结构。例如，不共享数据库。</li>
+<li>服务可以抵抗故障。</li>
+<li>团队独立拥有职能，并能够自主发布变更</li>
+<li>团队拥护自动化文化。例如，自动化测试，持续集成和持续交付</li>
+</ol>
+<p><strong>简而言之，我们可以将这种体系结构样式总结如下</strong>：</p>
+<p>松耦合的面向服务的体系结构，其中每个服务都包含在定义明确的<strong>有界上下文</strong>中，从而可以快速，频繁且可靠地交付应用程序。</p>
+<h2 id="领域驱动设计和有界上下文"><a href="#领域驱动设计和有界上下文" class="headerlink" title="领域驱动设计和有界上下文"></a><strong>领域驱动设计和有界上下文</strong></h2><p>微服务的力量来自明确定义其职责并划分它们之间的边界。此处的目的是在边界内建立高凝聚力，并在边界外建立低耦合（banq注：高凝聚低耦合）。也就是说，趋于一起改变的事物应该属于同一事物。就像在许多现实生活中的问题一样，这说起来容易做起来难，业务在不断发展，逻辑的假设前提也会随之改变。因此，重构的能力是设计系统时要考虑的另一关键问题。</p>
+<p>领域驱动设计（DDD）是关键，在我们看来，这是设计微服务时必不可少的工具，无论是打破整体还是实施未开发项目。领域驱动的设计（Eric Evans在他的书中提出）是一组思想、原理和模式，可帮助基于业务领域的基础模型设计软件系统。开发人员和领域专家共同合作，以通用的通用语言创建业务模型。然后，他们将这些模型绑定到有意义的系统，并在这些系统与从事这些服务的团队之间建立协作协议。更重要的是，他们设计了系统之间的概念轮廓或边界。</p>
+<p>微服务设计从这些概念中汲取了灵感，因为所有这些原理都有助于构建可以相互独立变化和发展的模块化系统。</p>
+<p>在继续进行之前，让我们快速了解一下<strong>DDD</strong>的一些基本术语。域驱动设计的完整概述超出了本博客的范围。我们强烈建议任何尝试构建微服务的人推荐Eric Evans的书籍。</p>
+<p>领域：代表组织的工作。例如它是零售或电子商务。</p>
+<p>子域：组织或组织内的业务部门。域由多个子域组成。</p>
+<p>无所不在的语言：这是用于表达模型的语言。在下面的示例中，Item是一个模型，属于这些子域中每个子域的通用语言。开发人员，产品经理，领域专家和业务涉众都同意使用相同的语言，并在其工件（代码，产品文档等）中使用该语言。</p>
+<p>有界上下文：域驱动的设计将有界上下文定义为“单词或语句能确定其含义的设置”。简而言之，这意味着模型是有意义的边界。在上面的示例中，“项目”在每种上下文中的含义不同。在目录上下文中，项目表示可售产品，而在购物车上下文中，则表示客户已将其添加到购物车中的项目。在“运输”上下文中，它表示将要运送给客户的仓库物料。这些模型中的每一个都是不同的，并且每个都有不同的含义，并且可能包含不同的属性。通过将这些模型分离并隔离在它们各自的边界内，我们可以自由地表达模型而没有歧义。</p>
+<p>注意：必须了解子域和有界上下文之间的区别。子域属于问题空间，即您的企业如何看待问题，而受限上下文属于解决方案空间，即我们将如何实施问题的解决方案。从理论上讲，每个子域可能具有多个有界上下文，尽管我们努力为每个子域提供一个有界上下文。</p>
         
       
 
@@ -211,15 +224,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SpringBoot</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">WebSocket</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">netty</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">微服务</a>
         		</li>
       		
 		</ul>
@@ -229,7 +234,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/15/Springboot+Netty+Websocket%E5%AE%9E%E7%8E%B0%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/02/20/%E6%9E%84%E5%BB%BA%E5%9F%BA%E4%BA%8EDDD%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BE%AE%E6%9C%8D%E5%8A%A1/">展开全文 >></a>
         </p>
       
 
@@ -259,20 +264,765 @@
 
 
   
-    <article id="post-常见Linux命令" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-OkHttp" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/14/%E5%B8%B8%E8%A7%81Linux%E5%91%BD%E4%BB%A4/">常见Linux命令</a>
+      <a class="article-title" href="/2022/02/19/OkHttp/">OkHttp</a>
     </h1>
   
 
         
-        <a href="/2021/10/14/%E5%B8%B8%E8%A7%81Linux%E5%91%BD%E4%BB%A4/" class="archive-article-date">
-  	<time datetime="2021-10-14T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-14</time>
+        <a href="/2022/02/19/OkHttp/" class="archive-article-date">
+  	<time datetime="2022-02-19T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-19</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：1.6k字 | 预计阅读时长：8分钟
+	  </div> 
+      
+        <p>今天来看一个网络请求工具，<strong>OkHttp</strong>的使用，内容摘抄自微信公众号【Java技术栈】。</p>
+<p>Java封装OkHttp3工具类，适用于Java后端开发者。</p>
+<p>说实在话，用过挺多网络请求工具，有过java原生的，HttpClient3和4，但是个人感觉用了OkHttp3之后，之前的那些完全不想再用了。</p>
+<p>怎么说呢，代码轻便，使用起来很很很灵活，响应快，比起HttpClient好用许多。</p>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a><strong>准备工作</strong></h2><p>Maven项目在pom文件中引入jar包</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.squareup.okhttp3<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>okhttp<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.10.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.60<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>引入json是因为工具类中有些地方用到了，现在通信都流行使用json传输，也少不了要这个jar包。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">网络</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/02/19/OkHttp/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Lambda表达式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/18/Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/">Lambda表达式</a>
+    </h1>
+  
+
+        
+        <a href="/2022/02/18/Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="archive-article-date">
+  	<time datetime="2022-02-18T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-18</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：2k字 | 预计阅读时长：8分钟
+	  </div> 
+      
+        <p>今天来看一下<strong>Lambda表达式</strong>的具体用法。内容摘抄自微信公众号【springmeng】。</p>
+<h2 id="Lambda-简介"><a href="#Lambda-简介" class="headerlink" title="Lambda 简介"></a>Lambda 简介</h2><p>Lambda 表达式是 JDK8 的一个新特性，可以取代大部分的匿名内部类，写出更优雅的 Java 代码，尤其在集合的遍历和其他集合操作中，可以极大地优化代码结构。</p>
+<p>JDK 也提供了大量的内置函数式接口供我们使用，使得 Lambda 表达式的运用更加方便、高效。</p>
+<h2 id="对接口的要求"><a href="#对接口的要求" class="headerlink" title="对接口的要求"></a>对接口的要求</h2><p>虽然使用 Lambda 表达式可以对某些接口进行简单的实现，但并不是所有的接口都可以使用 Lambda 表达式来实现。Lambda 规定接口中只能有一个需要被实现的方法，不是规定接口中只能有一个方法</p>
+<p>jdk 8 中有另一个新特性：default， 被 default 修饰的方法会有默认实现，不是必须被实现的方法，所以不影响 Lambda 表达式的使用。</p>
+<h2 id="FunctionalInterface"><a href="#FunctionalInterface" class="headerlink" title="@FunctionalInterface"></a>@FunctionalInterface</h2><p>修饰函数式接口的，要求接口中的抽象方法只有一个。这个注解往往会和 lambda 表达式一起出现。</p>
+<h2 id="Lambda-基础语法"><a href="#Lambda-基础语法" class="headerlink" title="Lambda 基础语法"></a>Lambda 基础语法</h2><p>我们这里给出六个接口，后文的全部操作都利用这六个接口来进行阐述。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**多参数无返回*/</span></span><br><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">NoReturnMultiParam</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">method</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**无参无返回值*/</span></span><br><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">NoReturnNoParam</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">method</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**一个参数无返回*/</span></span><br><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">NoReturnOneParam</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">method</span><span class="params">(<span class="keyword">int</span> a)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**多个参数有返回值*/</span></span><br><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ReturnMultiParam</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">method</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*** 无参有返回*/</span></span><br><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ReturnNoParam</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">method</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**一个参数有返回值*/</span></span><br><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ReturnOneParam</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">method</span><span class="params">(<span class="keyword">int</span> a)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/02/18/Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-excel导入导出" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/17/excel%E5%AF%BC%E5%85%A5%E5%AF%BC%E5%87%BA/">excel导入导出</a>
+    </h1>
+  
+
+        
+        <a href="/2022/02/17/excel%E5%AF%BC%E5%85%A5%E5%AF%BC%E5%87%BA/" class="archive-article-date">
+  	<time datetime="2022-02-17T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-17</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：5.9k字 | 预计阅读时长：30分钟
+	  </div> 
+      
+        <p>今天来看一下excel的导入导出。内容摘抄自微信公众号【Java大后端】。</p>
+<p>喝水不忘挖井人，感谢阿里巴巴项目组提供了easyexcel工具类，github地址：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/alibaba/easyexcel">https://github.com/alibaba/easyexcel</a></p>
+</blockquote>
+<h2 id="文章目录"><a href="#文章目录" class="headerlink" title="文章目录"></a>文章目录</h2><ul>
+<li><p>环境搭建</p>
+</li>
+<li><p>读取excel文件</p>
+</li>
+<li></li>
+<li><ul>
+<li>默认读取</li>
+<li>指定读取</li>
+<li>默认读取</li>
+<li>指定读取</li>
+<li>小于1000行数据</li>
+<li>大于1000行数据</li>
+</ul>
+</li>
+<li><p>导出excle</p>
+</li>
+<li></li>
+<li><ul>
+<li>无模型映射导出</li>
+<li>模型映射导出</li>
+<li>单个Sheet导出</li>
+<li>多个Sheet导出</li>
+</ul>
+</li>
+<li><p>工具类</p>
+</li>
+<li><p>测试类</p>
+</li>
+</ul>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=MzUyNDc0NjM0Nw==&mid=2247492574&idx=2&sn=f27a39ad8bf4540785d08d7d4be889df&chksm=fa2a08dacd5d81cc3b043fcf01b6b0d9f12e0ed43f02a97c0941c5d325d989c6af5fb0276dc7&scene=21#wechat_redirect">easyexcel 依赖（必须）</a></li>
+<li><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=MzUyNDc0NjM0Nw==&mid=2247492574&idx=2&sn=f27a39ad8bf4540785d08d7d4be889df&chksm=fa2a08dacd5d81cc3b043fcf01b6b0d9f12e0ed43f02a97c0941c5d325d989c6af5fb0276dc7&scene=21#wechat_redirect">springboot (不是必须)</a></li>
+<li><a target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=MzUyNDc0NjM0Nw==&mid=2247492574&idx=2&sn=f27a39ad8bf4540785d08d7d4be889df&chksm=fa2a08dacd5d81cc3b043fcf01b6b0d9f12e0ed43f02a97c0941c5d325d989c6af5fb0276dc7&scene=21#wechat_redirect">lombok （不是必须）</a></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;easyexcel&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.1.2-beat1&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;lombok&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.18.2&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Spring Boot 基础就不介绍了，推荐下这个实战教程：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/javastacks/spring-boot-best-practice">https://github.com/javastacks/spring-boot-best-practice</a></p>
+</blockquote>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/02/17/excel%E5%AF%BC%E5%85%A5%E5%AF%BC%E5%87%BA/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Java可变参数" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/16/Java%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0/">Java可变参数</a>
+    </h1>
+  
+
+        
+        <a href="/2022/02/16/Java%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0/" class="archive-article-date">
+  	<time datetime="2022-02-16T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-16</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：1.5k字 | 预计阅读时长：5分钟
+	  </div> 
+      
+        <p>今天来看一下Java可变参数的类型和用法。内容摘抄自微信公众号【Java极客技术】。</p>
+<p>我们都知道 Java 支持可变参数的形式定义方法，这种语法糖在某些时候可以简化我们的代码，但是关于可变参数是如何实现的以及其他的更多细节，你真的知道吗？今天阿粉就带你来了解一下。</p>
+<h2 id="可变参数方法的定义"><a href="#可变参数方法的定义" class="headerlink" title="可变参数方法的定义"></a>可变参数方法的定义</h2><p>首先看下可变参数方法在代码上是如何定义的，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">(Integer id, String... names)</span> </span>&#123;      </span><br><span class="line">    System.out.println(<span class="string">&quot;id:&quot;</span> + id + <span class="string">&quot; names:&quot;</span> + names.length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过上面的示例，我们可以看出在定义方法时，在最后一个形参类型后加上三点 <code>…</code>，就表示该形参可以接受多个相同类型的参数值，多个参数值被当成数组传入。这里我们需要注意几个点：</p>
+<ol>
+<li>可变参数只能作为函数的最后一个参数，在其前面可以有也可以没有任何其他参数；</li>
+<li>由于可变参数必须是最后一个参数，所以一个函数最多只能有一个可变参数；</li>
+<li>Java 的可变参数，会被编译器转型为一个数组；</li>
+</ol>
+<p>上面提到可变参数的形式会被编译成一个数组，那么问题来了，我可不可以写两个下面这样的方法呢？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">(Integer id, String... names)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;id:&quot;</span> + id + <span class="string">&quot; names:&quot;</span>+ names.length);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">method1</span><span class="params">(Integer id, String[] names)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;id:&quot;</span> + id + <span class="string">&quot; names:&quot;</span> + names.length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在一个类中的定义相同名字的一个可变参数的方法和一个包含数组的方法，写完过后我们就发现 IDEA 已经提示我们这种写法的编译不了的了。</p>
+<p><img src="/2022/02/16/Java%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0/1.png" alt="img"></p>
+<p>从这里我们可以知道可变参数在编译为字节码后，在方法签名中会以数组形态出现的，导致这两个方法的签名一致的，如果同时出现，是不能编译通过的。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/02/16/Java%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-整合定时批量任务" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/15/%E6%95%B4%E5%90%88%E5%AE%9A%E6%97%B6%E6%89%B9%E9%87%8F%E4%BB%BB%E5%8A%A1/">整合定时批量任务</a>
+    </h1>
+  
+
+        
+        <a href="/2022/02/15/%E6%95%B4%E5%90%88%E5%AE%9A%E6%97%B6%E6%89%B9%E9%87%8F%E4%BB%BB%E5%8A%A1/" class="archive-article-date">
+  	<time datetime="2022-02-15T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-15</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：2.3k字 | 预计阅读时长：12分钟
+	  </div> 
+      
+        <p>今天来看下SpringBoot + SpringBatch + Quartz整合定时批量任务。内容摘抄自微信公众号【springmeng】。</p>
+<h2 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h2><p>最近一周，被借调到其他部门，赶一个紧急需求，需求内容如下：</p>
+<p>PC网页触发一条设备升级记录（下图），后台要定时批量设备更新。这里定时要用到Quartz，批量数据处理要用到SpringBatch，二者结合，可以完成该需求。</p>
+<p>由于之前，没有用过SpringBatch，于是上网查了下资料，发现可参考的不是很多，于是只能去慢慢的翻看官方文档。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-batch/4.1.x/reference/html/">https://docs.spring.io/spring-batch/4.1.x/reference/html/</a></p>
+</blockquote>
+<p>遇到不少问题，就记录一下吧。</p>
+<p><img src="/2022/02/15/%E6%95%B4%E5%90%88%E5%AE%9A%E6%97%B6%E6%89%B9%E9%87%8F%E4%BB%BB%E5%8A%A1/1.png" alt="img"></p>
+<h2 id="二、代码具体实现"><a href="#二、代码具体实现" class="headerlink" title="二、代码具体实现"></a>二、代码具体实现</h2><p>1、pom文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.postgresql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>postgresql<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-batch<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-batch<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">中间件</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/02/15/%E6%95%B4%E5%90%88%E5%AE%9A%E6%97%B6%E6%89%B9%E9%87%8F%E4%BB%BB%E5%8A%A1/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-大文件上传相关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/14/%E5%A4%A7%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E7%9B%B8%E5%85%B3/">大文件上传相关</a>
+    </h1>
+  
+
+        
+        <a href="/2022/02/14/%E5%A4%A7%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E7%9B%B8%E5%85%B3/" class="archive-article-date">
+  	<time datetime="2022-02-14T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-14</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：2.7k字 | 预计阅读时长：11分钟
+	  </div> 
+      
+        <p>今天来看一下大文件上传的一些内容，包括秒传，断点续传和分片上传等。内容摘抄自微信公众号【springmeng】。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>文件上传是一个老生常谈的话题了，在文件相对比较小的情况下，可以直接把文件转化为字节流上传到服务器，但在文件比较大的情况下，用普通的方式进行上传，这可不是一个好的办法，毕竟很少有人会忍受，当文件上传到一半中断后，继续上传却只能重头开始上传，这种让人不爽的体验。那有没有比较好的上传体验呢，答案有的，就是下边要介绍的几种上传方式</p>
+<h2 id="详细教程"><a href="#详细教程" class="headerlink" title="详细教程"></a>详细教程</h2><h3 id="秒传"><a href="#秒传" class="headerlink" title="秒传"></a>秒传</h3><h4 id="1、什么是秒传"><a href="#1、什么是秒传" class="headerlink" title="1、什么是秒传"></a>1、什么是秒传</h4><p>通俗的说，你把要上传的东西上传，服务器会先做MD5校验，如果服务器上有一样的东西，它就直接给你个新地址，其实你下载的都是服务器上的同一个文件，想要不秒传，其实只要让MD5改变，就是对文件本身做一下修改（改名字不行），例如一个文本文件，你多加几个字，MD5就变了，就不会秒传了.</p>
+<h4 id="2、本文实现的秒传核心逻辑"><a href="#2、本文实现的秒传核心逻辑" class="headerlink" title="2、本文实现的秒传核心逻辑"></a>2、本文实现的秒传核心逻辑</h4><p>a、利用redis的set方法存放文件上传状态，其中key为文件上传的md5，value为是否上传完成的标志位，</p>
+<p>b、当标志位true为上传已经完成，此时如果有相同文件上传，则进入秒传逻辑。如果标志位为false，则说明还没上传完成，此时需要在调用set的方法，保存块号文件记录的路径，其中key为上传文件md5加一个固定前缀，value为块号文件记录路径</p>
+<h3 id="分片上传"><a href="#分片上传" class="headerlink" title="分片上传"></a>分片上传</h3><h4 id="1-什么是分片上传"><a href="#1-什么是分片上传" class="headerlink" title="1.什么是分片上传"></a>1.什么是分片上传</h4><p>分片上传，就是将所要上传的文件，按照一定的大小，将整个文件分隔成多个数据块（我们称之为Part）来进行分别上传，上传完之后再由服务端对所有上传的文件进行汇总整合成原始的文件。</p>
+<h4 id="2-分片上传的场景"><a href="#2-分片上传的场景" class="headerlink" title="2.分片上传的场景"></a>2.分片上传的场景</h4><p>1.大文件上传</p>
+<p>2.网络环境环境不好，存在需要重传风险的场景</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/02/14/%E5%A4%A7%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E7%9B%B8%E5%85%B3/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-for和forEach" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/13/for%E5%92%8CforEach/">for和forEach</a>
+    </h1>
+  
+
+        
+        <a href="/2022/02/13/for%E5%92%8CforEach/" class="archive-article-date">
+  	<time datetime="2022-02-13T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-13</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：2.4k字 | 预计阅读时长：10分钟
+	  </div> 
+      
+        <p>今天来看一下for和forEach的区别。内容摘抄自微信公众号【springmeng】。</p>
+<p>js中那么多循环，<code>for</code> <code>for...in</code> <code>for...of</code> <code>forEach</code>，有些循环感觉上是大同小异今天我们讨论下<code>for</code>循环和<code>forEach</code>的差异。我们从几个维度展开讨论：</p>
+<ol>
+<li><code>for</code>循环和<code>forEach</code>的本质区别。</li>
+<li><code>for</code>循环和<code>forEach</code>的语法区别。</li>
+<li><code>for</code>循环和<code>forEach</code>的性能区别。</li>
+</ol>
+<h2 id="本质区别"><a href="#本质区别" class="headerlink" title="本质区别"></a>本质区别</h2><p><code>for</code>循环是js提出时就有的循环方法。<code>forEach</code>是ES5提出的，挂载在可迭代对象原型上的方法，例如<code>Array</code> <code>Set</code> <code>Map</code>。<code>forEach</code>是一个迭代器，负责遍历可迭代对象。那么<strong>遍历</strong>，<strong>迭代</strong>，<strong>可迭代对象</strong>分别是什么呢。</p>
+<p><strong>遍历</strong>：指的对数据结构的每一个成员进行有规律的且为一次访问的行为。</p>
+<p><strong>迭代</strong>：迭代是递归的一种特殊形式，是迭代器提供的一种方法，默认情况下是按照一定顺序<strong>逐个</strong>访问数据结构成员。迭代也是一种遍历行为。</p>
+<p><strong>可迭代对象</strong>：ES6中引入了 <code>iterable</code> 类型，<code>Array</code> <code>Set</code> <code>Map</code> <code>String</code> <code>arguments</code> <code>NodeList</code> 都属于 <code>iterable</code>，他们特点就是都拥有 <code>[Symbol.iterator]</code> 方法，包含他的对象被认为是可迭代的 <code>iterable</code>。</p>
+<p><img src="/2022/02/13/for%E5%92%8CforEach/1.png" alt="img"></p>
+<p>在了解这些后就知道 <code>forEach</code> 其实是一个迭代器，他与 <code>for</code> 循环本质上的区别是 <code>forEach</code> 是负责遍历（<code>Array</code> <code>Set</code> <code>Map</code>）可迭代对象的，而 <code>for</code> 循环是一种循环机制，只是能通过它遍历出数组。</p>
+<p>再来聊聊究竟什么是<strong>迭代器</strong>，还记得之前提到的 Generator 生成器，当它被调用时就会生成一个迭代器对象（Iterator Object），它有一个 <code>.next()</code>方法，每次调用返回一个对象<code>&#123;value:value,done:Boolean&#125;</code>，<code>value</code>返回的是 <code>yield</code> 后的返回值，当 <code>yield</code> 结束，<code>done</code> 变为 <code>true</code>，通过不断调用并依次的迭代访问内部的值。</p>
+<p><strong>迭代器</strong>是一种特殊对象。ES6规范中它的标志是返回对象的 <code>next()</code> 方法，迭代行为判断在 <code>done</code> 之中。在不暴露内部表示的情况下，迭代器实现了遍历。看代码</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]  <span class="comment">// 可迭代对象</span></span><br><span class="line"><span class="keyword">let</span> iterator = arr[<span class="built_in">Symbol</span>.iterator]()  <span class="comment">// 调用 Symbol.iterator 后生成了迭代器对象</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 1, done: false&#125;  访问迭代器对象的next方法</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 2, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 3, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 4, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: undefined, done: true&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>我们看到了。只要是可迭代对象，调用内部的 <code>Symbol.iterator</code> 都会提供一个迭代器，并根据迭代器返回的<code>next</code> 方法来访问内部，这也是 <code>for...of</code> 的实现原理。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> arr) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(item); <span class="comment">// 1 2 3 4 </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>把调用 <code>next</code> 方法返回对象的 <code>value</code> 值并保存在 <code>item</code> 中，直到 <code>value</code> 为 <code>undefined</code> 跳出循环，所有可迭代对象可供<code>for...of</code>消费。再来看看其他可迭代对象：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">num</span>(<span class="params">params</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">arguments</span>); <span class="comment">// Arguments(6) [1, 2, 3, 4, callee: ƒ, Symbol(Symbol.iterator): ƒ]</span></span><br><span class="line">    <span class="keyword">let</span> iterator = <span class="built_in">arguments</span>[<span class="built_in">Symbol</span>.iterator]()</span><br><span class="line">    <span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 1, done: false&#125;</span></span><br><span class="line">    <span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 2, done: false&#125;</span></span><br><span class="line">    <span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 3, done: false&#125;</span></span><br><span class="line">    <span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 4, done: false&#125;</span></span><br><span class="line">    <span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: undefined, done: true&#125;</span></span><br><span class="line">&#125;</span><br><span class="line">num(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> set = <span class="keyword">new</span> <span class="built_in">Set</span>(<span class="string">&#x27;1234&#x27;</span>)</span><br><span class="line">set.forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(item); <span class="comment">// 1 2 3 4</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">let</span> iterator = set[<span class="built_in">Symbol</span>.iterator]()</span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 1, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 2, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 3, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 4, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: undefined, done: true&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>所以我们也能很直观的看到可迭代对象中的 <code>Symbol.iterator</code> 属性被调用时都能生成迭代器，而 <code>forEach</code> 也是生成一个迭代器，在内部的回调函数中传递出每个元素的值。</p>
+<p>（感兴趣的同学可以搜下 <code>forEach</code> 源码， <code>Array</code> <code>Set</code> <code>Map</code> 实例上都挂载着 <code>forEach</code> ，但网上的答案大多数是通过 <code>length</code> 判断长度， 利用<code>for</code>循环机制实现的。但在 <code>Set</code> <code>Map</code> 上使用会报错，所以我认为是调用的迭代器，不断调用 <code>next</code>，传参到回调函数。由于网上没查到答案也不妄下断言了，有答案的人可以评论区留言）</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/02/13/for%E5%92%8CforEach/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-代码设计开发原则" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/12/%E4%BB%A3%E7%A0%81%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E5%8E%9F%E5%88%99/">代码设计开发原则</a>
+    </h1>
+  
+
+        
+        <a href="/2022/02/12/%E4%BB%A3%E7%A0%81%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E5%8E%9F%E5%88%99/" class="archive-article-date">
+  	<time datetime="2022-02-12T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-12</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：5k字 | 预计阅读时长：18分钟
+	  </div> 
+      
+        <p>今天来看一下要设计出可重构的代码所需要遵循的一些原则和规则。内容摘抄自微信公众号【Java后端技术】。</p>
+<h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a><strong>一、前言</strong></h2><p><code>我们不一样，就你没对象！</code> <em>对，你是面向过程编程的！</em></p>
+<p>我说的，绝大多数码农没日没夜被需求憋着肝出来的代码，无论有多么的吭哧瘪肚，都不可能有重构，只有重新写。为什么？因为重新写所花的时间成本，远比重构一份已经烂成团的代码，要节省时间。但谁又不敢保证重写完的代码，就比之前能好多少，况且还要承担着重写后的代码事故风险和几乎体现不出来的<code>业务价值</code>！</p>
+<p>虽然代码是给机器运行的，但同样也是给人看的，并且随着每次需求的迭代、变更、升级，都需要研发人员对同一份代码进行多次开发和上线，那么这里就会涉及到<code>可维护</code>、<code>易扩展</code>、<code>好交接</code>的特点。</p>
+<p>而那些不合理分层实现代码逻辑、不写代码注释、不按规范提交、不做格式化、命名随意甚至把 queryBatch 写成 queryBitch 的，都会造成后续代码没法重构的问题。那么接下来我们就分别介绍下，开发好能重构的代码，都要怎么干！</p>
+<p><img src="/2022/02/12/%E4%BB%A3%E7%A0%81%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E5%8E%9F%E5%88%99/1.png" alt="img"></p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">设计</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/02/12/%E4%BB%A3%E7%A0%81%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E5%8E%9F%E5%88%99/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-全文索引" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/02/11/%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95/">全文索引</a>
+    </h1>
+  
+
+        
+        <a href="/2022/02/11/%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95/" class="archive-article-date">
+  	<time datetime="2022-02-11T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-11</time>
 </a>
         
       </header>
@@ -283,676 +1033,20 @@
 		字数：2.5k字 | 预计阅读时长：9分钟
 	  </div> 
       
-        <p>Linux命令之前有总结过一些，今天再来看下，十分常用的Linux命令，内容摘抄自微信公众号【springmeng】。</p>
-<h2 id="一、文件和目录"><a href="#一、文件和目录" class="headerlink" title="一、文件和目录"></a>一、文件和目录</h2><h3 id="1-cd命令"><a href="#1-cd命令" class="headerlink" title="1. cd命令"></a>1. cd命令</h3><p>（它用于切换当前目录，它的参数是要切换到的目录的路径，可以是绝对路径，也可以是相对路径）</p>
+        <p>今天来看一下全文索引的用法，内容摘抄自微信公众号【springmeng】。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>我们都知道 InnoDB 在模糊查询数据时使用 “%xx” 会导致索引失效，但有时需求就是如此，类似这样的需求还有很多，例如，搜索引擎需要根基用户数据的关键字进行全文查找，电子商务网站需要根据用户的查询条件，在可能需要在商品的详细介绍中进行查找，这些都不是B+树索引能很好完成的工作。</p>
+<p>通过数值比较，范围过滤等就可以完成绝大多数我们需要的查询了。但是，如果希望通过关键字的匹配来进行查询过滤，那么就需要基于相似度的查询，而不是原来的精确数值比较，全文索引就是为这种场景设计的。</p>
+<p>全文索引（Full-Text Search）是将存储于数据库中的整本书或整篇文章中的任意信息查找出来的技术。它可以根据需要获得全文中有关章、节、段、句、词等信息，也可以进行各种统计和分析。</p>
+<p>在早期的 MySQL 中，InnoDB 并不支持全文检索技术，从 MySQL 5.6 开始，InnoDB 开始支持全文检索。</p>
+<h2 id="倒排索引"><a href="#倒排索引" class="headerlink" title="倒排索引"></a><strong>倒排索引</strong></h2><p>全文检索通常使用倒排索引（inverted index）来实现，倒排索引同 B+Tree 一样，也是一种索引结构。它在辅助表中存储了单词与单词自身在一个或多个文档中所在位置之间的映射，这通常利用关联数组实现，拥有两种表现形式：</p>
 <ul>
-<li>cd /home   进入 ‘/ home’ 目录</li>
-<li>cd ..       返回上一级目录</li>
-<li>cd ../..     返回上两级目录</li>
-<li>cd        进入个人的主目录</li>
-<li>cd ~user1  进入个人的主目录</li>
-<li>cd -       返回上次所在的目录</li>
+<li>inverted file index：{单词，单词所在文档的id}</li>
+<li>full inverted index：{单词，（单词所在文档的id，再具体文档中的位置）}</li>
 </ul>
-<h3 id="2-pwd命令"><a href="#2-pwd命令" class="headerlink" title="2. pwd命令"></a>2. pwd命令</h3><p>pwd 显示工作路径</p>
-<h3 id="3-ls命令"><a href="#3-ls命令" class="headerlink" title="3. ls命令"></a>3. ls命令</h3><p>（查看文件与目录的命令，list之意）</p>
-<ul>
-<li>ls 查看目录中的文件</li>
-<li>ls -l 显示文件和目录的详细资料</li>
-<li>ls -a 列出全部文件，包含隐藏文件</li>
-<li>ls -R 连同子目录的内容一起列出（递归列出），等于该目录下的所有文件都会显示出来</li>
-<li>ls [0-9] 显示包含数字的文件名和目录名</li>
-</ul>
-<h3 id="4-cp-命令"><a href="#4-cp-命令" class="headerlink" title="4. cp 命令"></a>4. cp 命令</h3><p>（用于复制文件，copy之意，它还可以把多个文件一次性地复制到一个目录下）</p>
-<ul>
-<li>-a ：将文件的特性一起复制</li>
-<li>-p ：连同文件的属性一起复制，而非使用默认方式，与-a相似，常用于备份</li>
-<li>-i ：若目标文件已经存在时，在覆盖时会先询问操作的进行</li>
-<li>-r ：递归持续复制，用于目录的复制行为</li>
-<li>-u ：目标文件与源文件有差异时才会复制</li>
-</ul>
-<h3 id="5-mv命令"><a href="#5-mv命令" class="headerlink" title="5.  mv命令"></a>5.  mv命令</h3><p>（用于移动文件、目录或更名，move之意）</p>
-<ul>
-<li>-f ：force强制的意思，如果目标文件已经存在，不会询问而直接覆盖</li>
-<li>-i ：若目标文件已经存在，就会询问是否覆盖</li>
-<li>-u ：若目标文件已经存在，且比目标文件新，才会更新</li>
-</ul>
-<h3 id="6-rm-命令"><a href="#6-rm-命令" class="headerlink" title="6.  rm 命令"></a>6.  rm 命令</h3><p>（用于删除文件或目录，remove之意）</p>
-<ul>
-<li>-f ：就是force的意思，忽略不存在的文件，不会出现警告消息</li>
-<li>-i ：互动模式，在删除前会询问用户是否操作</li>
-<li>-r ：递归删除，最常用于目录删除，它是一个非常危险的参数</li>
-</ul>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">部署</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/14/%E5%B8%B8%E8%A7%81Linux%E5%91%BD%E4%BB%A4/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Redis常见使用场景" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/13/Redis%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/">Redis常见使用场景</a>
-    </h1>
-  
-
-        
-        <a href="/2021/10/13/Redis%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/" class="archive-article-date">
-  	<time datetime="2021-10-13T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-13</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：1.2k字 | 预计阅读时长：5分钟
-	  </div> 
-      
-        <p>今天来归纳总结一下Redis几个常见的使用场景。内容摘抄自微信公众号【springmeng】。</p>
-<h2 id="Redis常见使用场景"><a href="#Redis常见使用场景" class="headerlink" title="Redis常见使用场景"></a>Redis常见使用场景</h2><h3 id="1、缓存"><a href="#1、缓存" class="headerlink" title="1、缓存"></a>1、缓存</h3><p>String类型</p>
-<p>例如：热点数据缓存（例如报表、明星出轨），对象缓存、全页缓存、可以提升热点数据的访问数据。</p>
-<h3 id="2、数据共享分布式"><a href="#2、数据共享分布式" class="headerlink" title="2、数据共享分布式"></a>2、数据共享分布式</h3><p>String 类型，因为 Redis 是分布式的独立服务，可以在多个应用之间共享</p>
-<p>例如：分布式Session</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span> </span><br><span class="line"> <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.session<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span> </span><br><span class="line"> <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-session-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span> </span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="3、分布式锁"><a href="#3、分布式锁" class="headerlink" title="3、分布式锁"></a>3、分布式锁</h3><p>String 类型setnx方法，只有不存在时才能添加成功，返回true</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">getLock</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">    Long flag = jedis.setnx(key, <span class="string">&quot;1&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (flag == <span class="number">1</span>) &#123;</span><br><span class="line">        jedis.expire(key, <span class="number">10</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> flag == <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">releaseLock</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">    jedis.del(key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="4、全局ID"><a href="#4、全局ID" class="headerlink" title="4、全局ID"></a>4、全局ID</h3><p>int类型，incrby，利用原子性</p>
-<p>incrby userid 1000</p>
-<p>分库分表的场景，一次性拿一段</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/13/Redis%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-分布式定时任务框架选型" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/12/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E6%A1%86%E6%9E%B6%E9%80%89%E5%9E%8B/">分布式定时任务框架选型</a>
-    </h1>
-  
-
-        
-        <a href="/2021/10/12/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E6%A1%86%E6%9E%B6%E9%80%89%E5%9E%8B/" class="archive-article-date">
-  	<time datetime="2021-10-12T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-12</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：3.2k字 | 预计阅读时长：11分钟
-	  </div> 
-      
-        <p>今天来看一下分布式定时任务的框架选型，内容摘抄自微信公众号【springmeng】。</p>
-<h2 id="1-前言"><a href="#1-前言" class="headerlink" title="1. 前言"></a>1. 前言</h2><p>我们先思考下面几个业务场景的解决方案:</p>
-<ul>
-<li>支付系统每天凌晨1点跑批，进行一天清算，每月1号进行上个月清算</li>
-<li>电商整点抢购，商品价格8点整开始优惠</li>
-<li>12306购票系统，超过30分钟没有成功支付订单的，进行回收处理</li>
-<li>商品成功发货后，需要向客户发送短信提醒</li>
-</ul>
-<blockquote>
-<p>“</p>
-<p>类似的业务场景非常多，我们怎么解决？</p>
-<p>”</p>
-</blockquote>
-<p>很多业务场景需要我们某一特定的时刻去做某件任务，定时任务解决的就是这种业务场景。一般来说，系统可以使用消息传递代替部分定时任务，两者有很多相似之处，可以相互替换场景。</p>
-<p>如，上面发货成功发短信通知客户的业务场景，我们可以在发货成功后发送MQ消息到队列，然后去消费mq消息，发送短信。</p>
-<p>但在某些场景下不能互换：</p>
-<p>时间驱动/事件驱动：内部系统一般可以通过时间来驱动，但涉及到外部系统，则只能使用时间驱动。如怕取外部网站价格，每小时爬一次</p>
-<p>批量处理/逐条处理：批量处理堆积的数据更加高效，在不需要实时性的情况下比消息中间件更有优势。而且有的业务逻辑只能批量处理。如移动每个月结算我们的话费</p>
-<p>实时性/非实时性：消息中间件能够做到实时处理数据，但是有些情况下并不需要实时，比如：vip升级</p>
-<p>系统内部/系统解耦：定时任务调度一般是在系统内部，而消息中间件可用于两个系统间</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/12/%E5%88%86%E5%B8%83%E5%BC%8F%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1%E6%A1%86%E6%9E%B6%E9%80%89%E5%9E%8B/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-常见git命令" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/11/%E5%B8%B8%E8%A7%81git%E5%91%BD%E4%BB%A4/">常见git命令</a>
-    </h1>
-  
-
-        
-        <a href="/2021/10/11/%E5%B8%B8%E8%A7%81git%E5%91%BD%E4%BB%A4/" class="archive-article-date">
-  	<time datetime="2021-10-11T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-11</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：1.1k字 | 预计阅读时长：4分钟
-	  </div> 
-      
-        <p>今天来看下常见的git命令，内容摘抄自微信公众号【Java技术栈】。</p>
-<p>在这篇文章中，我将介绍在使用 Git 时最常使用的 20 个命令。</p>
-<p>以下是这些Git命令：</p>
-<ul>
-<li>git init</li>
-<li>git clone</li>
-<li>git add</li>
-<li>git commit</li>
-<li>git diff</li>
-<li>git reset</li>
-<li>git status</li>
-<li>git rm</li>
-<li>git log</li>
-<li>git show</li>
-<li>git tag</li>
-<li>git branch</li>
-<li>git checkout</li>
-<li>git remote</li>
-<li>git push</li>
-<li>git pull</li>
-<li>git stash</li>
-</ul>
-<p>下面让我们逐一介绍。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">部署</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/11/%E5%B8%B8%E8%A7%81git%E5%91%BD%E4%BB%A4/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Spring事务设计原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/10/Spring%E4%BA%8B%E5%8A%A1%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86/">Spring事务设计原理</a>
-    </h1>
-  
-
-        
-        <a href="/2021/10/10/Spring%E4%BA%8B%E5%8A%A1%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86/" class="archive-article-date">
-  	<time datetime="2021-10-10T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-10</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：741字 | 预计阅读时长：2分钟
-	  </div> 
-      
-        <p>pring事务控制是很重要的一部分，今天就来看下Spring事务设计的原理。内容摘抄自微信公众号【Java技术栈】</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>事务，是描述一组操作的抽象，比如对数据库的一组操作，要么全部成功，要么全部失败。<strong>事务具有4个特性：Atomicity（原子性），Consistency（一致性），Isolation（隔离性），Durability（持久性）。</strong></p>
-<p>在实际开发中，我们对事务应用最多就是在数据库操作这一环，特别是Spring对数据库事务进行了封装管理。</p>
-<p>Spring对事务的支持，确实很强大，但是从本质上来讲：事务是否生效取决数据库底层是否支持（比如MySQL的MyISAM引擎就不支持事务，Spring能奈何！），同时一个事务的多个操作需要在同一个Connection上。事务也往往是在业务逻辑层来控制。</p>
-<p>本篇博客将通过手写一个Demo来分析Spring事务底层到底是如何帮助我们轻松完成事务管理的！</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/10/Spring%E4%BA%8B%E5%8A%A1%E8%AE%BE%E8%AE%A1%E5%8E%9F%E7%90%86/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-SpringCloud组件原理分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/09/SpringCloud%E7%BB%84%E4%BB%B6%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">SpringCloud组件原理分析</a>
-    </h1>
-  
-
-        
-        <a href="/2021/10/09/SpringCloud%E7%BB%84%E4%BB%B6%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" class="archive-article-date">
-  	<time datetime="2021-10-09T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-09</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：6.1k字 | 预计阅读时长：21分钟
-	  </div> 
-      
-        <p>今天来看下SpringCloud架构的各个组件的原理分析。我们先认识一下SpringCloud的各个组件，然后知其所以然。内容摘抄自微信公众号【springmrng】。</p>
-<p><img src="/2021/10/09/SpringCloud%E7%BB%84%E4%BB%B6%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/1.png" alt="image-20211008174353889"></p>
-<p><strong>原理讲解前，先看一个最经典的业务场景，如开发一个电商网站，要实现支付订单的功能，流程如下：</strong></p>
-<ol>
-<li>创建一个订单之后，如果用户立刻支付了这个订单，我们需要将订单状态更新为“已支付”</li>
-<li>扣减相应的商品库存</li>
-<li>通知仓储中心，进行发货</li>
-<li>给用户的这次购物增加相应的积分</li>
-</ol>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">SpringCloud</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/09/SpringCloud%E7%BB%84%E4%BB%B6%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-AOP" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/08/AOP/">AOP</a>
-    </h1>
-  
-
-        
-        <a href="/2021/10/08/AOP/" class="archive-article-date">
-  	<time datetime="2021-10-08T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-08</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：4.7k字 | 预计阅读时长：19分钟
-	  </div> 
-      
-        <p>今天来详细了解一下Spring的三大核心思想之一的面向切面编程AOP。内容摘抄自微信公众号【 springmeng】。</p>
-<h1 id="1-理解AOP"><a href="#1-理解AOP" class="headerlink" title="1 理解AOP"></a><strong>1 理解AOP</strong></h1><h2 id="1-1、什么是AOP"><a href="#1-1、什么是AOP" class="headerlink" title="1.1、什么是AOP"></a>1.1、什么是AOP</h2><p>AOP（Aspect Oriented Programming），面向切面思想，是Spring的三大核心思想之一（两外两个：IOC-控制反转、DI-依赖注入）。</p>
-<p>那么AOP为何那么重要呢？</p>
-<p>在我们的程序中，经常存在一些系统性的需求，比如权限校验、日志记录、统计等，这些代码会散落穿插在各个业务逻辑中，非常冗余且不利于维护。例如下面这个示意图：</p>
-<p><img src="/2021/10/08/AOP/image1.png" alt="image1"></p>
-<p>有多少业务操作，就要写多少重复的校验和日志记录代码，这显然是无法接受的。当然，用面向对象的思想，我们可以把这些重复的代码抽离出来，写成公共方法，就是下面这样：</p>
-<p><img src="/2021/10/08/AOP/image2.png" alt="image2"></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/08/AOP/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-SpringBoot动态切换数据源" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/08/SpringBoot%E5%8A%A8%E6%80%81%E5%88%87%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%BA%90/">SpringBoot动态切换数据源</a>
-    </h1>
-  
-
-        
-        <a href="/2021/10/08/SpringBoot%E5%8A%A8%E6%80%81%E5%88%87%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%BA%90/" class="archive-article-date">
-  	<time datetime="2021-10-08T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-08</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：3.6k字 | 预计阅读时长：17分钟
-	  </div> 
-      
-        <p>最近在工作中遇到了一个问题，就是要在SpringBoot中动态切换数据源。动态切换数据源，无非是继承org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource这个类，重写determineCurrentLookupKey()这个方法，动态变换数据源的key值，下面介绍两个方法。</p>
-<h1 id="一、springboot-dynamic-datasource多数据源配置动态切换"><a href="#一、springboot-dynamic-datasource多数据源配置动态切换" class="headerlink" title="一、springboot+dynamic-datasource多数据源配置动态切换"></a>一、springboot+dynamic-datasource多数据源配置动态切换</h1><h2 id="一、引入依赖"><a href="#一、引入依赖" class="headerlink" title="一、引入依赖"></a>一、引入依赖</h2><p><strong>导入数据库驱动（mysql（8.0.11）、postgresql等），数据库连接池(非必须)（druid（1.1.17）），数据库操作框架（mybatis-plus-boot-starter（3.3.1）、dynamic-datasource-spring-boot-starter（2.5.4））。</strong></p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">		<span class="tag">&lt;<span class="name">mybatis-plus.version</span>&gt;</span>3.3.1<span class="tag">&lt;/<span class="name">mybatis-plus.version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dynamic-ds.version</span>&gt;</span>2.5.4<span class="tag">&lt;/<span class="name">dynamic-ds.version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">druid.version</span>&gt;</span>1.1.17<span class="tag">&lt;/<span class="name">druid.version</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.postgresql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>postgresql<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- druid --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>druid-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;druid.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- mybatis-plus --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.baomidou<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-plus-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;mybatis-plus.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--mysql--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>8.0.11<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 动态数据源 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.baomidou<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dynamic-datasource-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">version</span>&gt;</span>2.5.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><img src="/2022/02/11/%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95/1.png" alt="img"></p>
+<p>上图为 inverted file index 关联数组，可以看到其中单词”code”存在于文档1,4中，这样存储再进行全文查询就简单了，可以直接根据 Documents 得到包含查询关键字的文档；而 full inverted index 存储的是对，即（DocumentId,Position），因此其存储的倒排索引如下图，如关键字”code”存在于文档1的第6个单词和文档4的第8个单词。</p>
+<p>相比之下，full inverted index 占用了更多的空间，但是能更好的定位数据，并扩充一些其他搜索特性。</p>
+<p><img src="/2022/02/11/%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95/2.png" alt="img"></p>
         
       
 
@@ -968,10 +1062,6 @@
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">数据库</a>
         		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SpringBoot</a>
-        		</li>
       		
 		</ul>
 	</div>
@@ -980,96 +1070,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/08/SpringBoot%E5%8A%A8%E6%80%81%E5%88%87%E6%8D%A2%E6%95%B0%E6%8D%AE%E6%BA%90/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Redis持久化机制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2021/10/07/Redis%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/">Redis持久化机制</a>
-    </h1>
-  
-
-        
-        <a href="/2021/10/07/Redis%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/" class="archive-article-date">
-  	<time datetime="2021-10-07T02:35:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2021-10-07</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：2.9k字 | 预计阅读时长：10分钟
-	  </div> 
-      
-        <p>今天来看下Redis持久化机制，内容摘抄自微信公众号【Java技术栈】。</p>
-<p>最近在面试的路上愈走愈远了，<code>Redis</code>肯定是一个热门面试方向。像有几种数据结构？如何实现延迟队列？淘汰机制是怎么样的？都快问到麻木，这些问题还常绕脑梁。那我们这篇就举一个比较常见且难度适中的面试题来聊聊。<strong>Redis</strong> 的持久化策略是怎么样的？</p>
-<p>开局问个问题，相信被问到 <strong>Redis 持久化</strong> 的同学肯定不在少数，答对的同学肯定也不在少数，有些小伙伴说到 <strong>Redis持久化</strong> 肯定张口就来，毕竟也就 <strong>AOF 和 RDB</strong> 两个概念，只要你准备了面试，就不会被问的太惨。</p>
-<p>但是你是真的懂还是只是为了应付面试而去应付记忆？你知道 <strong>AOF</strong> 和 <strong>RDB</strong> 两个词是什么单词的缩写吗？你落地实施过吗？你真以为面试官听不出来你是背题还是实操吗？</p>
-<p>如果 4 个问题你中了一半，那不妨往下看看，也许会有些收获，起码答面试题的时候心中有小菜~！</p>
-<h2 id="Redis-持久化"><a href="#Redis-持久化" class="headerlink" title="Redis 持久化"></a>Redis 持久化</h2><blockquote>
-<p>什么是Redis持久化？</p>
-</blockquote>
-<p>咱们先别记得往解决方向前行，先明白这道题的意思。</p>
-<p><em>持久化</em> 就是要让数据永久的保存下去。那什么是 <em>Redis 持久化</em> ？那就是把Redis保存在内存的数据写到磁盘中，防止服务宕机了内存数据丢失问题。那有些小伙伴就说了，那磁盘损坏了，数据怎么持久化？就算多点备份能解决磁盘损坏问题，那如果来个多点丢失怎么整？停住停住，咱们这篇讲的是Redis内存数据-&gt;磁盘的持久化问题，可别指望靠这个问题跟面试官扯半个小时~！</p>
-<p>咱们这篇从几个点来说明 <strong>Redis持久化</strong> 问题。</p>
-<p><img src="/2021/10/07/Redis%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/image1.png" alt="image1"></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2021/10/07/Redis%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/02/11/%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95/">展开全文 >></a>
         </p>
       
 
@@ -1101,7 +1102,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/16/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/18/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/16/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="page-number" href="/page/16/">16</a><span class="page-number current">17</span><a class="page-number" href="/page/18/">18</a><a class="page-number" href="/page/19/">19</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/18/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1203,15 +1204,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">前端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1251,15 +1272,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常处理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多线程</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">中间件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1307,11 +1328,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">前端</a>
+                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1335,15 +1356,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1351,11 +1368,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+                <a href="javascript:void(0)" class="js-tag color5">并发编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库，缓存</a>
               </li>
             
             <div class="clearfix"></div>

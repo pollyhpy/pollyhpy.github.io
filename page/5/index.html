@@ -79,8 +79,8 @@
 			</ul>
 		</nav>
 		<nav>
-			<a>总文章数 286</a>
-			<a>总字数 <span class="post-count">826k</span></a>
+			<a>总文章数 413</a>
+			<a>总字数 <span class="post-count">1279k</span></a>
 		</nav>
 		<nav class="header-smart-menu">
     		
@@ -165,20 +165,20 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-for和forEach" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-nginx面试相关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/13/for%E5%92%8CforEach/">for和forEach</a>
+      <a class="article-title" href="/2022/06/21/nginx%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">nginx面试相关</a>
     </h1>
   
 
         
-        <a href="/2022/02/13/for%E5%92%8CforEach/" class="archive-article-date">
-  	<time datetime="2022-02-13T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-13</time>
+        <a href="/2022/06/21/nginx%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/" class="archive-article-date">
+  	<time datetime="2022-06-21T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-21</time>
 </a>
         
       </header>
@@ -186,208 +186,559 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2.4k字 | 预计阅读时长：10分钟
+		字数：7.9k字 | 预计阅读时长：29分钟
 	  </div> 
       
-        <p>今天来看一下for和forEach的区别。内容摘抄自微信公众号【springmeng】。</p>
-<p>js中那么多循环，<code>for</code> <code>for...in</code> <code>for...of</code> <code>forEach</code>，有些循环感觉上是大同小异今天我们讨论下<code>for</code>循环和<code>forEach</code>的差异。我们从几个维度展开讨论：</p>
-<ol>
-<li><code>for</code>循环和<code>forEach</code>的本质区别。</li>
-<li><code>for</code>循环和<code>forEach</code>的语法区别。</li>
-<li><code>for</code>循环和<code>forEach</code>的性能区别。</li>
-</ol>
-<h2 id="本质区别"><a href="#本质区别" class="headerlink" title="本质区别"></a>本质区别</h2><p><code>for</code>循环是js提出时就有的循环方法。<code>forEach</code>是ES5提出的，挂载在可迭代对象原型上的方法，例如<code>Array</code> <code>Set</code> <code>Map</code>。<code>forEach</code>是一个迭代器，负责遍历可迭代对象。那么<strong>遍历</strong>，<strong>迭代</strong>，<strong>可迭代对象</strong>分别是什么呢。</p>
-<p><strong>遍历</strong>：指的对数据结构的每一个成员进行有规律的且为一次访问的行为。</p>
-<p><strong>迭代</strong>：迭代是递归的一种特殊形式，是迭代器提供的一种方法，默认情况下是按照一定顺序<strong>逐个</strong>访问数据结构成员。迭代也是一种遍历行为。</p>
-<p><strong>可迭代对象</strong>：ES6中引入了 <code>iterable</code> 类型，<code>Array</code> <code>Set</code> <code>Map</code> <code>String</code> <code>arguments</code> <code>NodeList</code> 都属于 <code>iterable</code>，他们特点就是都拥有 <code>[Symbol.iterator]</code> 方法，包含他的对象被认为是可迭代的 <code>iterable</code>。</p>
-<p><img src="/2022/02/13/for%E5%92%8CforEach/1.png" alt="img"></p>
-<p>在了解这些后就知道 <code>forEach</code> 其实是一个迭代器，他与 <code>for</code> 循环本质上的区别是 <code>forEach</code> 是负责遍历（<code>Array</code> <code>Set</code> <code>Map</code>）可迭代对象的，而 <code>for</code> 循环是一种循环机制，只是能通过它遍历出数组。</p>
-<p>再来聊聊究竟什么是<strong>迭代器</strong>，还记得之前提到的 Generator 生成器，当它被调用时就会生成一个迭代器对象（Iterator Object），它有一个 <code>.next()</code>方法，每次调用返回一个对象<code>&#123;value:value,done:Boolean&#125;</code>，<code>value</code>返回的是 <code>yield</code> 后的返回值，当 <code>yield</code> 结束，<code>done</code> 变为 <code>true</code>，通过不断调用并依次的迭代访问内部的值。</p>
-<p><strong>迭代器</strong>是一种特殊对象。ES6规范中它的标志是返回对象的 <code>next()</code> 方法，迭代行为判断在 <code>done</code> 之中。在不暴露内部表示的情况下，迭代器实现了遍历。看代码</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]  <span class="comment">// 可迭代对象</span></span><br><span class="line"><span class="keyword">let</span> iterator = arr[<span class="built_in">Symbol</span>.iterator]()  <span class="comment">// 调用 Symbol.iterator 后生成了迭代器对象</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 1, done: false&#125;  访问迭代器对象的next方法</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 2, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 3, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 4, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: undefined, done: true&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>我们看到了。只要是可迭代对象，调用内部的 <code>Symbol.iterator</code> 都会提供一个迭代器，并根据迭代器返回的<code>next</code> 方法来访问内部，这也是 <code>for...of</code> 的实现原理。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> arr) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(item); <span class="comment">// 1 2 3 4 </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>把调用 <code>next</code> 方法返回对象的 <code>value</code> 值并保存在 <code>item</code> 中，直到 <code>value</code> 为 <code>undefined</code> 跳出循环，所有可迭代对象可供<code>for...of</code>消费。再来看看其他可迭代对象：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">num</span>(<span class="params">params</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">arguments</span>); <span class="comment">// Arguments(6) [1, 2, 3, 4, callee: ƒ, Symbol(Symbol.iterator): ƒ]</span></span><br><span class="line">    <span class="keyword">let</span> iterator = <span class="built_in">arguments</span>[<span class="built_in">Symbol</span>.iterator]()</span><br><span class="line">    <span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 1, done: false&#125;</span></span><br><span class="line">    <span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 2, done: false&#125;</span></span><br><span class="line">    <span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 3, done: false&#125;</span></span><br><span class="line">    <span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 4, done: false&#125;</span></span><br><span class="line">    <span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: undefined, done: true&#125;</span></span><br><span class="line">&#125;</span><br><span class="line">num(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> set = <span class="keyword">new</span> <span class="built_in">Set</span>(<span class="string">&#x27;1234&#x27;</span>)</span><br><span class="line">set.forEach(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(item); <span class="comment">// 1 2 3 4</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">let</span> iterator = set[<span class="built_in">Symbol</span>.iterator]()</span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 1, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 2, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 3, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: 4, done: false&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(iterator.next()); <span class="comment">// &#123;value: undefined, done: true&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>所以我们也能很直观的看到可迭代对象中的 <code>Symbol.iterator</code> 属性被调用时都能生成迭代器，而 <code>forEach</code> 也是生成一个迭代器，在内部的回调函数中传递出每个元素的值。</p>
-<p>（感兴趣的同学可以搜下 <code>forEach</code> 源码， <code>Array</code> <code>Set</code> <code>Map</code> 实例上都挂载着 <code>forEach</code> ，但网上的答案大多数是通过 <code>length</code> 判断长度， 利用<code>for</code>循环机制实现的。但在 <code>Set</code> <code>Map</code> 上使用会报错，所以我认为是调用的迭代器，不断调用 <code>next</code>，传参到回调函数。由于网上没查到答案也不妄下断言了，有答案的人可以评论区留言）</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">前端</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/02/13/for%E5%92%8CforEach/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-代码设计开发原则" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/12/%E4%BB%A3%E7%A0%81%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E5%8E%9F%E5%88%99/">代码设计开发原则</a>
-    </h1>
-  
-
-        
-        <a href="/2022/02/12/%E4%BB%A3%E7%A0%81%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E5%8E%9F%E5%88%99/" class="archive-article-date">
-  	<time datetime="2022-02-12T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-12</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：5k字 | 预计阅读时长：18分钟
-	  </div> 
-      
-        <p>今天来看一下要设计出可重构的代码所需要遵循的一些原则和规则。内容摘抄自微信公众号【Java后端技术】。</p>
-<h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a><strong>一、前言</strong></h2><p><code>我们不一样，就你没对象！</code> <em>对，你是面向过程编程的！</em></p>
-<p>我说的，绝大多数码农没日没夜被需求憋着肝出来的代码，无论有多么的吭哧瘪肚，都不可能有重构，只有重新写。为什么？因为重新写所花的时间成本，远比重构一份已经烂成团的代码，要节省时间。但谁又不敢保证重写完的代码，就比之前能好多少，况且还要承担着重写后的代码事故风险和几乎体现不出来的<code>业务价值</code>！</p>
-<p>虽然代码是给机器运行的，但同样也是给人看的，并且随着每次需求的迭代、变更、升级，都需要研发人员对同一份代码进行多次开发和上线，那么这里就会涉及到<code>可维护</code>、<code>易扩展</code>、<code>好交接</code>的特点。</p>
-<p>而那些不合理分层实现代码逻辑、不写代码注释、不按规范提交、不做格式化、命名随意甚至把 queryBatch 写成 queryBitch 的，都会造成后续代码没法重构的问题。那么接下来我们就分别介绍下，开发好能重构的代码，都要怎么干！</p>
-<p><img src="/2022/02/12/%E4%BB%A3%E7%A0%81%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E5%8E%9F%E5%88%99/1.png" alt="img"></p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">设计</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/02/12/%E4%BB%A3%E7%A0%81%E8%AE%BE%E8%AE%A1%E5%BC%80%E5%8F%91%E5%8E%9F%E5%88%99/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-全文索引" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/11/%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95/">全文索引</a>
-    </h1>
-  
-
-        
-        <a href="/2022/02/11/%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95/" class="archive-article-date">
-  	<time datetime="2022-02-11T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-11</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：2.5k字 | 预计阅读时长：9分钟
-	  </div> 
-      
-        <p>今天来看一下全文索引的用法，内容摘抄自微信公众号【springmeng】。</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>我们都知道 InnoDB 在模糊查询数据时使用 “%xx” 会导致索引失效，但有时需求就是如此，类似这样的需求还有很多，例如，搜索引擎需要根基用户数据的关键字进行全文查找，电子商务网站需要根据用户的查询条件，在可能需要在商品的详细介绍中进行查找，这些都不是B+树索引能很好完成的工作。</p>
-<p>通过数值比较，范围过滤等就可以完成绝大多数我们需要的查询了。但是，如果希望通过关键字的匹配来进行查询过滤，那么就需要基于相似度的查询，而不是原来的精确数值比较，全文索引就是为这种场景设计的。</p>
-<p>全文索引（Full-Text Search）是将存储于数据库中的整本书或整篇文章中的任意信息查找出来的技术。它可以根据需要获得全文中有关章、节、段、句、词等信息，也可以进行各种统计和分析。</p>
-<p>在早期的 MySQL 中，InnoDB 并不支持全文检索技术，从 MySQL 5.6 开始，InnoDB 开始支持全文检索。</p>
-<h2 id="倒排索引"><a href="#倒排索引" class="headerlink" title="倒排索引"></a><strong>倒排索引</strong></h2><p>全文检索通常使用倒排索引（inverted index）来实现，倒排索引同 B+Tree 一样，也是一种索引结构。它在辅助表中存储了单词与单词自身在一个或多个文档中所在位置之间的映射，这通常利用关联数组实现，拥有两种表现形式：</p>
+        <p>今天看一下<strong>nginx面试相关</strong>的一些问题，内容摘抄自微信公众号【springmeng】。</p>
 <ul>
-<li>inverted file index：{单词，单词所在文档的id}</li>
-<li>full inverted index：{单词，（单词所在文档的id，再具体文档中的位置）}</li>
+<li>什么是Nginx？</li>
+<li>Nginx 有哪些优点？</li>
+<li>Nginx应用场景？</li>
+<li>Nginx怎么处理请求的？</li>
+<li>Nginx 是如何实现高并发的？</li>
+<li>什么是正向代理？</li>
+<li>什么是反向代理？</li>
+<li>反向代理服务器的优点是什么?</li>
+<li>Nginx目录结构有哪些？</li>
+<li>Nginx配置文件nginx.conf有哪些属性模块?</li>
+<li>cookie和session区别？</li>
+<li>为什么 Nginx 不使用多线程？</li>
+<li>nginx和apache的区别</li>
+<li>什么是动态资源、静态资源分离？</li>
+<li>为什么要做动、静分离？</li>
+<li>什么叫 CDN 服务？</li>
+<li>Nginx怎么做的动静分离？</li>
+<li>Nginx负载均衡的算法怎么实现的?策略有哪些?</li>
+<li>如何用Nginx解决前端跨域问题？</li>
+<li>Nginx虚拟主机怎么配置?</li>
+<li>location的作用是什么？</li>
+<li>限流怎么做的？</li>
+<li>漏桶流算法和令牌桶算法知道？</li>
+<li>Nginx配置高可用性怎么配置？</li>
+<li>Nginx怎么判断别IP不可访问？</li>
+<li>在nginx中，如何使用未定义的服务器名称来阻止处理请求？</li>
+<li>怎么限制浏览器访问？</li>
+<li>Rewrite全局变量是什么？</li>
+<li>Nginx 如何实现后端服务的健康检查？</li>
+<li>Nginx 如何开启压缩？</li>
+<li>ngx_http_upstream_module的作用是什么?</li>
+<li>什么是C10K问题?</li>
+<li>Nginx是否支持将请求压缩到上游?</li>
+<li>如何在Nginx中获得当前的时间?</li>
+<li>用Nginx服务器解释-s的目的是什么?</li>
+<li>如何在Nginx服务器上添加模块?</li>
+<li>生产中如何设置worker进程的数量呢？</li>
+<li>nginx状态码</li>
 </ul>
-<p><img src="/2022/02/11/%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95/1.png" alt="img"></p>
-<p>上图为 inverted file index 关联数组，可以看到其中单词”code”存在于文档1,4中，这样存储再进行全文查询就简单了，可以直接根据 Documents 得到包含查询关键字的文档；而 full inverted index 存储的是对，即（DocumentId,Position），因此其存储的倒排索引如下图，如关键字”code”存在于文档1的第6个单词和文档4的第8个单词。</p>
-<p>相比之下，full inverted index 占用了更多的空间，但是能更好的定位数据，并扩充一些其他搜索特性。</p>
-<p><img src="/2022/02/11/%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95/2.png" alt="img"></p>
+<p><img src="/2022/06/21/nginx%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/1.png" alt="img"></p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nginx</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/06/21/nginx%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-技术架构进化过程" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/06/20/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84%E8%BF%9B%E5%8C%96%E8%BF%87%E7%A8%8B/">技术架构进化过程</a>
+    </h1>
+  
+
+        
+        <a href="/2022/06/20/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84%E8%BF%9B%E5%8C%96%E8%BF%87%E7%A8%8B/" class="archive-article-date">
+  	<time datetime="2022-06-20T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-20</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：3.6k字 | 预计阅读时长：12分钟
+	  </div> 
+      
+        <p>今天来看一下<strong>技术架构进化过程</strong>，熟悉一下架构相关的内容，内容摘抄自微信公众号【springmeng】。</p>
+<p> <strong>微服务是否适合小团队是个见仁见智的问题。</strong></p>
+<p>回归现象看本质，随着业务复杂度的提高，单体应用越来越庞大，就好像一个类的代码行越来越多，分而治之，切成多个类应该是更好的解决方法，所以一个庞大的单体应用分出多个小应用也更符合这种分治的思想。</p>
+<p>当然微服务架构不应该是一个小团队一开始就该考虑的问题，而是慢慢演化的结果，谨慎过度设计尤为重要。</p>
+<p>公司的背景是提供SaaS服务，对于大客户也会有定制开发以及私有化部署。经过2年不到的时间，技术架构经历了从单体到微服务再到容器化的过程。</p>
+<h2 id="单体应用时代"><a href="#单体应用时代" class="headerlink" title="单体应用时代"></a>单体应用时代</h2><p>早期开发只有两个人，考虑微服务之类的都是多余。不过由于受前公司影响，最初就决定了前后端分离的路线，因为不需要考虑SEO的问题，索性就做成了SPA单页应用。</p>
+<p>多说一句，前后端分离也不一定就不能服务端渲染，例如电商系统或者一些匿名即可访问的系统，加一层薄薄的View层，无论是php还是用Thymeleaf都是不错的选择。</p>
+<p>部署架构上，我们使用Nginx代理前端HTML资源，在接收请求时根据路径反向代理到server的8080端口实现业务。</p>
+<p><img src="/2022/06/20/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84%E8%BF%9B%E5%8C%96%E8%BF%87%E7%A8%8B/1.png" alt="img"></p>
+<h3 id="接口定义"><a href="#接口定义" class="headerlink" title="接口定义"></a>接口定义</h3><p>接口按照标准的Restful来定义，</p>
+<ul>
+<li>版本，统一跟在 /api/后面，例如 <code>/api/v2</code></li>
+<li>以资源为中心，使用复数表述，例如<code>/api/contacts</code>，也可以嵌套，如<code>/api/groups/1/contacts/100</code></li>
+<li>url中尽量不使用动词，实践中发现做到这一点真的比较难，每个研发人员的思路不一致，起的名字也千奇百怪，都需要在代码Review中覆盖。</li>
+<li>动作支持，<code>POST / PUT / DELELE / GET</code> ，这里有一个坑，PUT和PATCH都是更新，但是PUT是全量更新而PATCH是部分更新，前者如果传入的字段是空（未传也视为空）那么也会被更新到数据库中。目前我们虽然是使用PUT但是忽略空字段和未传字段，本质上是一种部分更新，这也带来了一些问题，比如确有置空的业务需要特殊处理。</li>
+<li>接口通过swagger生成文档供前端同事使用。</li>
+</ul>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/06/20/%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84%E8%BF%9B%E5%8C%96%E8%BF%87%E7%A8%8B/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-git经典操作场景" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/06/19/git%E7%BB%8F%E5%85%B8%E6%93%8D%E4%BD%9C%E5%9C%BA%E6%99%AF/">git经典操作场景</a>
+    </h1>
+  
+
+        
+        <a href="/2022/06/19/git%E7%BB%8F%E5%85%B8%E6%93%8D%E4%BD%9C%E5%9C%BA%E6%99%AF/" class="archive-article-date">
+  	<time datetime="2022-06-19T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-19</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：6.5k字 | 预计阅读时长：27分钟
+	  </div> 
+      
+        <p>今天来看一下<strong>git的一些经典操作场景</strong>，内容摘抄自微信公众号【Java后端技术】。</p>
+<p><strong>git</strong>对于大家应该都不太陌生，熟练使用git已经成为程序员的一项基本技能，尽管在工作中有诸如 <code>Sourcetree</code>这样牛X的客户端工具，使得合并代码变的很方便。但找工作面试和一些需彰显个人实力的场景，仍然需要我们掌握足够多的git命令。</p>
+<p>下边我们整理了45个日常用git合代码的经典操作场景，基本覆盖了工作中的需求。</p>
+<h3 id="我刚才提交了什么"><a href="#我刚才提交了什么" class="headerlink" title="我刚才提交了什么?"></a>我刚才提交了什么?</h3><p>如果你用 <code>git commit -a</code> 提交了一次变化(changes)，而你又不确定到底这次提交了哪些内容。你就可以用下面的命令显示当前<code>HEAD</code>上的最近一次的提交(commit):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(main)$ git show</span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git log -n1 -p</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="我的提交信息-commit-message-写错了"><a href="#我的提交信息-commit-message-写错了" class="headerlink" title="我的提交信息(commit message)写错了"></a>我的提交信息(commit message)写错了</h3><p>如果你的提交信息(commit message)写错了且这次提交(commit)还没有推(push), 你可以通过下面的方法来修改提交信息(commit message):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git commit --amend --only</span><br></pre></td></tr></table></figure>
+
+<p>这会打开你的默认编辑器, 在这里你可以编辑信息. 另一方面, 你也可以用一条命令一次完成:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git commit --amend --only -m &#x27;xxxxxxx&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>如果你已经推(push)了这次提交(commit), 你可以修改这次提交(commit)然后强推(force push), 但是不推荐这么做。</p>
+<h3 id="我提交-commit-里的用户名和邮箱不对"><a href="#我提交-commit-里的用户名和邮箱不对" class="headerlink" title="我提交(commit)里的用户名和邮箱不对"></a>我提交(commit)里的用户名和邮箱不对</h3><p>如果这只是单个提交(commit)，修改它：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git commit --amend --author &quot;New Authorname &lt;authoremail@mydomain.com&gt;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>如果你需要修改所有历史, 参考 ‘git filter-branch’的指南页.</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">git</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/06/19/git%E7%BB%8F%E5%85%B8%E6%93%8D%E4%BD%9C%E5%9C%BA%E6%99%AF/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-高并发架构演进" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/06/18/%E9%AB%98%E5%B9%B6%E5%8F%91%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B/">高并发架构演进</a>
+    </h1>
+  
+
+        
+        <a href="/2022/06/18/%E9%AB%98%E5%B9%B6%E5%8F%91%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B/" class="archive-article-date">
+  	<time datetime="2022-06-18T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-18</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：5.9k字 | 预计阅读时长：20分钟
+	  </div> 
+      
+        <p>今天来看一下<strong>高并发架构演进</strong>相关的内容，内容摘抄自微信公众号【springmeng】。</p>
+<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h1><p>本文以淘宝作为例子，介绍从一百个到千万级并发情况下服务端的架构的演进过程，同时列举出每个演进阶段会遇到的相关技术，让大家对架构的演进有一个整体的认知，文章最后汇总了一些架构设计的原则。</p>
+<blockquote>
+<p><strong>特别说明：本文以淘宝为例仅仅是为了便于说明演进过程可能遇到的问题，并非是淘宝真正的技术演进路径</strong></p>
+</blockquote>
+<h1 id="2-基本概念"><a href="#2-基本概念" class="headerlink" title="2. 基本概念"></a>2. 基本概念</h1><p>在介绍架构之前，为了避免部分读者对架构设计中的一些概念不了解，下面对几个最基础的概念进行介绍：</p>
+<ul>
+<li><strong>分布式</strong><br>系统中的多个模块在不同服务器上部署，即可称为分布式系统，如Tomcat和数据库分别部署在不同的服务器上，或两个相同功能的Tomcat分别部署在不同服务器上</li>
+<li><strong>高可用</strong><br>系统中部分节点失效时，其他节点能够接替它继续提供服务，则可认为系统具有高可用性</li>
+<li><strong>集群</strong><br>一个特定领域的软件部署在多台服务器上并作为一个整体提供一类服务，这个整体称为集群。如Zookeeper中的Master和Slave分别部署在多台服务器上，共同组成一个整体提供集中配置服务。在常见的集群中，客户端往往能够连接任意一个节点获得服务，并且当集群中一个节点掉线时，其他节点往往能够自动的接替它继续提供服务，这时候说明集群具有高可用性</li>
+<li><strong>负载均衡</strong><br>请求发送到系统时，通过某些方式把请求均匀分发到多个节点上，使系统中每个节点能够均匀的处理请求负载，则可认为系统是负载均衡的</li>
+<li><strong>正向代理和反向代理</strong><br>系统内部要访问外部网络时，统一通过一个代理服务器把请求转发出去，在外部网络看来就是代理服务器发起的访问，此时代理服务器实现的是正向代理；当外部请求进入系统时，代理服务器把该请求转发到系统中的某台服务器上，对外部请求来说，与之交互的只有代理服务器，此时代理服务器实现的是反向代理。简单来说，正向代理是代理服务器代替系统内部来访问外部网络的过程，反向代理是外部请求访问系统时通过代理服务器转发到内部服务器的过程。</li>
+</ul>
+<h1 id="3-架构演进"><a href="#3-架构演进" class="headerlink" title="3. 架构演进"></a>3. 架构演进</h1><h2 id="3-1-单机架构"><a href="#3-1-单机架构" class="headerlink" title="3.1 单机架构"></a>3.1 单机架构</h2><p><img src="/2022/06/18/%E9%AB%98%E5%B9%B6%E5%8F%91%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B/1.png" alt="img"></p>
+<p>以淘宝作为例子。在网站最初时，应用数量与用户数都较少，可以把Tomcat和数据库部署在同一台服务器上。浏览器往<a target="_blank" rel="noopener" href="http://www.taobao.com发起请求时,首先经过dns服务器(域名系统)把域名转换为实际ip地址10.102.4.1,浏览器转而访问该ip对应的tomcat./">www.taobao.com发起请求时，首先经过DNS服务器（域名系统）把域名转换为实际IP地址10.102.4.1，浏览器转而访问该IP对应的Tomcat。</a></p>
+<blockquote>
+<p><strong>随着用户数的增长，Tomcat和数据库之间竞争资源，单机性能不足以支撑业务</strong></p>
+</blockquote>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/06/18/%E9%AB%98%E5%B9%B6%E5%8F%91%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-数据库执行计划" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/06/17/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/">数据库执行计划</a>
+    </h1>
+  
+
+        
+        <a href="/2022/06/17/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/" class="archive-article-date">
+  	<time datetime="2022-06-17T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-17</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：3.5k字 | 预计阅读时长：13分钟
+	  </div> 
+      
+        <p>今天来详细看一下数据库的执行计划explain的用法，内容摘抄自微信公众号【苏三说技术】。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>对于互联网公司来说，随着用户量和数据量的不断增加，慢查询是无法避免的问题。一般情况下如果出现慢查询，意味着接口响应慢、接口超时等问题。如果是高并发的场景，可能会出现数据库连接被占满的情况，直接导致服务不可用。</p>
+<p>慢查询的确会导致很多问题，我们要如何优化慢查询呢？</p>
+<p>主要解决办法有：</p>
+<ul>
+<li>监控sql执行情况，发邮件、短信报警，便于快速识别慢查询sql</li>
+<li>打开数据库慢查询日志功能</li>
+<li>简化业务逻辑</li>
+<li>代码重构、优化</li>
+<li>异步处理</li>
+<li>sql优化</li>
+<li>索引优化</li>
+</ul>
+<p>其他的办法先不说，后面有机会再单独介绍。今天我重点说说索引优化，因为它是解决慢查询sql问题最有效的手段。</p>
+<p>如何查看某条sql的索引执行情况呢？</p>
+<p>没错，在sql前面加上<code>explain</code>关键字，就能够看到它的执行计划，通过执行计划，我们可以清楚的看到表和索引执行的情况，索引有没有执行、索引执行顺序和索引的类型等。</p>
+<p>索引优化的步骤是：</p>
+<ol>
+<li>使用<code>explain</code>查看sql执行计划</li>
+<li>判断哪些索引使用不当</li>
+<li>优化sql，sql可能需要多次优化才能达到索引使用的最优值</li>
+</ol>
+<p>既然索引优化的第一步是使用<code>explain</code>，我们先全面的了解一下它。</p>
+<h2 id="explain介绍"><a href="#explain介绍" class="headerlink" title="explain介绍"></a><strong>explain介绍</strong></h2><p>先看看mysql的官方文档是怎么描述explain的：</p>
+<p><img src="/2022/06/17/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/1.png" alt="img"></p>
+<ul>
+<li><p>EXPLAIN可以使用于 SELECT， DELETE， INSERT， REPLACE，和 UPDATE语句。</p>
+</li>
+<li><p>当EXPLAIN与可解释的语句一起使用时，MySQL将显示来自优化器的有关语句执行计划的信息。也就是说，MySQL解释了它将如何处理该语句，包括有关如何连接表以及以何种顺序连接表的信息。</p>
+</li>
+<li><p>当EXPLAIN与非可解释的语句一起使用时，它将显示在命名连接中执行的语句的执行计划。</p>
+</li>
+<li><p>对于SELECT语句， EXPLAIN可以显示的其他执行计划的警告信息。</p>
+</li>
+</ul>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Mysql</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/06/17/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-数据库常见错误用法" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/06/16/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E7%94%A8%E6%B3%95/">数据库常见错误用法</a>
+    </h1>
+  
+
+        
+        <a href="/2022/06/16/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E7%94%A8%E6%B3%95/" class="archive-article-date">
+  	<time datetime="2022-06-16T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-16</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：2.6k字 | 预计阅读时长：11分钟
+	  </div> 
+      
+        <p>今天来看一下<strong>数据库常见错误用法</strong>，也可以说是Sql语句的一些优化技巧，内容摘抄自微信公众号【springmeng】。</p>
+<ul>
+<li>1、LIMIT 语句</li>
+<li>2、隐式转换</li>
+<li>3、关联更新、删除</li>
+<li>4、混合排序</li>
+<li>5、EXISTS语句</li>
+<li>6、条件下推</li>
+<li>7、提前缩小范围</li>
+<li>8、中间结果集下推</li>
+<li>总结</li>
+</ul>
+<hr>
+<p><strong>sql语句的执行顺序：</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span></span><br><span class="line"><span class="operator">&lt;</span>left_table<span class="operator">&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ON</span></span><br><span class="line"><span class="operator">&lt;</span>join_condition<span class="operator">&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="operator">&lt;</span>join_type<span class="operator">&gt;</span></span><br><span class="line"> <span class="keyword">JOIN</span></span><br><span class="line"><span class="operator">&lt;</span>right_table<span class="operator">&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line"><span class="operator">&lt;</span>where_condition<span class="operator">&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span></span><br><span class="line"><span class="operator">&lt;</span>group_by_list<span class="operator">&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">HAVING</span></span><br><span class="line"><span class="operator">&lt;</span>having_condition<span class="operator">&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">DISTINCT</span></span><br><span class="line"><span class="operator">&lt;</span>select_list<span class="operator">&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span></span><br><span class="line"><span class="operator">&lt;</span>order_by_condition<span class="operator">&gt;</span></span><br><span class="line"></span><br><span class="line">LIMIT</span><br><span class="line"><span class="operator">&lt;</span>limit_number<span class="operator">&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="1、LIMIT-语句"><a href="#1、LIMIT-语句" class="headerlink" title="1、LIMIT 语句"></a><strong>1、LIMIT 语句</strong></h2><p>分页查询是最常用的场景之一，但也通常也是最容易出问题的地方。比如对于下面简单的语句，一般 DBA 想到的办法是在 type, name, create_time 字段上加组合索引。这样条件排序都能有效的利用到索引，性能迅速提升。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span>   operation</span><br><span class="line"><span class="keyword">WHERE</span>  type <span class="operator">=</span> <span class="string">&#x27;SQLStats&#x27;</span></span><br><span class="line">       <span class="keyword">AND</span> name <span class="operator">=</span> <span class="string">&#x27;SlowLog&#x27;</span></span><br><span class="line"><span class="keyword">ORDER</span>  <span class="keyword">BY</span> create_time</span><br><span class="line">LIMIT  <span class="number">1000</span>, <span class="number">10</span>;</span><br></pre></td></tr></table></figure>
+
+<p>好吧，可能90%以上的 DBA 解决该问题就到此为止。但当 LIMIT 子句变成 “LIMIT 1000000,10” 时，程序员仍然会抱怨：我只取10条记录为什么还是慢？</p>
+<p>要知道数据库也并不知道第1000000条记录从什么地方开始，即使有索引也需要从头计算一次。出现这种性能问题，多数情形下是程序员偷懒了。</p>
+<p>在前端数据浏览翻页，或者大数据分批导出等场景下，是可以将上一页的最大值当成参数作为查询条件的。SQL 重新设计如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span>   <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span>     operation</span><br><span class="line"><span class="keyword">WHERE</span>    type <span class="operator">=</span> <span class="string">&#x27;SQLStats&#x27;</span></span><br><span class="line"><span class="keyword">AND</span>      name <span class="operator">=</span> <span class="string">&#x27;SlowLog&#x27;</span></span><br><span class="line"><span class="keyword">AND</span>      create_time <span class="operator">&gt;</span> <span class="string">&#x27;2017-03-16 14:00:00&#x27;</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> create_time limit <span class="number">10</span>;</span><br></pre></td></tr></table></figure>
+
+<p>在新设计下查询时间基本固定，不会随着数据量的增长而发生变化。</p>
         
       
 
@@ -411,7 +762,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2022/02/11/%E5%85%A8%E6%96%87%E7%B4%A2%E5%BC%95/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/06/16/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF%E7%94%A8%E6%B3%95/">展开全文 >></a>
         </p>
       
 
@@ -441,20 +792,20 @@
 
 
   
-    <article id="post-LRU淘汰策略" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-JWT实现单点登录" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/10/LRU%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/">LRU淘汰策略</a>
+      <a class="article-title" href="/2022/06/15/JWT%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">JWT实现单点登录</a>
     </h1>
   
 
         
-        <a href="/2022/02/10/LRU%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/" class="archive-article-date">
-  	<time datetime="2022-02-10T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-10</time>
+        <a href="/2022/06/15/JWT%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/" class="archive-article-date">
+  	<time datetime="2022-06-15T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-15</time>
 </a>
         
       </header>
@@ -462,19 +813,19 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：2.6k字 | 预计阅读时长：11分钟
+		字数：5.4k字 | 预计阅读时长：27分钟
 	  </div> 
       
-        <p>今天来具体看一下LRU算法实现，内容摘抄自微信公众号【苏三说技术】。</p>
-<p>今天我们这篇文章的目的是要<code>搞懂LRU淘汰策略</code>以及<code>实现一个LRU算法</code>。</p>
-<p>文章会结合图解循序渐进的讲解，跟着我的思路慢慢来就能看懂，我们开始吧。</p>
-<h2 id="文章导读"><a href="#文章导读" class="headerlink" title="文章导读"></a>文章导读</h2><p><img src="/2022/02/10/LRU%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/1.png" alt="img"></p>
-<p>​                                                                                                                       LRU</p>
-<h2 id="Redis的淘汰策略"><a href="#Redis的淘汰策略" class="headerlink" title="Redis的淘汰策略"></a>Redis的淘汰策略</h2><p>为什么要有淘汰策略呢？</p>
-<p><strong>因为存储内存的空间是有限的，所以需要有淘汰的策略。</strong></p>
-<p>Redis的清理内存淘汰策略有哪些呢？</p>
-<p><img src="/2022/02/10/LRU%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/2.png" alt="img"></p>
-<p>​                                                                                             Redis内存淘汰策略</p>
+        <p>今天继续来看一下单点登录的问题，内容摘抄自微信公众号【Java大后端】。</p>
+<p>本文我们来看下 SpringSecurity + JWT 实现单点登录操作，本文 2W 字，预计阅读时间 30 min，文章提供了代码骨架，建议收藏。</p>
+<h2 id="一、什么是单点登陆"><a href="#一、什么是单点登陆" class="headerlink" title="一、什么是单点登陆"></a><strong>一、什么是单点登陆</strong></h2><p>单点登录（Single Sign On），简称为 SSO，是目前比较流行的企业业务整合的解决方案之一。SSO的定义是在多个应用系统中，用户只需要登录一次就可以访问所有相互信任的应用系统</p>
+<h2 id="二、简单的运行机制"><a href="#二、简单的运行机制" class="headerlink" title="二、简单的运行机制"></a><strong>二、简单的运行机制</strong></h2><p>单点登录的机制其实是比较简单的，用一个现实中的例子做比较。某公园内部有许多独立的景点，游客可以在各个景点门口单独买票。</p>
+<p>对于需要游玩所有的景点的游客，这种买票方式很不方便，需要在每个景点门口排队买票，钱包拿 进拿出的，容易丢失，很不安全。</p>
+<p>于是绝大多数游客选择在大门口买一张通票（也叫套票），就可以玩遍所有的景点而不需要重新再买票。他们只需要在每个景点门 口出示一下刚才买的套票就能够被允许进入每个独立的景点。</p>
+<p>单点登录的机制也一样，如下图所示，</p>
+<p><img src="/2022/06/15/JWT%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/1.png" alt="img"></p>
+<p><strong>用户认证：</strong>这一环节主要是用户向认证服务器发起认证请求，认证服务器给用户返回一个成功的令牌token，主要在认证服务器中完成，即图中的认证系统，注意认证系统只能有一个。</p>
+<p><strong>身份校验：</strong> 这一环节是用户携带token去访问其他服务器时，在其他服务器中要对token的真伪进行检验，主要在资源服务器中完成，即图中的应用系统2 3</p>
         
       
 
@@ -488,7 +839,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">算法</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">token</a>
         		</li>
       		
 		</ul>
@@ -498,7 +849,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2022/02/10/LRU%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/06/15/JWT%E5%AE%9E%E7%8E%B0%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">展开全文 >></a>
         </p>
       
 
@@ -528,20 +879,20 @@
 
 
   
-    <article id="post-微服务拆分原则之AKF" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-提升SpringBoot项目的吞吐量" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/09/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86%E5%8E%9F%E5%88%99%E4%B9%8BAKF/">微服务拆分原则之AKF</a>
+      <a class="article-title" href="/2022/06/14/%E6%8F%90%E5%8D%87SpringBoot%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%90%9E%E5%90%90%E9%87%8F/">提升SpringBoot项目的吞吐量</a>
     </h1>
   
 
         
-        <a href="/2022/02/09/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86%E5%8E%9F%E5%88%99%E4%B9%8BAKF/" class="archive-article-date">
-  	<time datetime="2022-02-09T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-09</time>
+        <a href="/2022/06/14/%E6%8F%90%E5%8D%87SpringBoot%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%90%9E%E5%90%90%E9%87%8F/" class="archive-article-date">
+  	<time datetime="2022-06-14T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-14</time>
 </a>
         
       </header>
@@ -549,25 +900,22 @@
     
     <div class="article-entry" itemprop="articleBody">
 	  <div class="post-count">
-		字数：885字 | 预计阅读时长：3分钟
+		字数：1.8k字 | 预计阅读时长：8分钟
 	  </div> 
       
-        <p>今天来看一下微服务设计原则之一的AKF原则。内容摘抄自微信公众号【Java技术栈】。</p>
-<p>当我们搭建集群的时候,首先要想明白需要解决哪些问题,搞清楚这个之前,想想单节点、单实例、单机有哪些问题?</p>
-<ul>
-<li>单点故障</li>
-<li>容量有限</li>
-<li>可支持的连接有限(性能不足)</li>
-<li>……</li>
-</ul>
-<p>为了解决这些问题,我们需要对服务器进行集群,一变多,具体怎们扩充服务器呢?</p>
-<p>这儿引入一个概念,微服务设计原则之一——<strong>AKF原则</strong></p>
-<h2 id="微服务拆分原则之AKF"><a href="#微服务拆分原则之AKF" class="headerlink" title="微服务拆分原则之AKF"></a>微服务拆分原则之AKF</h2><p>首先来看单节点的<strong>单点故障</strong>这个问题,既然单节点容易挂,那么就可以进行复制,一变多,这儿设计到三个概念,主从、主主、主备,也是三种方式,简单来说,主主相当于多台服务器同时对外提供读写:</p>
-<p><img src="/2022/02/09/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86%E5%8E%9F%E5%88%99%E4%B9%8BAKF/1.png" alt="img"></p>
-<p>主从,主机可以读写,但是一般只对外提供写,从机对外提供读:</p>
-<p><img src="/2022/02/09/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86%E5%8E%9F%E5%88%99%E4%B9%8BAKF/2.png" alt="img"></p>
-<p>主备,主机提供读写,备机不对外提供服务,当主机挂了的时候,备机通过选举产生主机对外提供服务。</p>
-<p><img src="/2022/02/09/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86%E5%8E%9F%E5%88%99%E4%B9%8BAKF/3.png" alt="img"></p>
+        <p>今天来看一下如何<strong>提升SpringBoot项目的吞吐量</strong>，内容摘抄自微信公众号【springmeng】。</p>
+<h2 id="一、异步执行"><a href="#一、异步执行" class="headerlink" title="一、异步执行"></a>一、异步执行</h2><p>实现方式二种：</p>
+<ol>
+<li>使用异步注解<code>@aysnc</code>、启动类：添加<code>@EnableAsync</code>注解</li>
+<li>JDK 8本身有一个非常好用的Future类——<code>CompletableFuture</code></li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AskThread</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> CompletableFuture&lt;Integer&gt; re = <span class="keyword">null</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> myRe = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            myRe = re.get() * re.get();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(myRe);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> CompletableFuture&lt;Integer&gt; future = <span class="keyword">new</span> CompletableFuture&lt;&gt;();</span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> AskThread(future)).start();</span><br><span class="line">        <span class="comment">//模拟长时间的计算过程</span></span><br><span class="line">        Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        <span class="comment">//告知完成结果</span></span><br><span class="line">        future.complete(<span class="number">60</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在该示例中，启动一个线程，此时<code>AskThread</code>对象还没有拿到它需要的数据，执行到<code>myRe = re.get() * re.get()</code>会阻塞。我们用休眠1秒来模拟一个长时间的计算过程，并将计算结果告诉<code>future</code>执行结果，<code>AskThread</code>线程将会继续执行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Calc</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Integer <span class="title">calc</span><span class="params">(Integer para)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//模拟一个长时间的执行</span></span><br><span class="line">            Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> para * para;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> ExecutionException, InterruptedException </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> CompletableFuture&lt;Void&gt; future = CompletableFuture.supplyAsync(() -&gt; calc(<span class="number">50</span>))</span><br><span class="line">                .thenApply((i) -&gt; Integer.toString(i))</span><br><span class="line">                .thenApply((str) -&gt; <span class="string">&quot;\&quot;&quot;</span> + str + <span class="string">&quot;\&quot;&quot;</span>)</span><br><span class="line">                .thenAccept(System.out::println);</span><br><span class="line">        future.get();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>CompletableFuture.supplyAsync</code>方法构造一个<code>CompletableFuture</code>实例，在<code>supplyAsync()</code>方法中，它会在一个新线程中，执行传入的参数。在这里它会执行<code>calc()</code>方法，这个方法可能是比较慢的，但这并不影响<code>CompletableFuture</code>实例的构造速度，<code>supplyAsync()</code>会立即返回。而返回的<code>CompletableFuture</code>实例就可以作为这次调用的契约，在将来任何场合，用于获得最终的计算结果。</p>
+<p><code>supplyAsync</code>用于提供返回值的情况，<code>CompletableFuture</code>还有一个不需要返回值的异步调用方法<code>runAsync(Runnable runnable)</code>,一般我们在优化<code>Controller</code>时，使用这个方法比较多。这两个方法如果在不指定线程池的情况下，都是在<code>ForkJoinPool.common</code>线程池中执行，而这个线程池中的所有线程都是<code>Daemon</code>（守护）线程，所以，当主线程结束时，这些线程无论执行完毕都会退出系统。</p>
         
       
 
@@ -581,224 +929,211 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">微服务</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/02/09/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%8B%86%E5%88%86%E5%8E%9F%E5%88%99%E4%B9%8BAKF/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Java线程状态转换" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/08/Java%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2/">Java线程状态转换</a>
-    </h1>
-  
-
-        
-        <a href="/2022/02/08/Java%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2/" class="archive-article-date">
-  	<time datetime="2022-02-08T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-08</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：1.3k字 | 预计阅读时长：4分钟
-	  </div> 
-      
-        <p>今天来看一下Java线程状态转换的相关内容。内容摘抄自微信公众号【Java极客技术】。</p>
-<h1 id="线程状态"><a href="#线程状态" class="headerlink" title="线程状态"></a>线程状态</h1><p>先来个开场四连问</p>
-<ul>
-<li><code>Java</code>线程状态有几个？</li>
-<li><code>Java</code>线程状态是如何转换？</li>
-<li><code>Java</code>线程状态转换什么情况会进入锁的等待队列？</li>
-<li><code>Java</code>线程状态转换什么情况会进入锁的同步队列？</li>
-</ul>
-<p>一提到<code>Java</code>线程状态，不少读者立马想到线程状态转换图，但细想，印象又不深刻，只记得有那么几个状态。</p>
-<p>再要你说出<code>Java</code>线程状态是如何转换的，脑子里可能就如下图一样，已经是一团浆糊了。</p>
-<p><img src="/2022/02/08/Java%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2/1.png" alt="img"></p>
-<p>别慌，阿星为了帮读者大大们理清楚上面的问题，会一步一步的把<strong>线程状态转换图</strong>给画出来，让读者大大们真正的理解<strong>Java线程状态转换</strong>。</p>
-<p>首先线程的状态可以分为<code>6</code>态或<code>7</code>态，具体状态如下</p>
-<p><strong>6态</strong></p>
-<ul>
-<li><code>New</code>：新建状态</li>
-<li><code>Runnable</code>：可运行状态</li>
-<li><code>Terminated</code>：终止状态</li>
-<li><code>Waiting</code>：等待状态</li>
-<li><code>TimedWaiting</code>：超时等待状态</li>
-<li><code>Blocked</code>：阻塞状态</li>
-</ul>
-<p><strong>7态</strong></p>
-<ul>
-<li><code>New</code>：新建状态</li>
-<li><code>Ready</code>：就绪状态</li>
-<li><code>Running</code>：运行状态</li>
-<li><code>Terminated</code>：终止状态</li>
-<li><code>Waiting</code>：等待状态</li>
-<li><code>TimedWaiting</code>：超时等待状态</li>
-<li><code>Blocked</code>：阻塞状态</li>
-</ul>
-<p>其实6态与7态差别不大，只不过<code>7</code>态把<code>Runnable</code>可运行状态，拆解成了<code>Ready</code>就绪状态与<code>Running</code>运行状态。</p>
-<p>阿星以<code>7</code>态为例，来逐步讲解它们之间是如何转换的。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">多线程</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/02/08/Java%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-JVM面试相关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/07/JVM%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">JVM面试相关</a>
-    </h1>
-  
-
-        
-        <a href="/2022/02/07/JVM%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/" class="archive-article-date">
-  	<time datetime="2022-02-07T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-07</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：4.9k字 | 预计阅读时长：18分钟
-	  </div> 
-      
-        <p>今天总结一下面试中经常会问到的关于JVM的题目。</p>
-<h2 id="1-什么情况下会发生栈内存溢出。"><a href="#1-什么情况下会发生栈内存溢出。" class="headerlink" title="1.什么情况下会发生栈内存溢出。"></a>1.什么情况下会发生栈内存溢出。</h2><p><strong>思路： 描述栈定义，再描述为什么会溢出，再说明一下相关配置参数，OK的话可以给面试官手写是一个栈溢出的demo。</strong></p>
-<p>答案：</p>
-<p>栈是线程私有的，他的生命周期与线程相同，每个方法在执行的时候都会创建一个栈帧，用来存储局部变量表，操作数栈，动态链接，方法出口等信息。局部变量表又包含基本数据类型，对象引用类型<br>如果线程请求的栈深度大于虚拟机所允许的最大深度，将抛出StackOverflowError异常，方法递归调用产生这种结果。<br>如果Java虚拟机栈可以动态扩展，并且扩展的动作已经尝试过，但是无法申请到足够的内存去完成扩展，或者在新建立线程的时候没有足够的内存去创建对应的虚拟机栈，那么Java虚拟机将抛出一个OutOfMemory 异常。(线程启动过多)<br>参数 -Xss 去调整JVM栈的大小</p>
-<h2 id="2-详解JVM内存模型"><a href="#2-详解JVM内存模型" class="headerlink" title="2.详解JVM内存模型"></a>2.详解JVM内存模型</h2><p><strong>思路： 给面试官画一下JVM内存模型图，并描述每个模块的定义，作用，以及可能会存在的问题，如栈溢出等。</strong></p>
-<p>答案：</p>
-<ul>
-<li>JVM内存结构</li>
-</ul>
-<p><img src="/2022/02/07/JVM%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/1.png" alt="img"></p>
-<ul>
-<li><p>程序计数器：当前线程所执行的字节码的行号指示器，用于记录正在执行的虚拟机字节指令地址，线程私有。</p>
-</li>
-<li><p>Java虚拟栈：存放基本数据类型、对象的引用、方法出口等，线程私有。</p>
-</li>
-<li><p>Native方法栈：和虚拟栈相似，只不过它服务于Native方法，线程私有。</p>
-</li>
-<li><p>Java堆：java内存最大的一块，所有对象实例、数组都存放在java堆，GC回收的地方，线程共享。</p>
-</li>
-<li><p>方法区：存放已被加载的类信息、常量、静态变量、即时编译器编译后的代码数据等。（即永久带），回收目标主要是常量池的回收和类型的卸载，各线程共享</p>
-</li>
-</ul>
-<h2 id="3-JVM内存为什么要分成新生代，老年代，持久代。新生代中为什么要分为Eden和Survivor。"><a href="#3-JVM内存为什么要分成新生代，老年代，持久代。新生代中为什么要分为Eden和Survivor。" class="headerlink" title="3.JVM内存为什么要分成新生代，老年代，持久代。新生代中为什么要分为Eden和Survivor。"></a>3.JVM内存为什么要分成新生代，老年代，持久代。新生代中为什么要分为Eden和Survivor。</h2><p><strong>思路： 先讲一下JAVA堆，新生代的划分，再谈谈它们之间的转化，相互之间一些参数的配置（如： –XX:NewRatio，–XX:SurvivorRatio等），再解释为什么要这样划分，最好加一点自己的理解。</strong></p>
-<p>答案：</p>
-<h4 id="1）共享内存区划分"><a href="#1）共享内存区划分" class="headerlink" title="1）共享内存区划分"></a>1）共享内存区划分</h4><p>共享内存区 = 持久带 + 堆<br>持久带 = 方法区 + 其他<br>Java堆 = 老年代 + 新生代<br>新生代 = Eden + S0 + S1</p>
-<h4 id="2）一些参数的配置"><a href="#2）一些参数的配置" class="headerlink" title="2）一些参数的配置"></a>2）一些参数的配置</h4><p>默认的，新生代 ( Young ) 与老年代 ( Old ) 的比例的值为 1:2 ，可以通过参数 –XX:NewRatio 配置。<br>默认的，Edem : from : to = 8 : 1 : 1 ( 可以通过参数 –XX:SurvivorRatio 来设定)<br>Survivor区中的对象被复制次数为15(对应虚拟机参数 -XX:+MaxTenuringThreshold)</p>
-<h4 id="3-为什么要分为Eden和Survivor-为什么要设置两个Survivor区？"><a href="#3-为什么要分为Eden和Survivor-为什么要设置两个Survivor区？" class="headerlink" title="3)为什么要分为Eden和Survivor?为什么要设置两个Survivor区？"></a>3)为什么要分为Eden和Survivor?为什么要设置两个Survivor区？</h4><p>如果没有Survivor，Eden区每进行一次Minor GC，存活的对象就会被送到老年代。老年代很快被填满，触发Major GC.老年代的内存空间远大于新生代，进行一次Full GC消耗的时间比Minor GC长得多,所以需要分为Eden和Survivor。<br>Survivor的存在意义，就是减少被送到老年代的对象，进而减少Full GC的发生，Survivor的预筛选保证，只有经历16次Minor GC还能在新生代中存活的对象，才会被送到老年代。<br>设置两个Survivor区最大的好处就是解决了碎片化，刚刚新建的对象在Eden中，经历一次Minor GC，Eden中的存活对象就会被移动到第一块survivor space S0，Eden被清空；等Eden区再满了，就再触发一次Minor GC，Eden和S0中的存活对象又会被复制送入第二块survivor space S1（这个过程非常重要，因为这种复制算法保证了S1中来自S0和Eden两部分的存活对象占用连续的内存空间，避免了碎片化的发生）</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">JVM</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">设计</a>
         		</li>
       		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">SpringBoot</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/06/14/%E6%8F%90%E5%8D%87SpringBoot%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%90%9E%E5%90%90%E9%87%8F/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Transactional注解失效原因及解决方案" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/06/13/Transactional%E6%B3%A8%E8%A7%A3%E5%A4%B1%E6%95%88%E5%8E%9F%E5%9B%A0%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">Transactional注解失效原因及解决方案</a>
+    </h1>
+  
+
+        
+        <a href="/2022/06/13/Transactional%E6%B3%A8%E8%A7%A3%E5%A4%B1%E6%95%88%E5%8E%9F%E5%9B%A0%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" class="archive-article-date">
+  	<time datetime="2022-06-13T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-13</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：2.5k字 | 预计阅读时长：10分钟
+	  </div> 
+      
+        <p>今天来看一下<strong>Transactional注解失效原因及解决方案</strong>，内容摘抄自微信公众号【Java大后端】。</p>
+<h2 id="Transactional失效场景介绍"><a href="#Transactional失效场景介绍" class="headerlink" title="Transactional失效场景介绍"></a>Transactional失效场景介绍</h2><h3 id="第一种"><a href="#第一种" class="headerlink" title="第一种"></a>第一种</h3><p>Transactional注解标注方法修饰符为非public时，<code>@Transactional</code>注解将会不起作用。例如以下代码。</p>
+<p>定义一个错误的<code>@Transactional</code>标注实现，修饰一个默认访问符的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**  </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhoujy  </span></span><br><span class="line"><span class="comment"> **/</span>  </span><br><span class="line"><span class="meta">@Component</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestServiceImpl</span> </span>&#123;  </span><br><span class="line">    <span class="meta">@Resource</span>  </span><br><span class="line">    TestMapper testMapper;  </span><br><span class="line">      </span><br><span class="line">    <span class="meta">@Transactional</span>  </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">insertTestWrongModifier</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">int</span> re = testMapper.insert(<span class="keyword">new</span> Test(<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>));  </span><br><span class="line">        <span class="keyword">if</span> (re &gt; <span class="number">0</span>) &#123;  </span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NeedToInterceptException(<span class="string">&quot;need intercept&quot;</span>);  </span><br><span class="line">        &#125;  </span><br><span class="line">        testMapper.insert(<span class="keyword">new</span> Test(<span class="number">210</span>,<span class="number">20</span>,<span class="number">30</span>));  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+<p>在同一个包内，新建调用对象，进行访问。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InvokcationService</span> </span>&#123;  </span><br><span class="line">    <span class="meta">@Resource</span>  </span><br><span class="line">    <span class="keyword">private</span> TestServiceImpl testService;  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invokeInsertTestWrongModifier</span><span class="params">()</span></span>&#123;  </span><br><span class="line">        <span class="comment">//调用@Transactional标注的默认访问符方法  </span></span><br><span class="line">        testService.insertTestWrongModifier();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+<p>测试用例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RunWith(SpringRunner.class)</span>  </span><br><span class="line"><span class="meta">@SpringBootTest</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DemoApplicationTests</span> </span>&#123;  </span><br><span class="line">   <span class="meta">@Resource</span>  </span><br><span class="line">   InvokcationService invokcationService;  </span><br><span class="line">  </span><br><span class="line">   <span class="meta">@Test</span>  </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span>  <span class="title">testInvoke</span><span class="params">()</span></span>&#123;  </span><br><span class="line">      invokcationService.invokeInsertTestWrongModifier();  </span><br><span class="line">   &#125;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+<p>以上的访问方式，导致事务没开启，因此在方法抛出异常时，<code>testMapper.insert(new Test(10,20,30));</code>操作不会进行回滚。如果<code>TestServiceImpl#insertTestWrongModifier</code>方法改为public的话将会正常开启事务，<code>testMapper.insert(new Test(10,20,30));</code>将会进行回滚。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2022/06/13/Transactional%E6%B3%A8%E8%A7%A3%E5%A4%B1%E6%95%88%E5%8E%9F%E5%9B%A0%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-社招面试相关" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2022/06/12/%E7%A4%BE%E6%8B%9B%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">社招面试相关</a>
+    </h1>
+  
+
+        
+        <a href="/2022/06/12/%E7%A4%BE%E6%8B%9B%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/" class="archive-article-date">
+  	<time datetime="2022-06-12T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-06-12</time>
+</a>
+        
+      </header>
+	   
+    
+    <div class="article-entry" itemprop="articleBody">
+	  <div class="post-count">
+		字数：10.2k字 | 预计阅读时长：36分钟
+	  </div> 
+      
+        <p>今天看一下常见的社招面试题，内容摘抄自微信公众号【Java极客技术】。</p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有位朋友工作三年，去面试，给大家整理一下面试题，并附上答案。</p>
+<ol>
+<li>Mysql索引在什么情况下会失效</li>
+<li>MySql的存储引擎InnoDB与MyISAM的区别</li>
+<li>Mysql在项目中的优化场景，慢查询解决等</li>
+<li>Mysql有什么索引，索引模型是什么</li>
+<li>B-树与B+树的区别？为什么不用红黑树</li>
+<li>Mysql主从同步怎么做</li>
+<li>乐观锁与悲观锁的区别？</li>
+<li>聊聊binlog日志</li>
+<li>redis 持久化有哪几种方式，怎么选？</li>
+<li>redis 主从同步是怎样的过程？</li>
+<li>redis 的 zset 怎么实现的？</li>
+<li>Redis 过期策略和内存淘汰策略</li>
+<li>Hashmap实现原理</li>
+<li>select 和 epoll的区别</li>
+<li>http与https的区别，https的原理，如何加密的？</li>
+<li>Raft算法原理</li>
+<li>消息中间件如何做到高可用</li>
+<li>消息队列怎么保证不丢消息的</li>
+<li>聊聊Redis的哨兵机制</li>
+<li>算法题：无重复字符的最长子串</li>
+</ol>
+<h2 id="1-Mysql索引在什么情况下会失效"><a href="#1-Mysql索引在什么情况下会失效" class="headerlink" title="1. Mysql索引在什么情况下会失效"></a>1. Mysql索引在什么情况下会失效</h2><ul>
+<li>查询条件包含or，可能导致索引失效</li>
+<li>如何字段类型是字符串，where时一定用引号括起来，否则索引失效</li>
+<li>like通配符可能导致索引失效。</li>
+<li>联合索引，查询时的条件列不是联合索引中的第一个列，索引失效。</li>
+<li>在索引列上使用mysql的内置函数，索引失效。</li>
+<li>对索引列运算（如，+、-、*、/），索引失效。</li>
+<li>索引字段上使用（！= 或者 &lt; &gt;，not in）时，可能会导致索引失效。</li>
+<li>索引字段上使用is null， is not null，可能导致索引失效。</li>
+<li>左连接查询或者右连接查询查询关联的字段编码格式不一样，可能导致索引失效。</li>
+<li>mysql估计使用全表扫描要比使用索引快,则不使用索引。</li>
+</ul>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">面试</a>
         		</li>
@@ -810,273 +1145,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2022/02/07/JVM%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Linux命令行技巧" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/06/Linux%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%8A%80%E5%B7%A7/">Linux命令行技巧</a>
-    </h1>
-  
-
-        
-        <a href="/2022/02/06/Linux%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%8A%80%E5%B7%A7/" class="archive-article-date">
-  	<time datetime="2022-02-06T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-06</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：2.9k字 | 预计阅读时长：10分钟
-	  </div> 
-      
-        <p>今天来看一下一些常用的Linux命令行的技巧，可以提高部署和调优的效率。内容摘抄自微信公众号【IT大咖说】。</p>
-<p>命令行时节省大量时间。</p>
-<p>在本文中，我将向您演示一些专业的Linux命令技巧，这些技巧将使您节省大量时间，在某些情况下还可以避免很多麻烦，而且它也将帮助您提高工作效率。</p>
-<p>并不是说这些只是针对初学者的Linux技巧。即使有经验的Linux用户也有可能没有发现这些，尽管你这些年来一直在使用Linux。</p>
-<p><strong>很酷的Linux终端技巧，帮助您节省时间和提高生产力</strong></p>
-<p>您很可能已经知道这些Linux命令中的一些或全部。无论哪种情况，都欢迎您在评论部分中分享您喜欢的技巧。</p>
-<p>其中一些技巧还取决于shell的配置方式。现在让我们开始！</p>
-<h3 id="1、使用tab键进行自动完成"><a href="#1、使用tab键进行自动完成" class="headerlink" title="1、使用tab键进行自动完成"></a><strong>1、使用tab键进行自动完成</strong></h3><p>我将从一些看得见但又非常重要的事情开始：tab补全。</p>
-<p>当您开始在Linux终端中键入内容时，您可以按Tab键，它会建议所有可能的选项，这些选项以您到目前为止所键入的字符串开头。</p>
-<p>例如，如果您要复制名为linuxidc.txt的文件，则只需键入“ cp l ”，然后按tab键查看可能的选项。</p>
-<p><img src="/2022/02/06/Linux%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%8A%80%E5%B7%A7/1.png" alt="img"></p>
-<p>使用Tab键进行自动完成</p>
-<p>您也可以在完成命令时使用Tab键。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/02/06/Linux%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%8A%80%E5%B7%A7/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-常用设计模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/05/%E5%B8%B8%E7%94%A8%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">常用设计模式</a>
-    </h1>
-  
-
-        
-        <a href="/2022/02/05/%E5%B8%B8%E7%94%A8%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="archive-article-date">
-  	<time datetime="2022-02-05T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-05</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：5.7k字 | 预计阅读时长：23分钟
-	  </div> 
-      
-        <p>今天来看一下工作中常用到的一些设计模式，内容摘抄自微信公众号【Java极客技术】。</p>
-<p>平时我们写代码呢，多数情况都是<strong>流水线式</strong>写代码，基本就可以实现业务逻辑了。<strong>如何在写代码中找到乐趣呢</strong>，我觉得，最好的方式就是：<strong>使用设计模式优化自己的业务代码</strong>。今天跟大家聊聊日常工作中，我都使用过哪些设计模式。</p>
-<p><img src="/2022/02/05/%E5%B8%B8%E7%94%A8%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/1.png" alt="img"></p>
-<p>​                                                           工作中常用到哪些设计模式</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/02/05/%E5%B8%B8%E7%94%A8%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-状态模式" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/02/04/%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/">状态模式</a>
-    </h1>
-  
-
-        
-        <a href="/2022/02/04/%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" class="archive-article-date">
-  	<time datetime="2022-02-04T10:54:20.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2022-02-04</time>
-</a>
-        
-      </header>
-	   
-    
-    <div class="article-entry" itemprop="articleBody">
-	  <div class="post-count">
-		字数：2.4k字 | 预计阅读时长：9分钟
-	  </div> 
-      
-        <p>今天来看一下设计模式中的状态模式。内容摘抄自微信公众号【Java技术栈】。</p>
-<p>今天来看下将原来使用注释配置的 Java 数据类型改为使用缩写替代。</p>
-<p>为了便于缩写，能直观地看出完整类型，我设计的方案是：</p>
-<ol>
-<li>对简单类型如 String、int、Double，就使用类型的首字母替代，如 <code>i -&gt; int / D -&gt; Double</code>；</li>
-<li>对于容器类型如 List、Map，使用两个首字母分别标志容器的开始和闭合，如 <code>LDL -&gt; List / MDDM -&gt; Map</code>；</li>
-<li>由于 Set 的首字母和 String 首字母冲突，将 String 的缩写修改为 T，同时处理了 Long 和 List 的冲突；</li>
-<li>支持容器类型的嵌套，如 <code>LLTLL -&gt; List&gt; / MTLDLM -&gt; Map&gt;</code>；</li>
-</ol>
-<p>我使用普通的 if-else 方式和状态机方式各实现了一遍，更深切地理解了状态机在处理这种多状态的复杂问题时的优越性。</p>
-<p>两种实现的代码我都放在了 github 上，地址是：<a target="_blank" rel="noopener" href="https://github.com/zhenbianshu/java-shorten-type-parser%EF%BC%8C%E6%9C%89%E7%B1%BB%E4%BC%BC%E9%9C%80%E6%B1%82%E7%9A%84%E5%8F%AF%E4%BB%A5%E6%94%B9%E6%94%B9%E6%9D%A5%E7%94%A8%E3%80%82">https://github.com/zhenbianshu/java-shorten-type-parser，有类似需求的可以改改来用。</a></p>
-<h2 id="IF-ELSE-方式"><a href="#IF-ELSE-方式" class="headerlink" title="IF-ELSE 方式"></a>IF-ELSE 方式</h2><p>原来以为写一个简单的类型翻译器花不了太多时间，可是真做起来，才发现要注意的点太多了。</p>
-<p>首先是处理容器的开启和闭合，这就需要使用<code>栈</code>来保存预期的下一个字符类型，再对比栈顶字符类型和当前处理字符，决定解析的结果。</p>
-<p>还要注意类型嵌套的情况下，内层嵌套的容器作为外层容器的元素被解析完成时，需要修改外层容器的预期字符。而且 Map 作为一种相对 Set 和 List 比较特殊的容器，还要处理它的左右元素。同时还不能忘记处理各种异常，如未知字符、容器内是原始类型、容器未正确闭合等。</p>
-<p>而这些逻辑混杂在一块就更添复杂度了，通常是一遍代码写下来挺顺畅，找几个特殊的 case 一验证，往往就有没有考虑到的点，你以为解决了这个点就好了，殊不知这个问题点的解决方案又引起了另一个问题。</p>
-<p>最终修修补补好多次，终于把代码写完了，连优化的想法都没了，担心又引入新的问题。更多 Java 核心技术教程：<a target="_blank" rel="noopener" href="https://github.com/javastacks/javastack%EF%BC%8C%E4%B8%80%E8%B5%B7%E6%9D%A5%E5%AD%A6%E4%B9%A0%E5%90%A7%E3%80%82">https://github.com/javastacks/javastack，一起来学习吧。</a></p>
-<p>最终的伪代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">parseToFullType</span><span class="params">()</span> <span class="keyword">throws</span> IllegalStateException </span>&#123;</span><br><span class="line">    StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (; ; <span class="keyword">this</span>.scanner.next()) &#123;</span><br><span class="line">        Character currentChar = scanner.current();</span><br><span class="line">        <span class="keyword">if</span> (currentChar == <span class="string">&#x27;\uFFFF&#x27;</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> sb.toString();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (isCollection()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (CollectionEnd()) &#123;</span><br><span class="line">                dealCollectionEleEnd();</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;unexpected char &#x27;&quot;</span> + currentChar + <span class="string">&quot;&#x27; at position &quot;</span> + scanner.getIndex());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isWrapperType()) &#123;</span><br><span class="line">            dealSingleEleEnd();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (parseStart()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (collectionStart()) &#123;</span><br><span class="line">                putCollecitonExpectEle()</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;unknown char &#x27;&quot;</span> + currentChar + <span class="string">&quot;&#x27; at position &quot;</span> + scanner.getIndex());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">设计模式</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2022/02/04/%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/">展开全文 >></a>
+          <a class="article-more-a" href="/2022/06/12/%E7%A4%BE%E6%8B%9B%E9%9D%A2%E8%AF%95%E7%9B%B8%E5%85%B3/">展开全文 >></a>
         </p>
       
 
@@ -1108,7 +1177,7 @@
   
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/4/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/29/">29</a><a class="extend next" rel="next" href="/page/6/">Next &amp;raquo;</a>
+      <a class="extend prev" rel="prev" href="/page/4/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/42/">42</a><a class="extend next" rel="next" href="/page/6/">Next &amp;raquo;</a>
     </nav>
   
 
@@ -1210,15 +1279,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Java</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Spring</a>
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">设计</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Java</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">数据库</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">算法</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">缓存</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">前端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1258,15 +1347,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">异常处理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">多线程</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">中间件</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">算法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1314,11 +1403,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">前端</a>
+                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Zookeeper</a>
+                <a href="javascript:void(0)" class="js-tag color4">git</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1342,15 +1431,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">设计</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1358,11 +1443,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">部署</a>
+                <a href="javascript:void(0)" class="js-tag color5">并发编程</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">git</a>
+                <a href="javascript:void(0)" class="js-tag color2">数据库，缓存</a>
               </li>
             
             <div class="clearfix"></div>
